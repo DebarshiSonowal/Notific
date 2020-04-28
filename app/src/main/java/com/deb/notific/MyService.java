@@ -40,6 +40,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.maps.android.PolyUtil;
 import com.snatik.polygon.Point;
 import com.snatik.polygon.Polygon;
 
@@ -50,11 +51,12 @@ import java.util.List;
 public class MyService extends Service implements GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final String TAG = MyService.class.getSimpleName();
     DatabaseReference root = FirebaseDatabase.getInstance().getReference();
-    LatLng mLng;
+    LatLng mLng,mLatLng;
     List<LatLng>mLatLngs = new ArrayList<>();
+    List<LatLng>mLatLngList = new ArrayList<>();
     Double latitude,longitude;
     GoogleApiClient mLocationClient;
-    Boolean flag;
+    Boolean flag =false;
     String result;
     LocationRequest mLocationRequest = new LocationRequest();
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
@@ -86,7 +88,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
         mLocationRequest.setInterval(3000);
         mLocationRequest.setFastestInterval(2000);
-        mLocationRequest.setSmallestDisplacement(10f);
+//        mLocationRequest.setSmallestDisplacement(10f);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationClient.connect();
 
@@ -114,13 +116,16 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                         {
                             if(dataSnapshot3.getKey().equals("latitude"))
                             {
-                                latitude = (Double) dataSnapshot3.getValue();
+                                latitude = Double.parseDouble(dataSnapshot3.getValue().toString()) ;
+                                Log.d("MyService",dataSnapshot3.getValue().toString());
                             }
                             else
-                                longitude = (Double) dataSnapshot3.getValue();
+                                longitude =  Double.parseDouble(dataSnapshot3.getValue().toString()) ;
                         }
                         mLng = new LatLng(latitude,longitude);
+                        Log.d("MyService",mLng.toString());
                         mLatLngs.add(mLng);
+                        Log.d("MyService","Got data");
                     }
                 }
             }
@@ -166,44 +171,67 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         Log.d(TAG, "Location changed");
         if(location != null)
         {
+//            check(location);
+            mLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            Log.d("MyService",mLatLng.toString()+" A");
             for(int i=0;i<mLatLngs.size()/5;i++)
             {
-                Polygon m = Polygon.Builder().addVertex(new Point(mLatLngs.get(i).latitude,mLatLngs.get(i).longitude))
-                        .addVertex(new Point(mLatLngs.get(i+1).latitude,mLatLngs.get(i+1).longitude))
-                        .addVertex(new Point(mLatLngs.get(i+2).latitude,mLatLngs.get(i+2).longitude))
-                        .addVertex(new Point(mLatLngs.get(i+3).latitude,mLatLngs.get(i+3).longitude))
-                        .addVertex(new Point(mLatLngs.get(i+4).latitude,mLatLngs.get(i+4).longitude)).build();
-                Point mp = new Point(location.getLatitude(),location.getLongitude());
-                if(m.contains(mp))
+                Log.d("MyService", String.valueOf(i));
+                for(int j =0;j<5;j++)
                 {
-                    flag = true;
-                    break;
+                    Log.d("MyService",mLatLngs.get(j).toString());
+                    mLatLngList.add(mLatLngs.get(j));
                 }
-                 flag = false;
-
+                flag = PolyUtil.containsLocation(mLatLng,mLatLngList,false);
+                mLatLngList.clear();
             }
 
-            Toast.makeText(this,location.getLongitude()+"/"+location.getLatitude(),Toast.LENGTH_SHORT).show();
-            Geocoder geocoder = new Geocoder(this);
-            try {
-                List<Address> addresses =
-                        geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                result = addresses.get(0).getLocality() + ":";
-                result += addresses.get(0).getCountryName();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            sendnotific(result);
-            sendMessageToUI(String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()),result,false);
 
+
+//            for(int i=0;i<mLatLngs.size()/5;i++)
+//            {
+//                String ma = String.valueOf(i);
+//                Log.d("MyService",ma);
+//
+//                Polygon m = Polygon.Builder().addVertex(new Point(mLatLngs.get(i).latitude,mLatLngs.get(i).longitude))
+//                        .addVertex(new Point(mLatLngs.get(i+1).latitude,mLatLngs.get(i+1).longitude))
+//                        .addVertex(new Point(mLatLngs.get(i+2).latitude,mLatLngs.get(i+2).longitude))
+//                        .addVertex(new Point(mLatLngs.get(i+3).latitude,mLatLngs.get(i+3).longitude))
+//                        .addVertex(new Point(mLatLngs.get(i+4).latitude,mLatLngs.get(i+4).longitude)).build();
+//                Point mp = new Point(location.getLatitude(),location.getLongitude());
+//                if(m.contains(mp))
+//                {
+//                    flag = true;
+//                    break;
+//                }
+//
+//            }
+//            Toast.makeText(this,location.getLongitude()+"/"+location.getLatitude(),Toast.LENGTH_SHORT).show();
+            Log.d("MyService",flag.toString());
+           send(location);
         }
     }
+
+    private void send(Location location) {
+        Geocoder geocoder = new Geocoder(this);
+        try {
+            List<Address> addresses =
+                    geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            result = addresses.get(0).getLocality() + ":";
+            result += addresses.get(0).getCountryName();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        sendnotific(result);
+        sendMessageToUI(String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()),result,flag);
+    }
+
 
     private void sendnotific(String result) {
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
-        NotificationCompat.Builder notificationCompatBuilder;
+
         Notification notification =  new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("The locaton service is running")
                 .setContentText(result)

@@ -64,7 +64,7 @@ Main2Activity mMain2Activity;
                         if(status1.equals("true"))
                         {
                             state.setText("Inside");
-                        }else
+                        }else if(status1.equals("false"))
                             state.setText("Outside");
 
                     }

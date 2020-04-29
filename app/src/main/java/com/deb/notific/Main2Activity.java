@@ -61,9 +61,9 @@ import java.util.ArrayList;
 import static com.deb.notific.helper.BusStation.getBus;
 
 public class Main2Activity extends AppCompatActivity {
-   static  Main2Activity instance;
-   LocationRequest mLocationRequest;
-   FusedLocationProviderClient mFusedLocationProviderClient;
+    static Main2Activity instance;
+    LocationRequest mLocationRequest;
+    FusedLocationProviderClient mFusedLocationProviderClient;
 
     public static Main2Activity getInstance() {
         return instance;
@@ -86,6 +86,14 @@ public class Main2Activity extends AppCompatActivity {
 //        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
         NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && !notificationManager.isNotificationPolicyAccessGranted()) {
 
+            Intent intent = new Intent(
+                    android.provider.Settings
+                            .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+
+            startActivity(intent);
+        }
     }
 }

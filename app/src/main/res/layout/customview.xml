@@ -45,7 +45,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="#000000">
 
             <Button
                 android:id="@+id/button3"
@@ -63,6 +64,7 @@
                 android:layout_width="145dp"
                 android:layout_height="45dp"
                 android:gravity="center"
+                android:textColor="#FFFFFF"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/button3"
                 app:layout_constraintHorizontal_bias="0.043"

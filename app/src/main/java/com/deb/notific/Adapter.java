@@ -17,12 +17,11 @@ import java.util.List;
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>  {
     private LayoutInflater mLayoutInflater;
     private List<String> namelist;
-    private List<LatLng> mLatLngs;
+//    private List<LatLng> mLatLngs;
 
-    public Adapter(Context context ,List<String> namelist, List<LatLng> latLngs) {
+    public Adapter(Context context ,List<String> namelist) {
         this.mLayoutInflater = LayoutInflater.from(context);
         this.namelist = namelist;
-        mLatLngs = latLngs;
     }
 
     @NonNull
@@ -51,7 +50,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>  {
 
     @Override
     public int getItemCount() {
-        return 0;
+        return namelist.size();
     }
     public static class ViewHolder extends RecyclerView.ViewHolder{
         TextView nam;

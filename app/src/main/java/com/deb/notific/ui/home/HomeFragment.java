@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.location.Geocoder;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +27,22 @@ import com.deb.notific.R;
 import com.deb.notific.helper.BusStation;
 import com.deb.notific.helper.State;
 import com.deb.notific.helper.message;
+import com.google.android.gms.maps.model.LatLng;
 import com.squareup.otto.Subscribe;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class HomeFragment extends Fragment {
 AudioManager mAudioManager;
 Main2Activity mMain2Activity;
     TextView ringm,nomark,usenm,loc,totaluse,misscall,state ;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getexecuted();
+    }
 
     @SuppressLint("SetTextI18n")
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -49,27 +60,6 @@ Main2Activity mMain2Activity;
         totaluse  = root.findViewById(R.id.totlauview);
        misscall = root.findViewById(R.id.nocallview);
 
-        LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).registerReceiver(
-                new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        String latitude = intent.getStringExtra(MyService.EXTRA_LATITUDE);
-                        String longitude = intent.getStringExtra(MyService.EXTRA_LONGITUDE);
-                        String name = intent.getStringExtra("Name");
-                        String status1 = intent.getStringExtra("STATE");
-
-                        if (latitude != null && longitude != null) {
-                           loc.setText(name);
-                        }
-                        if(status1.equals("true"))
-                        {
-                            state.setText("Inside");
-                        }else if(status1.equals("false"))
-                            state.setText("Outside");
-
-                    }
-                }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
-        );
         if(mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)
         {
             ringm.setText("Normal");
@@ -80,6 +70,70 @@ Main2Activity mMain2Activity;
         }
         else if(mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT)
             ringm.setText("Silent");
+
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        String latitude = intent.getStringExtra(MyService.EXTRA_LATITUDE);
+                        String longitude = intent.getStringExtra(MyService.EXTRA_LONGITUDE);
+                        String name = intent.getStringExtra("Name");
+                        String status1 = intent.getStringExtra("STATE");
+
+                        if (latitude != null && longitude != null) {
+                            loc.setText(name);
+                        }
+                        if(status1.equals("true"))
+                        {
+                            state.setText("Inside");
+                        }else if(status1.equals("false"))
+                            state.setText("Outside");
+
+                    }
+                }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
+        );
+//        Timer timer = new Timer();
+//        timer.scheduleAtFixedRate(new TimerTask() {
+//                                      @Override
+//                                      public void run() {
+//                                          if(mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)
+//                                          {
+//                                              ringm.setText("Normal");
+//                                          }
+//                                          else if(mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE)
+//                                          {
+//                                              ringm.setText("Vibrate");
+//                                          }
+//                                          else if(mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT)
+//                                              ringm.setText("Silent");
+//                                          LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
+//                                                  new BroadcastReceiver() {
+//                                                      @Override
+//                                                      public void onReceive(Context context, Intent intent) {
+//                                                          String latitude = intent.getStringExtra(MyService.EXTRA_LATITUDE);
+//                                                          String longitude = intent.getStringExtra(MyService.EXTRA_LONGITUDE);
+//                                                          String name = intent.getStringExtra("Name");
+//                                                          String status1 = intent.getStringExtra("STATE");
+//
+//                                                          if (latitude != null && longitude != null) {
+//                                                              loc.setText(name);
+//                                                          }
+//                                                          if(status1.equals("true"))
+//                                                          {
+//                                                              state.setText("Inside");
+//                                                          }else if(status1.equals("false"))
+//                                                              state.setText("Outside");
+//
+//                                                      }
+//                                                  }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
+//                                          );
+//                                      }
+//                                  },
+//                0, 1000);   // 1000 Millisecond  = 1 second
+
+
+
+
         return root;
 
     }
@@ -87,25 +141,66 @@ Main2Activity mMain2Activity;
     public void onResume() {
         super.onResume();
 
+        getexecuted();
+
+    }
+
+    private void getexecuted() {
+        mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+        Log.d("Pause","It is resume");
+        if(mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)
+        {
+            ringm.setText("Normal");
+        }
+        else if(mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE)
+        {
+            ringm.setText("Vibrate");
+        }
+        else if(mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT)
+            ringm.setText("Silent");
+
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        Log.d("Pause","Received");
+                        String latitude = intent.getStringExtra(MyService.EXTRA_LATITUDE);
+                        String longitude = intent.getStringExtra(MyService.EXTRA_LONGITUDE);
+                        String name = intent.getStringExtra("Name");
+                        String status1 = intent.getStringExtra("STATE");
+
+                        if (latitude != null && longitude != null) {
+                            loc.setText(name);
+                        }
+                        if(status1.equals("true"))
+                        {
+                            state.setText("Inside");
+                        }else if(status1.equals("false"))
+                            state.setText("Outside");
+
+                    }
+                }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
+        );
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        Log.d("Pause","It is paused");
 //        BusStation.getBus().unregister(this);
     }
-    @Subscribe
-    public  void receivedMessage(message message){
-        loc.setText(message.getMessage());
-    }
-
-    @Subscribe
-    public  void receivedState(State status){
-        if(status.getState()){
-            state.setText("Inside");
-        }
-        else
-            state.setText("Outside");
-    }
+//    @Subscribe
+//    public  void receivedMessage(message message){
+//        loc.setText(message.getMessage());
+//    }
+//
+//    @Subscribe
+//    public  void receivedState(State status){
+//        if(status.getState()){
+//            state.setText("Inside");
+//        }
+//        else
+//            state.setText("Outside");
+//    }
 
 }

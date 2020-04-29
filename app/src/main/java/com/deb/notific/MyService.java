@@ -115,6 +115,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                 {
                     for(DataSnapshot dataSnapshot2:dataSnapshot1.getChildren())
                     {
+
                         for(DataSnapshot dataSnapshot3: dataSnapshot2.getChildren())
                         {
                             if(dataSnapshot3.getKey().equals("latitude"))
@@ -173,6 +174,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         Log.d(TAG, "Location changed");
         if(location != null)
         {
+            send(location);
 //            check(location);
             mLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             Log.d("MyService",location.getLatitude()+ " " + location.getLongitude() +" A");
@@ -188,7 +190,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                 mLatLngList.add(mLatLngs.get(0));
                 flag = PolyUtil.containsLocation(mLatLng,mLatLngList,true);
                 Log.d("MyService",flag.toString());
-                send(location);
+
                 sound(flag);
                 mLatLngList.clear();
             }
@@ -214,8 +216,8 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 //                }
 //
 //            }
-//            Toast.makeText(this,location.getLongitude()+"/"+location.getLatitude(),Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(this,location.getLongitude()+"/"+location.getLatitude(),Toast.LENGTH_SHORT).show();
+            sound(flag);
         }
     }
 
@@ -224,7 +226,11 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         {
             if(mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_VIBRATE)
             {
-                mAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                if(mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_SILENT)
+                {
+                    mAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                }
+
             }
         }
         else

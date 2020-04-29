@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -55,6 +56,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     List<LatLng>mLatLngs = new ArrayList<>();
     List<LatLng>mLatLngList = new ArrayList<>();
     Double latitude,longitude;
+    AudioManager mAudioManager;
     GoogleApiClient mLocationClient;
     Boolean flag =false;
     String result;
@@ -68,6 +70,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     public int onStartCommand(Intent intent, int flags, int startId) {
         getData();
         createNotificationChannel();
+        mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 //        startForeground(1,getNotification("Starting"));
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
@@ -117,7 +120,6 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                             if(dataSnapshot3.getKey().equals("latitude"))
                             {
                                 latitude = Double.parseDouble(dataSnapshot3.getValue().toString()) ;
-                                Log.d("MyService",dataSnapshot3.getValue().toString());
                             }
                             else
                                 longitude =  Double.parseDouble(dataSnapshot3.getValue().toString()) ;
@@ -173,19 +175,25 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         {
 //            check(location);
             mLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-            Log.d("MyService",mLatLng.toString()+" A");
+            Log.d("MyService",location.getLatitude()+ " " + location.getLongitude() +" A");
             for(int i=0;i<mLatLngs.size()/5;i++)
             {
                 Log.d("MyService", String.valueOf(i));
                 for(int j =0;j<5;j++)
                 {
-                    Log.d("MyService",mLatLngs.get(j).toString());
+                    Log.d("MyService", String.valueOf(j)+"point");
                     mLatLngList.add(mLatLngs.get(j));
+                    Log.d("MyService",mLatLngList.get(j).toString());
                 }
-                flag = PolyUtil.containsLocation(mLatLng,mLatLngList,false);
+                mLatLngList.add(mLatLngs.get(0));
+                flag = PolyUtil.containsLocation(mLatLng,mLatLngList,true);
+                Log.d("MyService",flag.toString());
+                send(location);
+                sound(flag);
                 mLatLngList.clear();
             }
-
+            mLatLngs.clear();
+            getData();
 
 
 //            for(int i=0;i<mLatLngs.size()/5;i++)
@@ -207,9 +215,25 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 //
 //            }
 //            Toast.makeText(this,location.getLongitude()+"/"+location.getLatitude(),Toast.LENGTH_SHORT).show();
-            Log.d("MyService",flag.toString());
-           send(location);
+
         }
+    }
+
+    private void sound(Boolean flag) {
+        if(flag)
+        {
+            if(mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_VIBRATE)
+            {
+                mAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+            }
+        }
+        else
+            if(mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL)
+            {
+                mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+            }
+
+
     }
 
     private void send(Location location) {

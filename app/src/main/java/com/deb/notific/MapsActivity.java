@@ -174,11 +174,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 MarkerOptions markerOptions = new MarkerOptions().position(latLng).draggable(true);
                 Marker marker = mMap.addMarker(markerOptions);
                 mLatLngs.add(latLng);
+                Log.d("MyService",latLng.toString());
                 markerList.add(marker);
-                if(mLatLngs.size() == 5)
+                if(mLatLngs.size() == 4)
                 {
                     String key = UUID.randomUUID().toString();
-                    for(int j=0;j<5;j++)
+                    for(int j=0;j<4;j++)
                     {
 
                         String key1 = UUID.randomUUID().toString();
@@ -186,7 +187,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         local.child(key).child(key1).setValue(pol1);
 
                     }
-                    mLatLngs.clear();
+//                    mLatLngs.clear();
                 }
 
 

@@ -7,16 +7,22 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.ContactsContract;
+import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -26,6 +32,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.android.internal.telephony.ITelephony;
 import com.deb.notific.helper.Check;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.Api;
@@ -46,6 +53,8 @@ import com.snatik.polygon.Point;
 import com.snatik.polygon.Polygon;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,18 +68,50 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     AudioManager mAudioManager;
     GoogleApiClient mLocationClient;
     Boolean flag =false;
+    String phoneNr;
     String result;
+    ITelephony  telephonyService;
     LocationRequest mLocationRequest = new LocationRequest();
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
     public static final String ACTION_LOCATION_BROADCAST = MyService.class.getName() + "LocationBroadcast";
     public static final String EXTRA_LATITUDE = "extra_latitude";
     public static final String EXTRA_LONGITUDE = "extra_longitude";
-
+    SmsManager smsManager;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        smsManager = SmsManager.getDefault();
         getData();
         createNotificationChannel();
+        try {
+            TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+            Class c = Class.forName(tm.getClass().getName());
+            Method
+                m = c.getDeclaredMethod("getITelephony");
+            m.setAccessible(true);
+            telephonyService = (ITelephony) m.invoke(tm);
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
         mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        try {
+            String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
+            if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_RINGING))
+            {
+                String number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+               phoneNr = intent.getStringExtra("incoming_number");
+                telephonyService.endCall();
+
+                Toast.makeText(getApplicationContext(),"Ringing"+" "+ getContactName(this,number),Toast.LENGTH_SHORT).show();
+            }
+            if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_IDLE)){
+                sendSMSMessage(phoneNr);
+            }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 //        startForeground(1,getNotification("Starting"));
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
@@ -98,6 +139,28 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         return START_REDELIVER_INTENT;
     }
 
+    private void sendSMSMessage(String phoneNo) {
+
+        smsManager.sendTextMessage(phoneNo, null, "Sorry I am busy at the moment", null, null);
+    }
+    public static String getContactName(Context context, String phoneNumber) {
+        ContentResolver cr = context.getContentResolver();
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+        Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+        if (cursor == null) {
+            return null;
+        }
+        String contactName = null;
+        if(cursor.moveToFirst()) {
+            contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+        }
+
+        if(cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+
+        return contactName;
+    }
 //    private Notification getNotification(String s) {
 //        Intent notificationIntent = new Intent(this, MainActivity.class);
 //        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
@@ -216,7 +279,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 //                }
 //
 //            }
-            Toast.makeText(this,location.getLongitude()+"/"+location.getLatitude(),Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this,location.getLongitude()+"/"+location.getLatitude(),Toast.LENGTH_SHORT).show();
             sound(flag);
         }
     }

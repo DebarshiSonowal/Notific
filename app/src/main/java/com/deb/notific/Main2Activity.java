@@ -61,6 +61,7 @@ import java.util.ArrayList;
 import static com.deb.notific.helper.BusStation.getBus;
 
 public class Main2Activity extends AppCompatActivity {
+    private static final int PERMISSION_REQUEST_READ_PHONE_STATE =1 ;
     static Main2Activity instance;
     LocationRequest mLocationRequest;
     FusedLocationProviderClient mFusedLocationProviderClient;
@@ -94,6 +95,12 @@ public class Main2Activity extends AppCompatActivity {
                             .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
 
             startActivity(intent);
+        }
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED || checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED) {
+                String[] permissions = {Manifest.permission.READ_PHONE_STATE, Manifest.permission.CALL_PHONE};
+                requestPermissions(permissions, PERMISSION_REQUEST_READ_PHONE_STATE);
+            }
         }
     }
 }

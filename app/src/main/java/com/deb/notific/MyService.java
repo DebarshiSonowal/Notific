@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Address;
@@ -21,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.ContactsContract;
+import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -34,6 +36,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.android.internal.telephony.ITelephony;
 import com.deb.notific.helper.Check;
+import com.deb.notific.helper.pnumber;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -70,6 +73,8 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     Boolean flag =false;
     String phoneNr;
     String result;
+    String number;
+    BroadcastReceiver receiver;
     ITelephony  telephonyService;
     LocationRequest mLocationRequest = new LocationRequest();
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
@@ -77,41 +82,109 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     public static final String ACTION_LOCATION_BROADCAST = MyService.class.getName() + "LocationBroadcast";
     public static final String EXTRA_LATITUDE = "extra_latitude";
     public static final String EXTRA_LONGITUDE = "extra_longitude";
-    SmsManager smsManager;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+//        Intent intent = new Intent(this,Phone.class);
+//       startService(intent);
+//        IntentFilter filter = new IntentFilter();
+////        <action android:name="android.intent.action.PHONE_STATE" />
+////                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+////                <action android:name="android.media.RINGER_MODE_CHANGED" />
+//        filter.addAction("android.intent.action.PHONE_STATE");
+//        filter.addAction("android.intent.action.NEW_OUTGOING_CALL");
+//        filter.addAction("android.media.RINGER_MODE_CHANGED");
+////        filter.addAction(android.telephony.TelephonyManager.ACTION_PHONE_STATE_CHANGED);
+////        filter.addAction("your_action_strings"); //further more
+////        filter.addAction("your_action_strings"); //further more
+//        registerReceiver(receiver, filter);
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        smsManager = SmsManager.getDefault();
+
+//         receiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//                try {
+//                    String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
+//                    if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_RINGING))
+//                    {
+//                        number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+//                        String phoneNr=  getContactName(context,number);
+//                        Log.d("Phone",number);
+//                        pnumber pnumber = new pnumber(number);
+//                        number = pnumber.getPhone();
+//                        sendSMSMessage(number);
+//                        Toast.makeText(context,"Ringing"+" "+number,Toast.LENGTH_SHORT).show();
+////                number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+////                Toast.makeText(this,"Ringing"+" "+ getContactName(this,number),Toast.LENGTH_SHORT).show();
+////                pnumber nm = new pnumber(number);
+////               phoneNr = intent.getStringExtra("incoming_number");
+//////                telephonyService.endCall();
+////                number = nm.getPhone();
+////                sendSMSMessage(number);
+//                    }
+//                    if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_IDLE)){
+////                sendSMSMessage(phoneNr);
+//                    }
+//                }catch (Exception e)
+//                {
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
+//        TelephonyManager telephony = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
         getData();
         createNotificationChannel();
-        try {
-            TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-            Class c = Class.forName(tm.getClass().getName());
-            Method
-                m = c.getDeclaredMethod("getITelephony");
-            m.setAccessible(true);
-            telephonyService = (ITelephony) m.invoke(tm);
-        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+//            Class c = Class.forName(tm.getClass().getName());
+//            Method
+//                m = c.getDeclaredMethod("getITelephony");
+//            m.setAccessible(true);
+//            telephonyService = (ITelephony) m.invoke(tm);
+//        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+//            e.printStackTrace();
+//        }
 
         mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-        try {
-            String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
-            if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_RINGING))
-            {
-                String number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-               phoneNr = intent.getStringExtra("incoming_number");
-                telephonyService.endCall();
 
-                Toast.makeText(getApplicationContext(),"Ringing"+" "+ getContactName(this,number),Toast.LENGTH_SHORT).show();
-            }
-            if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_IDLE)){
-                sendSMSMessage(phoneNr);
-            }
-        }catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+//        telephony.listen(new PhoneStateListener(){
+//            @Override
+//            public void onCallStateChanged(int state, String incomingNumber) {
+//                super.onCallStateChanged(state, incomingNumber);
+//                Log.d("Phone",incomingNumber);
+//            }
+//        },PhoneStateListener.LISTEN_CALL_STATE);
+
+//        try {
+//            String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
+//            if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_RINGING))
+//            {
+//                number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+//                String phoneNr=  getContactName(this,number);
+//                Log.d("Phone",number);
+//                pnumber pnumber = new pnumber(number);
+//                number = pnumber.getPhone();
+//                sendSMSMessage(number);
+//                Toast.makeText(this,"Ringing"+" "+number,Toast.LENGTH_SHORT).show();
+////                number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+////                Toast.makeText(this,"Ringing"+" "+ getContactName(this,number),Toast.LENGTH_SHORT).show();
+////                pnumber nm = new pnumber(number);
+////               phoneNr = intent.getStringExtra("incoming_number");
+//////                telephonyService.endCall();
+////                number = nm.getPhone();
+////                sendSMSMessage(number);
+//            }
+//            if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_IDLE)){
+////                sendSMSMessage(phoneNr);
+//            }
+//        }catch (Exception e)
+//        {
+//            e.printStackTrace();
+//        }
 //        startForeground(1,getNotification("Starting"));
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
@@ -139,9 +212,10 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         return START_REDELIVER_INTENT;
     }
 
-    private void sendSMSMessage(String phoneNo) {
-
-        smsManager.sendTextMessage(phoneNo, null, "Sorry I am busy at the moment", null, null);
+    private void sendSMSMessage(String number) {
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage(number, null, "I am in a meeting", null, null);
+        Log.d("Message sfsffs",number);
     }
     public static String getContactName(Context context, String phoneNumber) {
         ContentResolver cr = context.getContentResolver();
@@ -357,6 +431,17 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(serviceChannel);
+        }
+    }
+    public class mybroad extends BroadcastReceiver{
+    Context mContext;
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mContext = context;
+        }
+
+        public Context getContext() {
+            return mContext;
         }
     }
 }

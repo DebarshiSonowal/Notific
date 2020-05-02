@@ -25,12 +25,11 @@ AudioManager am;
             if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_RINGING))
             {
                  number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+                Toast.makeText(context,"Ringing"+" "+number,Toast.LENGTH_SHORT).show();
                 String phoneNr=  getContactName(context,number);
                pnumber pnumber = new pnumber(number);
                   number = pnumber.getPhone();
                   send(number);
-                Toast.makeText(context,"Ringing"+" "+number,Toast.LENGTH_SHORT).show();
-
                 }
             if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_OFFHOOK))
             {

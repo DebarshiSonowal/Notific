@@ -32,8 +32,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>  {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Adapter.ViewHolder holder, int position) {
-        holder.mview.setText(namelist.get(position));
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.nam.setText(namelist.get(position));
         holder.mDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

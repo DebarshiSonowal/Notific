@@ -45,7 +45,7 @@ DatabaseReference rootref;
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
         rootref = FirebaseDatabase.getInstance().getReference();
-        rootref.child("Marked Locations").addValueEventListener(new ValueEventListener() {
+        rootref.child("Marked Location").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren()){
@@ -54,8 +54,6 @@ DatabaseReference rootref;
             }
                 mAdapter = new Adapter(getContext(),mList);
                 mRecyclerView.setAdapter(mAdapter);
-
-
             }
 
             @Override
@@ -63,6 +61,8 @@ DatabaseReference rootref;
 
             }
         });
+
+
 
 
 

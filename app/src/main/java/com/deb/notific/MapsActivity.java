@@ -52,7 +52,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, Dialog.DialogListener {
     private Button addloc, clear, loca;
     private GoogleMap mMap;
     private Marker marker;
@@ -178,15 +178,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 markerList.add(marker);
                 if(mLatLngs.size() == 4)
                 {
-                    String key = UUID.randomUUID().toString();
-                    for(int j=0;j<4;j++)
-                    {
-
-                        String key1 = UUID.randomUUID().toString();
-                        polylocation pol1 = new polylocation(mLatLngs.get(j).latitude,mLatLngs.get(j).longitude);
-                        local.child(key).child(key1).setValue(pol1);
-
-                    }
+                    opendialog();
+//                    String key = UUID.randomUUID().toString();
+//                    for(int j=0;j<4;j++)
+//                    {
+//                        String key1 = UUID.randomUUID().toString();
+//                        polylocation pol1 = new polylocation(mLatLngs.get(j).latitude,mLatLngs.get(j).longitude);
+//                        local.child(key).child(key1).setValue(pol1);
+//
+//                    }
 //                    mLatLngs.clear();
                 }
 
@@ -224,6 +224,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+    }
+
+    private void opendialog() {
+        Dialog mdialog = new Dialog();
+        mdialog.show(getSupportFragmentManager(),"Example Dialog");
+    }
+
+    @Override
+    public void applyTexts(String name) {
+        for(int j=0;j<4;j++)
+        {
+            String key1 = UUID.randomUUID().toString();
+            polylocation pol1 = new polylocation(mLatLngs.get(j).latitude,mLatLngs.get(j).longitude);
+            local.child(name).child(key1).setValue(pol1);
+        }
     }
 
 //    class FetchLocation implements Runnable {

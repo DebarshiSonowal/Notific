@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.location.Geocoder;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,13 @@ import com.deb.notific.helper.BusStation;
 import com.deb.notific.helper.State;
 import com.deb.notific.helper.message;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.otto.Subscribe;
 
 import java.util.Timer;
@@ -36,6 +44,8 @@ import java.util.TimerTask;
 public class HomeFragment extends Fragment {
 AudioManager mAudioManager;
 Main2Activity mMain2Activity;
+Handler mHandler = new Handler();
+    Long a,b;
     TextView ringm,nomark,usenm,loc,totaluse,misscall,state ;
 
     @Override
@@ -51,7 +61,8 @@ Main2Activity mMain2Activity;
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 //        mMain2Activity = (Main2Activity) getActivity();
         mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-
+        Dataoperation mdata = new Dataoperation();
+        new Thread(mdata).start();
         state = root.findViewById(R.id.statusview);
         usenm = root.findViewById(R.id.unameview);
          nomark = root.findViewById(R.id.nolocview);
@@ -140,7 +151,8 @@ Main2Activity mMain2Activity;
     @Override
     public void onResume() {
         super.onResume();
-
+        Dataoperation mdata = new Dataoperation();
+        new Thread(mdata).start();
         getexecuted();
 
     }
@@ -202,5 +214,83 @@ Main2Activity mMain2Activity;
 //        else
 //            state.setText("Outside");
 //    }
+class  Dataoperation implements Runnable{
+    DatabaseReference local;
+    FirebaseUser mUser;
+    String name;
+    @Override
+    public void run() {
+        Log.d("Thr","Thread created");
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        local = FirebaseDatabase.getInstance().getReference();
+        local.child("user").child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren())
+                {
+                    if(dataSnapshot1.getKey().equals("Username"))
+                    {
+                        name = (String) dataSnapshot1.getValue();
 
+                    }
+                }
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("Thr","handler");
+                        usenm.setText(name);
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        local.child("user").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                   a =  dataSnapshot.getChildrenCount();
+                    mHandler.post(new Runnable() {
+                        @SuppressLint("SetTextI18n")
+                        @Override
+                        public void run() {
+                            totaluse.setText(a.toString());
+                        }
+                    });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        local.child("Marked Location").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d("Thr","loc no");
+                b = dataSnapshot.getChildrenCount();
+                mHandler.post(new Runnable() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void run() {
+                        Log.d("Thr","set loc no");
+                        nomark.setText(b.toString());
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+    }
 }
+}
+

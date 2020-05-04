@@ -75,6 +75,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     String result;
     String number;
     BroadcastReceiver receiver;
+    Context mContext;
     ITelephony  telephonyService;
     LocationRequest mLocationRequest = new LocationRequest();
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
@@ -86,106 +87,17 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     @Override
     public void onCreate() {
         super.onCreate();
-//        Intent intent = new Intent(this,Phone.class);
-//       startService(intent);
-//        IntentFilter filter = new IntentFilter();
-////        <action android:name="android.intent.action.PHONE_STATE" />
-////                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
-////                <action android:name="android.media.RINGER_MODE_CHANGED" />
-//        filter.addAction("android.intent.action.PHONE_STATE");
-//        filter.addAction("android.intent.action.NEW_OUTGOING_CALL");
-//        filter.addAction("android.media.RINGER_MODE_CHANGED");
-////        filter.addAction(android.telephony.TelephonyManager.ACTION_PHONE_STATE_CHANGED);
-////        filter.addAction("your_action_strings"); //further more
-////        filter.addAction("your_action_strings"); //further more
-//        registerReceiver(receiver, filter);
+        mContext = this;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-//         receiver = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                try {
-//                    String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
-//                    if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_RINGING))
-//                    {
-//                        number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-//                        String phoneNr=  getContactName(context,number);
-//                        Log.d("Phone",number);
-//                        pnumber pnumber = new pnumber(number);
-//                        number = pnumber.getPhone();
-//                        sendSMSMessage(number);
-//                        Toast.makeText(context,"Ringing"+" "+number,Toast.LENGTH_SHORT).show();
-////                number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-////                Toast.makeText(this,"Ringing"+" "+ getContactName(this,number),Toast.LENGTH_SHORT).show();
-////                pnumber nm = new pnumber(number);
-////               phoneNr = intent.getStringExtra("incoming_number");
-//////                telephonyService.endCall();
-////                number = nm.getPhone();
-////                sendSMSMessage(number);
-//                    }
-//                    if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_IDLE)){
-////                sendSMSMessage(phoneNr);
-//                    }
-//                }catch (Exception e)
-//                {
-//                    e.printStackTrace();
-//                }
-//            }
-//        };
-//        TelephonyManager telephony = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
         getData();
         createNotificationChannel();
-//        try {
-//            TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-//            Class c = Class.forName(tm.getClass().getName());
-//            Method
-//                m = c.getDeclaredMethod("getITelephony");
-//            m.setAccessible(true);
-//            telephonyService = (ITelephony) m.invoke(tm);
-//        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-//            e.printStackTrace();
-//        }
 
         mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 
-//        telephony.listen(new PhoneStateListener(){
-//            @Override
-//            public void onCallStateChanged(int state, String incomingNumber) {
-//                super.onCallStateChanged(state, incomingNumber);
-//                Log.d("Phone",incomingNumber);
-//            }
-//        },PhoneStateListener.LISTEN_CALL_STATE);
 
-//        try {
-//            String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
-//            if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_RINGING))
-//            {
-//                number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-//                String phoneNr=  getContactName(this,number);
-//                Log.d("Phone",number);
-//                pnumber pnumber = new pnumber(number);
-//                number = pnumber.getPhone();
-//                sendSMSMessage(number);
-//                Toast.makeText(this,"Ringing"+" "+number,Toast.LENGTH_SHORT).show();
-////                number = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-////                Toast.makeText(this,"Ringing"+" "+ getContactName(this,number),Toast.LENGTH_SHORT).show();
-////                pnumber nm = new pnumber(number);
-////               phoneNr = intent.getStringExtra("incoming_number");
-//////                telephonyService.endCall();
-////                number = nm.getPhone();
-////                sendSMSMessage(number);
-//            }
-//            if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_IDLE)){
-////                sendSMSMessage(phoneNr);
-//            }
-//        }catch (Exception e)
-//        {
-//            e.printStackTrace();
-//        }
-//        startForeground(1,getNotification("Starting"));
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
@@ -211,39 +123,6 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
         return START_REDELIVER_INTENT;
     }
-
-    private void sendSMSMessage(String number) {
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(number, null, "I am in a meeting", null, null);
-        Log.d("Message sfsffs",number);
-    }
-    public static String getContactName(Context context, String phoneNumber) {
-        ContentResolver cr = context.getContentResolver();
-        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
-        Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
-        if (cursor == null) {
-            return null;
-        }
-        String contactName = null;
-        if(cursor.moveToFirst()) {
-            contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
-        }
-
-        if(cursor != null && !cursor.isClosed()) {
-            cursor.close();
-        }
-
-        return contactName;
-    }
-//    private Notification getNotification(String s) {
-//        Intent notificationIntent = new Intent(this, MainActivity.class);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-//        return new NotificationCompat.Builder(this)
-//                .setContentTitle("Notific running in background")
-//                .setContentText(s)
-//                .setContentIntent(pendingIntent).getNotification();
-//    }
-
     private void getData() {
         root.child("Marked Location").addValueEventListener(new ValueEventListener() {
             @Override
@@ -333,27 +212,6 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
             }
             mLatLngs.clear();
             getData();
-
-
-//            for(int i=0;i<mLatLngs.size()/5;i++)
-//            {
-//                String ma = String.valueOf(i);
-//                Log.d("MyService",ma);
-//
-//                Polygon m = Polygon.Builder().addVertex(new Point(mLatLngs.get(i).latitude,mLatLngs.get(i).longitude))
-//                        .addVertex(new Point(mLatLngs.get(i+1).latitude,mLatLngs.get(i+1).longitude))
-//                        .addVertex(new Point(mLatLngs.get(i+2).latitude,mLatLngs.get(i+2).longitude))
-//                        .addVertex(new Point(mLatLngs.get(i+3).latitude,mLatLngs.get(i+3).longitude))
-//                        .addVertex(new Point(mLatLngs.get(i+4).latitude,mLatLngs.get(i+4).longitude)).build();
-//                Point mp = new Point(location.getLatitude(),location.getLongitude());
-//                if(m.contains(mp))
-//                {
-//                    flag = true;
-//                    break;
-//                }
-//
-//            }
-//            Toast.makeText(this,location.getLongitude()+"/"+location.getLatitude(),Toast.LENGTH_SHORT).show();
             sound(flag);
         }
     }
@@ -361,6 +219,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     private void sound(Boolean flag) {
         if(flag)
         {
+
             if(mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_VIBRATE)
             {
                 if(mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_SILENT)
@@ -386,7 +245,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                     geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             result = addresses.get(0).getLocality() + ":";
             result += addresses.get(0).getCountryName();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         sendnotific(result);
@@ -433,15 +292,16 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
             manager.createNotificationChannel(serviceChannel);
         }
     }
-    public class mybroad extends BroadcastReceiver{
-    Context mContext;
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            mContext = context;
-        }
 
-        public Context getContext() {
-            return mContext;
-        }
-    }
+//    public class mybroad extends BroadcastReceiver{
+//    Context mContext;
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            mContext = context;
+//        }
+//
+//        public Context getContext() {
+//            return mContext;
+//        }
+//    }
 }

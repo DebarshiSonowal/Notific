@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.002"
         app:shape_arc_cropDirection="outside"
-        app:shape_arc_height="20dp"
+        app:shape_arc_height="30dp"
         app:shape_arc_position="bottom" >
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,6 +33,7 @@
                 android:gravity="center"
                 android:textColor="#FFFFFF"
                 android:textSize="24sp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.502"

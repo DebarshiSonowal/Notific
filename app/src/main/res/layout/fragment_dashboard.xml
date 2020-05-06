@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".ui.dashboard.DashboardFragment">
 
     <Button
@@ -13,10 +14,9 @@
         android:text="Add new locations"
         app:layout_constraintBottom_toTopOf="@+id/guideline18"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline19"
-        app:layout_constraintVertical_bias="0.142" />
+        app:layout_constraintVertical_bias="0.078" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline15"
@@ -98,9 +98,18 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline18"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/locbtn"
-        app:layout_constraintVertical_bias="0.636" />
+        app:layout_constraintVertical_bias="0.987" />
+
+    <Button
+        android:id="@+id/viewloc"
+        android:layout_width="158dp"
+        android:layout_height="43dp"
+        android:text="View location"
+        app:layout_constraintBottom_toTopOf="@+id/textView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/locbtn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

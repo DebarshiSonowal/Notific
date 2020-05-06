@@ -62,13 +62,13 @@
 
         </service>
 
-        <receiver android:name=".Phone">
-            <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE" />
-                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
-                <action android:name="android.media.RINGER_MODE_CHANGED" />
-            </intent-filter>
-        </receiver>
+<!--        <receiver android:name=".Phone">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.PHONE_STATE" />-->
+<!--                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />-->
+<!--                <action android:name="android.media.RINGER_MODE_CHANGED" />-->
+<!--            </intent-filter>-->
+<!--        </receiver>-->
 
         <meta-data
             android:name="preloaded_fonts"
@@ -80,7 +80,9 @@
         <activity
             android:name=".Main2Activity"
             android:label="@string/title_activity_main2"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
         <activity android:name=".login" />
         <activity android:name=".signup" />
         <activity android:name=".MainActivity">

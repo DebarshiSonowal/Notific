@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.deb.notific.Adapter;
 import com.deb.notific.MapsActivity;
+import com.deb.notific.MapsFragment;
 import com.deb.notific.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,9 +42,20 @@ DatabaseReference rootref;
         View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
         final RecyclerView mRecyclerView = root.findViewById(R.id.recyclerView);
         final Button location = root.findViewById(R.id.locbtn);
+        final Button viewloc = root.findViewById(R.id.viewloc);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
+        viewloc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MapsFragment nextFrag= new MapsFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.nav_host_fragment, nextFrag, "findThisFragment")
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
         rootref = FirebaseDatabase.getInstance().getReference();
         rootref.child("Marked Location").addValueEventListener(new ValueEventListener() {
             @Override

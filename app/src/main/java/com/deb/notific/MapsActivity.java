@@ -164,6 +164,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setBuildingsEnabled(true);
         mMap.setMinZoomPreference(1.0f);
         mMap.setMaxZoomPreference(25.0f);
+        mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setCompassEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
         CameraUpdateFactory.scrollBy(6, 6);
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -179,15 +183,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if(mLatLngs.size() == 4)
                 {
                     opendialog();
-//                    String key = UUID.randomUUID().toString();
-//                    for(int j=0;j<4;j++)
-//                    {
-//                        String key1 = UUID.randomUUID().toString();
-//                        polylocation pol1 = new polylocation(mLatLngs.get(j).latitude,mLatLngs.get(j).longitude);
-//                        local.child(key).child(key1).setValue(pol1);
-//
-//                    }
-//                    mLatLngs.clear();
                 }
 
 
@@ -235,7 +230,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void applyTexts(String name) {
         for(int j=0;j<4;j++)
         {
-            String key1 = UUID.randomUUID().toString();
+            String key1 = j+"point";
             polylocation pol1 = new polylocation(mLatLngs.get(j).latitude,mLatLngs.get(j).longitude);
             local.child(name).child(key1).setValue(pol1);
         }

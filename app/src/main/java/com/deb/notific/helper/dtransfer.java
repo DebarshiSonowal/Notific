@@ -16,16 +16,16 @@ public class dtransfer {
         mTimeList = timeList;
     }
 
-    public List<String> getNamelist() {
-        return namelist;
-    }
+        public List<String> getNamelist() {
+            return namelist;
+        }
 
-    public List<String> getPnumber() {
-        return pnumber;
-    }
+        public List<String> getPnumber() {
+            return pnumber;
+        }
 
-    public List<String> getTimeList() {
-        return mTimeList;
+        public List<String> getTimeList() {
+            return mTimeList;
     }
 }
 

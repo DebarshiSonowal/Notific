@@ -20,8 +20,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.deb.notific.R;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
-import com.sdsmdg.harjot.rotatingtext.RotatingTextWrapper;
-import com.sdsmdg.harjot.rotatingtext.models.Rotatable;
+
 
 import java.util.ArrayList;
 import java.util.List;

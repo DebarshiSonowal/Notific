@@ -16,7 +16,10 @@ import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.deb.notific.helper.BusStation;
+import com.deb.notific.helper.message;
 import com.deb.notific.helper.pnumber;
+import com.squareup.otto.Subscribe;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,8 +33,10 @@ public class Phone extends BroadcastReceiver {
     List<String>time = new ArrayList<>();
     SimpleDateFormat sdf = new SimpleDateFormat("h:mm a", Locale.getDefault());
     String number,nm;
+    String sflag;
     @Override
     public void onReceive(final Context context, Intent intent) {
+
                             try {
                                 String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
                                 if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_RINGING))

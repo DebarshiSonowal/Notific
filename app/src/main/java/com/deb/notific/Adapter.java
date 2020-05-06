@@ -20,7 +20,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>  {
 //    private List<LatLng> mLatLngs;
 
     public Adapter(Context context ,List<String> namelist) {
-        this.mLayoutInflater = LayoutInflater.from(context);
+        mLayoutInflater = LayoutInflater.from(context);
         this.namelist = namelist;
     }
 

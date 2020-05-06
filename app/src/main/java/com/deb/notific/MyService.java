@@ -17,6 +17,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,7 +36,9 @@ import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.android.internal.telephony.ITelephony;
+import com.deb.notific.helper.BusStation;
 import com.deb.notific.helper.Check;
+import com.deb.notific.helper.message;
 import com.deb.notific.helper.pnumber;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.Api;
@@ -83,15 +86,18 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     public static final String ACTION_LOCATION_BROADCAST = MyService.class.getName() + "LocationBroadcast";
     public static final String EXTRA_LATITUDE = "extra_latitude";
     public static final String EXTRA_LONGITUDE = "extra_longitude";
+    Phone broad;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = this;
+       broad = new Phone();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
         getData();
         createNotificationChannel();
 
@@ -194,26 +200,57 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 //            check(location);
             mLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             Log.d("MyService",location.getLatitude()+ " " + location.getLongitude() +" A");
-            for(int i=0;i<mLatLngs.size()/5;i++)
-            {
-                Log.d("MyService", String.valueOf(i));
-                for(int j =0;j<5;j++)
-                {
-                    Log.d("MyService", String.valueOf(j)+"point");
-                    mLatLngList.add(mLatLngs.get(j));
-                    Log.d("MyService",mLatLngList.get(j).toString());
-                }
-                mLatLngList.add(mLatLngs.get(0));
-                flag = PolyUtil.containsLocation(mLatLng,mLatLngList,true);
-                Log.d("MyService",flag.toString());
-
-                sound(flag);
-                mLatLngList.clear();
-            }
+            getchecked();
             mLatLngs.clear();
             getData();
             sound(flag);
         }
+    }
+
+    private void getchecked() {
+        for(int i=0;i<mLatLngs.size()/5;i++)
+        {
+            Log.d("MyService", String.valueOf(i));
+            for(int j =0;j<5;j++)
+            {
+                Log.d("MyService", String.valueOf(j)+"point");
+                mLatLngList.add(mLatLngs.get(j));
+                Log.d("MyService",mLatLngList.get(j).toString());
+            }
+            mLatLngList.add(mLatLngs.get(0));
+            flag = PolyUtil.containsLocation(mLatLng,mLatLngList,true);
+            Log.d("MyService",flag.toString());
+
+            sound(flag);
+            if(flag)
+            {
+                startBroadcast();
+            }
+            else
+            {
+
+                try {
+                    stopBroadcast();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            mLatLngList.clear();
+        }
+    }
+
+    private void stopBroadcast() {
+        unregisterReceiver(broad);
+    }
+
+    private void startBroadcast() {
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.intent.action.PHONE_STATE");
+        filter.addAction("android.intent.action.NEW_OUTGOING_CALL");
+        filter.addAction("android.media.RINGER_MODE_CHANGED");
+        registerReceiver(broad, filter);
     }
 
     private void sound(Boolean flag) {

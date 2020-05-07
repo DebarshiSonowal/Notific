@@ -1,8 +1,12 @@
 package com.deb.notific.ui.notifications;
 
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,81 +21,68 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.Adapter;
 
+import com.deb.notific.Adapter1;
+import com.deb.notific.MissedAdapter;
 import com.deb.notific.R;
+import com.deb.notific.helper.Contract;
+import com.deb.notific.helper.DatabaseHelper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 public class NotificationsFragment extends Fragment {
-    ArrayAdapter<String> arrayAdapter;
-    List<String>al;
-    int i;
+    List<String>namelist;
+    List<String>numberlist;
+    List<String>timelist;
+    MissedAdapter mAdapter;
+    SQLiteDatabase mDatabase;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(getContext());
+        mDatabase = databaseHelper.getWritableDatabase();
         View root = inflater.inflate(R.layout.fragment_notifications, container, false);
-        SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) root.findViewById(R.id.frame);
-
-        al = new ArrayList<String>();
-        al.add("php");
-        al.add("c");
-        al.add("python");
-        al.add("java");
-
-        //choose your favorite adapter
-        arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.item, R.id.helloText, al);
-
-        //set the listener and the adapter
-        flingContainer.setAdapter(arrayAdapter);
-        flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
-            @Override
-            public void removeFirstObjectInAdapter() {
-                // this is the simplest way to delete an object from the Adapter (/AdapterView)
-                Log.d("LIST", "removed object!");
-                al.remove(0);
-                arrayAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onLeftCardExit(Object dataObject) {
-                //Do something on the left!
-                //You also have access to the original object.
-                //If you want to use it just cast it (String) dataObject
-                Toast.makeText(getContext() , "Left!", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onRightCardExit(Object dataObject) {
-                Toast.makeText(getContext(), "Right!", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                // Ask for more data here
-                al.add("XML ".concat(String.valueOf(i)));
-                arrayAdapter.notifyDataSetChanged();
-                Log.d("LIST", "notified");
-                i++;
-            }
-
-            @Override
-            public void onScroll(float v) {
-
-            }
-        });
-
-        // Optionally add an OnItemClickListener
-        flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClicked(int itemPosition, Object dataObject) {
-
-            }
-        });
-
+//        LoadData();
+        final RecyclerView recyclerView = root.findViewById(R.id.notificrecycler);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
+//        mAdapter = new Adapter1(getContext(),namelist,timelist,namelist);
+        mAdapter = new MissedAdapter(getContext(),getAllItems());
+        recyclerView.setAdapter(mAdapter);
         return root;
+    }
+
+    private Cursor getAllItems() {
+        return mDatabase.query(
+                Contract.MissedCalls.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    private void LoadData() {
+        SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        Gson gson = new Gson();
+        String name = mPreferences.getString("name",null);
+        String number = mPreferences.getString("number",null);
+        String time = mPreferences.getString("time",null);
+        Type type = new TypeToken<ArrayList<String>>() {}.getType();
+        namelist = gson.fromJson(name, type);
+        numberlist = gson.fromJson(number,type);
+        timelist = gson.fromJson(time,type);
     }
 }
 

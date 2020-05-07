@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -41,14 +42,15 @@ public class Adapter1 extends RecyclerView.Adapter<Adapter1.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
             holder.name.setText(namelist.get(position));
             holder.time.setText(mTimeList.get(position));
-            holder.callbtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Uri number = Uri.parse(pnumber.get(position));
-                    Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
-                    context.startActivity(callIntent);
-                }
-            });
+           holder.number.setText(pnumber.get(position));
+           holder.mConstraintLayout.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   Uri number = Uri.parse("tel:5551234");
+                   Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
+                   context.startActivity(callIntent);
+               }
+           });
     }
 
     @Override
@@ -57,14 +59,15 @@ public class Adapter1 extends RecyclerView.Adapter<Adapter1.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView name,time;
-        Button callbtn;
+        TextView name,time,number;
+        ConstraintLayout mConstraintLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
            name = itemView.findViewById(R.id.contactname);
-            time = itemView.findViewById(R.id.time);
-            callbtn = itemView.findViewById(R.id.callbtn);
+            time = itemView.findViewById(R.id.timeview);
+            number = itemView.findViewById(R.id.numberview);
+            mConstraintLayout = itemView.findViewById(R.id.calllaay);
         }
     }
 }

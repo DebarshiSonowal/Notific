@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
@@ -59,7 +60,26 @@ public class NotificationsFragment extends Fragment {
 //        mAdapter = new Adapter1(getContext(),namelist,timelist,namelist);
         mAdapter = new MissedAdapter(getContext(),getAllItems());
         recyclerView.setAdapter(mAdapter);
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerview, RecyclerView.ViewHolder viewholder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewholder, int direction) {
+                removeItem((long) viewholder.itemView.getTag());
+            }
+        }).attachToRecyclerView(recyclerView);
+
         return root;
+    }
+
+    private void removeItem(long id) {
+        mDatabase.delete(Contract.MissedCalls.TABLE_NAME,
+                Contract.MissedCalls._ID + "=" + id, null);
+        mAdapter.swapCursor(getAllItems());
     }
 
     private Cursor getAllItems() {

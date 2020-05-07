@@ -53,9 +53,11 @@ public class MissedAdapter extends RecyclerView.Adapter<MissedAdapter.MissedView
        name = mCursor.getString(mCursor.getColumnIndex(Contract.MissedCalls.COLUMN_NAME));
         number = mCursor.getString(mCursor.getColumnIndex(Contract.MissedCalls.COLUMN_NUMBER));
         time = mCursor.getString(mCursor.getColumnIndex(Contract.MissedCalls.COLUMN_TIME));
+        long id = mCursor.getLong(mCursor.getColumnIndex(Contract.MissedCalls._ID));
         holder.name.setText(name);
         holder.time.setText(time);
         holder.number.setText(number);
+        holder.itemView.setTag(id);
         holder.mConstraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

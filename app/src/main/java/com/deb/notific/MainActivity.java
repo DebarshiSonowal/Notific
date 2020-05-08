@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -40,6 +41,14 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+//                SharedPreferences preferences = getSharedPreferences("prefs",MODE_PRIVATE);
+//                boolean firstStart = preferences.getBoolean("firstStart",true);
+//                if(firstStart)
+//                {
+//                    Intent myIntent = new Intent(MainActivity.this,Intro.class);
+//                   setPref();
+//                    startActivity(myIntent);
+//                }
                 //Do any action here. Now we are moving to next page
                 Intent mySuperIntent = new Intent(MainActivity.this, login.class);
                 startActivity(mySuperIntent);
@@ -49,6 +58,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }, SPLASH_TIME);
+    }
+
+    private void setPref() {
+        SharedPreferences preferences = getSharedPreferences("prefs",MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("firstStart",false);
+        editor.apply();
     }
 
     //Method to run progress bar for 5 seconds

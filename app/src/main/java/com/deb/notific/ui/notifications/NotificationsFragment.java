@@ -33,7 +33,7 @@ import com.deb.notific.helper.Contract;
 import com.deb.notific.helper.DatabaseHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.lorentzos.flingswipe.SwipeFlingAdapterView;
+
 
 
 import java.lang.reflect.Type;

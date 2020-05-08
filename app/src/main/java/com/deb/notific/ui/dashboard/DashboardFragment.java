@@ -7,20 +7,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.deb.notific.Adapter;
 import com.deb.notific.MapsActivity;
-import com.deb.notific.MapsFragment;
 import com.deb.notific.R;
+import com.deb.notific.login;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,20 +39,11 @@ DatabaseReference rootref;
         View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
         final RecyclerView mRecyclerView = root.findViewById(R.id.recyclerView);
         final Button location = root.findViewById(R.id.locbtn);
-        final Button viewloc = root.findViewById(R.id.viewloc);
+        final Button logbtn = root.findViewById(R.id.logoutbtn);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
-        viewloc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MapsFragment nextFrag= new MapsFragment();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.nav_host_fragment, nextFrag, "findThisFragment")
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
+
         rootref = FirebaseDatabase.getInstance().getReference();
         rootref.child("Marked Location").addValueEventListener(new ValueEventListener() {
             @Override
@@ -73,13 +61,13 @@ DatabaseReference rootref;
 
             }
         });
-
-
-
-
-
-
-
+        logbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getContext(), login.class));
+            }
+        });
         location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,24 +1,23 @@
 package com.deb.notific;
 
+import android.graphics.Color;
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.graphics.Color;
-import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.deb.notific.helper.polylocation;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -30,14 +29,16 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapsFragment extends Fragment {
-List<LatLng>mLatLngs = new ArrayList<>();
-LatLng mLatLng;
-DatabaseReference local;
-Double lat,lon;
-Polygon mPolygon;
+
+
+public class MarkedLocation extends Fragment {
+    List<LatLng> mLatLngs = new ArrayList<>();
+    LatLng mLatLng;
+    DatabaseReference local;
+    Double lat,lon;
+    Polygon mPolygon;
     GoogleMap googleMap;
-Handler mHandler = new Handler();
+    Handler mHandler = new Handler();
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
 
@@ -97,12 +98,23 @@ Handler mHandler = new Handler();
         }
     };
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_maps, container, false);
+        View root = inflater.inflate(R.layout.fragment_marked_location, container, false);
         return root;
     }
 
@@ -116,60 +128,5 @@ Handler mHandler = new Handler();
         }
 
 
-    }
-    public class networkop implements Runnable{
-    DatabaseReference root;
-    GoogleMap mMap;
-
-        public networkop(GoogleMap map) {
-            mMap = map;
-        }
-
-        @Override
-        public void run() {
-            Log.d("Map","Thread Started");
-//            root = FirebaseDatabase.getInstance().getReference();
-//            root.child("Marked location").addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                    for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren())
-//                    {
-//                        for(DataSnapshot dataSnapshot2:dataSnapshot1.getChildren())
-//                        {
-////                            for(DataSnapshot dataSnapshot3:dataSnapshot2.getChildren())
-////                            {
-////                                if(dataSnapshot3.getKey().equals("latlang"))
-////                                {
-////                                    lat = (Double) dataSnapshot3.getValue();
-////                                    Log.d("Map",lat+"");
-////                                }else
-////                                    lon = (Double) dataSnapshot3.getValue();
-////                            }
-//                            polylocation polylocation = dataSnapshot2.getValue(com.deb.notific.helper.polylocation.class);
-//                            Log.d("Map",polylocation+"");
-//                            mLatLng = new LatLng(polylocation.getLatitude(), polylocation.getLongitude());
-//                            mLatLngs.add(mLatLng);
-//                        }
-//                        mHandler.post(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                Log.d("Map","Runnable");
-//                                PolygonOptions polygonOptions = new PolygonOptions().addAll(mLatLngs).clickable(true);
-//                                mPolygon = mMap.addPolygon(polygonOptions);
-//                                mPolygon.setTag("First Location");
-//                                mPolygon.setStrokeColor(Color.BLACK);
-//                                mPolygon.setFillColor(Color.BLACK);
-//                            }
-//                        });
-//                        mLatLngs.clear();
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                }
-//            });
-        }
     }
 }

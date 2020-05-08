@@ -16,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline19"
-        app:layout_constraintVertical_bias="0.078" />
+        app:layout_constraintVertical_bias="0.073" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline15"
@@ -84,9 +84,10 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline15"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline18"
-        app:layout_constraintVertical_bias="0.333" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/textView3"
@@ -98,15 +99,19 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline18"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/locbtn"
-        app:layout_constraintVertical_bias="0.987" />
+        app:layout_constraintVertical_bias="0.887" />
 
     <Button
-        android:id="@+id/viewloc"
-        android:layout_width="158dp"
-        android:layout_height="43dp"
-        android:text="View location"
+        android:id="@+id/logoutbtn"
+        android:layout_width="149dp"
+        android:layout_height="42dp"
+        android:text="Log out"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/textView3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

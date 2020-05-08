@@ -97,6 +97,14 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+//        if(intent.hasExtra())
+            if(intent.hasExtra("ACTION")){
+                if(intent.getStringExtra("ACTION").equals("STOP"))
+                {
+                    Intent intent1 = new Intent(this,MyService.class);
+                    stopService(intent1);
+                }
+            }
 
         getData();
         createNotificationChannel();
@@ -104,15 +112,18 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 
 
-        Intent notificationIntent = new Intent(this, MainActivity.class);
+        Intent notificationIntent = new Intent(this, Main2Activity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
-
+//        Intent stopService = new Intent(this,MyService.class);
+//        stopService.setAction("STOP");
+//        PendingIntent stop = PendingIntent.getService(this,0,stopService,PendingIntent.FLAG_CANCEL_CURRENT);
         CharSequence input = "Checking";
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Foreground Service")
                 .setContentText(input)
                 .setContentIntent(pendingIntent)
+//                .addAction(R.drawable.address,"Stop",stop)
                 .build();
 
         startForeground(1, notification);
@@ -294,12 +305,15 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
-
+        Intent stopService = new Intent(this,MyService.class);
+        stopService.putExtra("ACTION","STOP");
+        PendingIntent stop = PendingIntent.getService(this,0,stopService,PendingIntent.FLAG_CANCEL_CURRENT);
         Notification notification =  new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("The locaton service is running")
                 .setContentText(result)
                 .setSmallIcon(R.drawable.address)
                 .setContentIntent(pendingIntent)
+                .addAction(R.drawable.address,"Stop",stop)
                 .build();
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

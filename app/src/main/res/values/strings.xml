@@ -11,4 +11,5 @@
     <string name="clear">Clear</string>
     <string name="mark_location">Mark Location</string>
     <string name="title_activity_maps">Map</string>
+    <string name="marked_locations">Marked Locations</string>
 </resources>

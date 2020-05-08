@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_navigation_home_to_navigation_dashboard"
             app:destination="@id/navigation_dashboard" />
+        <action
+            android:id="@+id/action_navigation_home_self"
+            app:destination="@id/navigation_home" />
     </fragment>
 
     <fragment
@@ -36,5 +39,17 @@
         <action
             android:id="@+id/action_navigation_notifications_to_navigation_dashboard"
             app:destination="@id/navigation_dashboard" />
+        <action
+            android:id="@+id/action_navigation_notifications_to_markedLocation"
+            app:destination="@id/markedLocation" />
+    </fragment>
+    <fragment
+        android:id="@+id/markedLocation"
+        android:name="com.deb.notific.MarkedLocation"
+        android:label="fragment_marked_location"
+        tools:layout="@layout/fragment_marked_location" >
+        <action
+            android:id="@+id/action_markedLocation_to_navigation_notifications"
+            app:destination="@id/navigation_notifications" />
     </fragment>
 </navigation>

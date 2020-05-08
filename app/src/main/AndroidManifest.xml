@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.deb.notific">
-
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -35,7 +34,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".Intro">
 
+        </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -60,29 +61,27 @@
             <!-- <action android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
             <!-- </intent-filter> -->
 
-        </service>
-
-<!--        <receiver android:name=".Phone">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.PHONE_STATE" />-->
-<!--                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />-->
-<!--                <action android:name="android.media.RINGER_MODE_CHANGED" />-->
-<!--            </intent-filter>-->
-<!--        </receiver>-->
-
+        </service> <!-- <receiver android:name=".Phone"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.PHONE_STATE" /> -->
+        <!-- <action android:name="android.intent.action.NEW_OUTGOING_CALL" /> -->
+        <!-- <action android:name="android.media.RINGER_MODE_CHANGED" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
         <activity
             android:name=".Main2Activity"
             android:label="@string/title_activity_main2"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
+
         <activity android:name=".login" />
         <activity android:name=".signup" />
         <activity android:name=".MainActivity">

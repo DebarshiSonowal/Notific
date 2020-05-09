@@ -56,27 +56,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button addloc, clear, loca;
     private GoogleMap mMap;
     private Marker marker;
-    private LatLng latLng,mLng;
+    private LatLng latLng, mLng;
     private String result;
     private Polygon mPolygon;
     private LocationListener locationListener;
     private LocationManager locationManager;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
-    private  List<Marker> markerList = new ArrayList<>();
+    private List<Marker> markerList = new ArrayList<>();
     private DatabaseReference root, local;
-    private Boolean flag = false,incr = false;
+    private Boolean flag = false, incr = false;
     private String key;
     private final static int polypoint = 5;
     private List<LatLng> mLatLngs = new ArrayList<>();
     private List<polylocation> nLatLngs = new ArrayList<>();
     private Handler mHandler = new Handler();
+    SupportMapFragment mapFragment;
+    Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment= (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapView);
         mapFragment.getMapAsync(this);
         locationManager =
@@ -99,10 +101,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             {Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_LOCATION_PERMISSION);
         } else {
-//            FetchLocation fetchLocation = new FetchLocation();
-//            new Thread(fetchLocation).start();
-
-            Timer timer = new Timer();
+            timer = new Timer();
             timer.scheduleAtFixedRate(new TimerTask() {
                                           @Override
                                           public void run() {
@@ -113,8 +112,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                               String lat = intent.getStringExtra(MyService.EXTRA_LATITUDE);
                                                               String lon = intent.getStringExtra(MyService.EXTRA_LONGITUDE);
                                                               String name = intent.getStringExtra("Name");
-                                                              latLng = new LatLng(Double.parseDouble(lat) , Double.parseDouble(lon));
-                                                              updateLoc(latLng,name);
+                                                              latLng = new LatLng(Double.parseDouble(lat), Double.parseDouble(lon));
+                                                              updateLoc(latLng, name);
 
                                                           }
                                                       }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
@@ -127,12 +126,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void updateLoc(LatLng latLng,String result) {
+    private void updateLoc(LatLng latLng, String result) {
         if (marker != null) {
             if (flag) {
                 marker.remove();
                 marker = mMap.addMarker(new MarkerOptions().position(latLng).title(result).icon(BitmapDescriptorFactory.fromResource(R.drawable.purple)));
-
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(20).build();
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 flag = false;
@@ -152,9 +150,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (ActivityCompat.checkSelfPermission(MapsActivity.this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-//            FetchLocation fetchLocation = new FetchLocation();
-//            new Thread(fetchLocation).start();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (locationManager != null && locationListener != null) {
+            locationManager.removeUpdates(locationListener);
+        }
+        if (timer != null) {
+            timer.cancel();
+        }
+        System.gc();
+        super.onDestroy();
+
     }
 
     @Override
@@ -178,10 +187,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 MarkerOptions markerOptions = new MarkerOptions().position(latLng).draggable(true);
                 Marker marker = mMap.addMarker(markerOptions);
                 mLatLngs.add(latLng);
-                Log.d("MyService",latLng.toString());
+                Log.d("MyService", latLng.toString());
                 markerList.add(marker);
-                if(mLatLngs.size() == 4)
-                {
+                if (mLatLngs.size() == 4) {
                     opendialog();
                 }
 
@@ -214,8 +222,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 flag = true;
-//                FetchLocation fetchLocation = new FetchLocation();
-//                new Thread(fetchLocation).start();
+
             }
         });
 
@@ -223,120 +230,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void opendialog() {
         Dialog mdialog = new Dialog();
-        mdialog.show(getSupportFragmentManager(),"Example Dialog");
+        mdialog.show(getSupportFragmentManager(), "Example Dialog");
     }
 
     @Override
     public void applyTexts(String name) {
-        for(int j=0;j<4;j++)
-        {
-            String key1 = j+"point";
-            polylocation pol1 = new polylocation(mLatLngs.get(j).latitude,mLatLngs.get(j).longitude);
+        for (int j = 0; j < 4; j++) {
+            String key1 = j + "point";
+            polylocation pol1 = new polylocation(mLatLngs.get(j).latitude, mLatLngs.get(j).longitude);
             local.child(name).child(key1).setValue(pol1);
         }
     }
-
-//    class FetchLocation implements Runnable {
-//        @Override
-//        public void run() {
-//            Looper.prepare();
-//            Log.d("Thread","Started");
-//            Toast.makeText( MapsActivity.this,"Started",Toast.LENGTH_SHORT).show();
-//
-//            locationListener = new LocationListener() {
-//                @Override
-//                public void onLocationChanged(Location location) {
-//                    double latitude = location.getLatitude();
-//                    double longitude = location.getLongitude();
-//                    //get the location name from latitude and longitude
-//                    Geocoder geocoder = new Geocoder(MapsActivity.this);
-//                    try {
-//                        List<Address> addresses =
-//                                geocoder.getFromLocation(latitude, longitude, 1);
-//                        result = addresses.get(0).getLocality() + ":";
-//                        result += addresses.get(0).getCountryName();
-//                        latLng = new LatLng(latitude, longitude);
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                Log.d("Thread","Handler");
-////                                if (marker != null) {
-////                                    if (flag) {
-////                                        marker.remove();
-////                                        marker = mMap.addMarker(new MarkerOptions().position(latLng).title(result).icon(BitmapDescriptorFactory.fromResource(R.drawable.purple)));
-////
-////                                        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(20).build();
-////                                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-////                                        flag = false;
-////                                    }
-////                                } else {
-////                                    marker = mMap.addMarker(new MarkerOptions().position(latLng).title(result).icon(BitmapDescriptorFactory.fromResource(R.drawable.purple)));
-////
-////
-////                                    CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(20).build();
-////                                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-////
-////                                }
-//                            }
-//                        });
-////                        mHandler.post(new Runnable() {
-////                            @Override
-////                            public void run() {
-////                                Log.d("Thread","Handler");
-////                                if (marker != null) {
-////                                    if (flag) {
-////                                        marker.remove();
-////                                        marker = mMap.addMarker(new MarkerOptions().position(latLng).title(result).icon(BitmapDescriptorFactory.fromResource(R.drawable.purple)));
-////
-////                                        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(20).build();
-////                                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-////                                        flag = false;
-////                                    }
-////                                } else {
-////                                    marker = mMap.addMarker(new MarkerOptions().position(latLng).title(result).icon(BitmapDescriptorFactory.fromResource(R.drawable.purple)));
-////
-////
-////                                    CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(20).build();
-////                                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-////
-////                                }
-////                            }
-////                        });
-//
-//
-//                    } catch (IOException e) {
-//                        Log.d("Thread",e.toString());
-//                    }
-//                }
-//
-//                @Override
-//                public void onStatusChanged(String provider, int status, Bundle extras) {
-//
-//                }
-//
-//                @Override
-//                public void onProviderEnabled(String provider) {
-//
-//                }
-//
-//                @Override
-//                public void onProviderDisabled(String provider) {
-//
-//                }
-//            };
-//            if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                // TODO: Consider calling
-//                //    ActivityCompat#requestPermissions
-//                // here to request the missing permissions, and then overriding
-//                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//                //                                          int[] grantResults)
-//                // to handle the case where the user grants the permission. See the documentation
-//                // for ActivityCompat#requestPermissions for more details.
-//                return;
-//            }
-//            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-//
-//        }
-//    }
 }

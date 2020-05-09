@@ -62,7 +62,10 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 public class MyService extends Service implements GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final String TAG = MyService.class.getSimpleName();
@@ -70,16 +73,18 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     LatLng mLng,mLatLng;
     List<LatLng>mLatLngs = new ArrayList<>();
     List<LatLng>mLatLngList = new ArrayList<>();
+    List<String>namelist=new ArrayList<>();
     Double latitude,longitude;
     AudioManager mAudioManager;
     GoogleApiClient mLocationClient;
     Boolean flag =false;
     String phoneNr;
     String result;
+    Map<String, List<LatLng>> mDictionary = new Hashtable<>();
     String number;
     BroadcastReceiver receiver;
     Context mContext;
-    ITelephony  telephonyService;
+    ValueEventListener mValueEventListener;
     LocationRequest mLocationRequest = new LocationRequest();
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
     private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
@@ -87,6 +92,18 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     public static final String EXTRA_LATITUDE = "extra_latitude";
     public static final String EXTRA_LONGITUDE = "extra_longitude";
     Phone broad;
+
+    @Override
+    public void onDestroy() {
+        mLocationClient.disconnect();
+        root.removeEventListener(mValueEventListener);
+        if (broad != null) {
+            unregisterReceiver(broad);
+        }
+        System.gc();
+        super.onDestroy();
+
+    }
 
     @Override
     public void onCreate() {
@@ -141,14 +158,13 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         return START_REDELIVER_INTENT;
     }
     private void getData() {
-        root.child("Marked Location").addValueEventListener(new ValueEventListener() {
+        root.child("Marked Location").addValueEventListener( mValueEventListener =  new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren())
                 {
                     for(DataSnapshot dataSnapshot2:dataSnapshot1.getChildren())
                     {
-
                         for(DataSnapshot dataSnapshot3: dataSnapshot2.getChildren())
                         {
                             if(dataSnapshot3.getKey().equals("latitude"))
@@ -160,7 +176,15 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                         }
                         mLng = new LatLng(latitude,longitude);
                         Log.d("MyService",mLng.toString());
+                        mLatLngs.clear();
                         mLatLngs.add(mLng);
+                        if(mLatLngs.size() == 4)
+                        {
+                            mDictionary.put(dataSnapshot1.getKey(),mLatLngs);
+                            namelist.add(dataSnapshot1.getKey());
+
+                        }
+
                         Log.d("MyService","Got data");
                     }
                 }
@@ -211,48 +235,100 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 //            check(location);
             mLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             Log.d("MyService",location.getLatitude()+ " " + location.getLongitude() +" A");
-            getchecked();
+//            getchecked();
+            get2checked();
             mLatLngs.clear();
             getData();
             sound(flag);
         }
     }
 
-    private void getchecked() {
-        for(int i=0;i<mLatLngs.size()/5;i++)
+    private void get2checked() {
+        for(int l=0;l<namelist.size();l++)
         {
-            Log.d("MyService", String.valueOf(i));
-            for(int j =0;j<5;j++)
-            {
-                Log.d("MyService", String.valueOf(j)+"point");
-                mLatLngList.add(mLatLngs.get(j));
-                Log.d("MyService",mLatLngList.get(j).toString());
-            }
-            mLatLngList.add(mLatLngs.get(0));
-            flag = PolyUtil.containsLocation(mLatLng,mLatLngList,true);
-            Log.d("MyService",flag.toString());
 
-            sound(flag);
-            if(flag)
-            {
-                startBroadcast();
+            try {
+                mLatLngList.addAll(mDictionary.get(namelist.get(l)));
+            } catch (Exception e) {
+                Log.d("Check",e.getMessage());
             }
-            else
-            {
+            try {
+                mLatLngList.add(mLatLngList.get(0));
+            } catch (IndexOutOfBoundsException e) {
+                Log.d("Check",e.getMessage());
+            }
 
-                try {
-                    stopBroadcast();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                flag = PolyUtil.containsLocation(mLatLng,mLatLngList,true);
+                sound(flag);
+                mLatLngList.clear();
+                if(flag)
+                {
+                    if (broad == null) {
+                        startBroadcast();
+                    }
+
+                }
+                else
+                {
+                    if (broad != null) {
+                        try {
+                            stopBroadcast();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
-
-            mLatLngList.clear();
         }
-    }
+
+
+//    private void getchecked() {
+//        for(int i=0;i<mLatLngs.size()/4;i++)
+//        {
+//            Log.d("MyService", String.valueOf(i));
+//            for(int j =0;j<4;j++)
+//            {
+//                Log.d("MyService", String.valueOf(j)+"point");
+//                mLatLngList.add(mLatLngs.get(j));
+//                Log.d("MyService",mLatLngList.get(j).toString());
+//            }
+////            for(int j=4;j<8;j++)
+////            {
+////                Log.d("MyService", String.valueOf(j)+"point");
+////                mLatLngList.add(mLatLngs.get(j));
+////                Log.d("MyService",mLatLngList.get(j).toString());
+////            }
+//            mLatLngList.add(mLatLngs.get(0));
+//            Log.d("MyService",mLatLngs.get(0).toString());
+//            flag = PolyUtil.containsLocation(mLatLng,mLatLngList,true);
+//            Log.d("MyService",flag.toString());
+//            sound(flag);
+//            if(flag)
+//            {
+//                if (broad == null) {
+//                    startBroadcast();
+//                }
+//
+//            }
+//            else
+//            {
+//                if (broad != null) {
+//                    stopBroadcast();
+//                }
+//            }
+//            mLatLngs.remove(0);
+//            mLatLngs.remove(1);
+//            mLatLngs.remove(2);
+//            mLatLngs.remove(3);
+//            mLatLngList.clear();
+//        }
+//    }
 
     private void stopBroadcast() {
-        unregisterReceiver(broad);
+
+            unregisterReceiver(broad);
+
+
     }
 
     private void startBroadcast() {

@@ -37,11 +37,9 @@ public class MarkedLocation extends Fragment {
     DatabaseReference local;
     Double lat,lon;
     Polygon mPolygon;
-    GoogleMap googleMap;
-    Handler mHandler = new Handler();
+    SupportMapFragment mapFragment;
+    ValueEventListener mValueEventListener;
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
-
-
         @Override
         public void onMapReady(final GoogleMap googleMap) {
             googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
@@ -56,7 +54,7 @@ public class MarkedLocation extends Fragment {
 //           networkop runnable = new networkop(googleMap);
 //           new Thread(runnable).start();
             local = FirebaseDatabase.getInstance().getReference();
-            local.child("Marked Location").addValueEventListener(new ValueEventListener() {
+            local.child("Marked Location").addValueEventListener(mValueEventListener =  new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren())
@@ -106,6 +104,9 @@ public class MarkedLocation extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        local.child("Marked Location").removeEventListener(mValueEventListener);
+        mapFragment = null;
+        System.gc();
 
     }
 
@@ -114,14 +115,13 @@ public class MarkedLocation extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_marked_location, container, false);
-        return root;
+        return inflater.inflate(R.layout.fragment_marked_location, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        SupportMapFragment mapFragment =
+        mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);

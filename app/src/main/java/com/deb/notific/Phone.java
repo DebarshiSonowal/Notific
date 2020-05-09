@@ -5,26 +5,18 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.media.AudioManager;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
-import com.deb.notific.helper.Contract;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.deb.notific.helper.BusStation;
+import com.deb.notific.helper.Contract;
 import com.deb.notific.helper.DatabaseHelper;
-import com.deb.notific.helper.message;
 import com.deb.notific.helper.pnumber;
-import com.google.gson.Gson;
-import com.squareup.otto.Subscribe;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,7 +57,6 @@ SQLiteDatabase mDatabase;
                                     pnumber pnumber = new pnumber(number);
                                     number = pnumber.getPhone();
                                     send(number);
-                                    saveData(context, time,pnum,namelist);
                                     Toast.makeText(context,"Ringing"+" "+sflag,Toast.LENGTH_SHORT).show();
                                     ContentValues cv = new ContentValues();
                                     cv.put(Contract.MissedCalls.COLUMN_NAME,sflag);
@@ -88,21 +79,7 @@ SQLiteDatabase mDatabase;
                             }
                         }
 
-    private void saveData(Context context, List<String> time, List<String> number, List<String> name) {
-        SharedPreferences pref = context.getSharedPreferences("shared pref", Context.MODE_PRIVATE);
-        SharedPreferences.Editor mEdit = pref.edit();
-        Gson gson = new Gson();
-        String timelist = gson.toJson(time);
-        String numberlist = gson.toJson(number);
-        String namelist = gson.toJson(name);
-        mEdit.putString("time",timelist);
-        mEdit.commit();
-        mEdit.putString("number",numberlist);
-        mEdit.commit();
-        mEdit.putString("name",namelist);
-        mEdit.commit();
 
-    }
 
 
     private void send(String number) {

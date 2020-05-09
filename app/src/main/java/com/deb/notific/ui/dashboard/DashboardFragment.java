@@ -29,37 +29,54 @@ import java.util.List;
 
 public class DashboardFragment extends Fragment {
 
-DatabaseReference rootref;
-    Adapter mAdapter;
+DatabaseReference rootref = FirebaseDatabase.getInstance().getReference();
 
+    Adapter mAdapter;
+ValueEventListener mValueEventListener;
     List<String>mList = new ArrayList<>();
+    View root;
+    Button logbtn,location;
+    LinearLayoutManager layoutManager;
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        rootref.child("Marked Location").removeEventListener(mValueEventListener);
+        root = null;
+        rootref = null;
+        logbtn = null;
+        location = null;
+        layoutManager = null;
+        System.gc();
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              final ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
-        final RecyclerView mRecyclerView = root.findViewById(R.id.recyclerView);
-        final Button location = root.findViewById(R.id.locbtn);
-        final Button logbtn = root.findViewById(R.id.logoutbtn);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        root = inflater.inflate(R.layout.fragment_dashboard, container, false);
+       final RecyclerView mRecyclerView = root.findViewById(R.id.recyclerView);
+      location = root.findViewById(R.id.locbtn);
+         logbtn = root.findViewById(R.id.logoutbtn);
+         layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
-
-        rootref = FirebaseDatabase.getInstance().getReference();
-        rootref.child("Marked Location").addValueEventListener(new ValueEventListener() {
+        mAdapter = new Adapter(getContext(),mList);
+        mRecyclerView.setAdapter(mAdapter);
+        rootref.child("Marked Location").addValueEventListener(
+               mValueEventListener= new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren()){
                 mList.add(dataSnapshot1.getKey());
                 Log.d("Recycler",dataSnapshot1.getKey().toString());
             }
-                mAdapter = new Adapter(getContext(),mList);
-                mRecyclerView.setAdapter(mAdapter);
+               mAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
+
         });
         logbtn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,67 +1,30 @@
 package com.deb.notific;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Message;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.deb.notific.helper.BusStation;
-import com.deb.notific.helper.State;
-import com.deb.notific.helper.message;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.snatik.polygon.Point;
-import com.snatik.polygon.Polygon;
-import com.squareup.otto.Bus;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import java.util.ArrayList;
-
-import static com.deb.notific.helper.BusStation.getBus;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class Main2Activity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_READ_PHONE_STATE =1 ;
-    static Main2Activity instance;
-    LocationRequest mLocationRequest;
-    FusedLocationProviderClient mFusedLocationProviderClient;
 
-    public static Main2Activity getInstance() {
-        return instance;
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.gc();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

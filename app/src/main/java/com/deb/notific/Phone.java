@@ -28,7 +28,7 @@ public class Phone extends BroadcastReceiver {
     List<String>pnum = new ArrayList<>();
     List<String>namelist= new ArrayList<>();
     List<String>time = new ArrayList<>();
-    SimpleDateFormat sdf = new SimpleDateFormat("h:mm a", Locale.getDefault());
+    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy h:mm a", Locale.getDefault());
     String number,nm;
     String sflag;
 SQLiteDatabase mDatabase;
@@ -36,8 +36,6 @@ SQLiteDatabase mDatabase;
     public void onReceive(final Context context, Intent intent) {
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         mDatabase =  databaseHelper.getWritableDatabase();
-
-
                             try {
                                 String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
                                 if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_RINGING))

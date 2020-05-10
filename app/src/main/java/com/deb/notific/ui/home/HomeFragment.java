@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.ref.WeakReference;
+
 public class HomeFragment extends Fragment {
     AudioManager mAudioManager;
     Handler mHandler = new Handler();
@@ -50,25 +53,29 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onDestroyView() {
+    public void onDestroy() {
+        super.onDestroy();
+    }
 
+    @Override
+    public void onDestroyView() {
         super.onDestroyView();
         root = null;
         loc = null;
-        mBroadcastManager.unregisterReceiver(mBroadcastReceiver);
-        mdata.local.child("user").removeEventListener(mValueEventListener);
-        mdata.local.child("user").child(mdata.mUser.getUid()).removeEventListener(mValueEventListener);
-        mdata.local.child("user").removeEventListener(mValueEventListener);
-        mHandler.removeCallbacks(mThread);
         mAudioManager = null;
         fragMan = null;
         misscall = null;
+        mBroadcastManager.unregisterReceiver(mBroadcastReceiver);
+//        mdata.local.child("user").removeEventListener(mValueEventListener);
+//        mdata.local.child("user").child(mdata.mUser.getUid()).removeEventListener(mValueEventListener);
+//        mdata.local.child("user").removeEventListener(mValueEventListener);
+//        mHandler.removeCallbacks(mThread);
+        mdata = null;
         nomark = null;
         ringm = null;
         totaluse = null;
         usenm = null;
         state = null;
-
         System.gc();
 
     }
@@ -76,12 +83,9 @@ public class HomeFragment extends Fragment {
     @SuppressLint("SetTextI18n")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        fragMan = getParentFragment().getParentFragmentManager();
+        fragMan = getChildFragmentManager();
         root = inflater.inflate(R.layout.fragment_home, container, false);
         mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-        mdata = new Dataoperation();
-        mThread = new Thread(mdata);
-        mThread.start();
         state = root.findViewById(R.id.statusview);
         usenm = root.findViewById(R.id.unameview);
         nomark = root.findViewById(R.id.nolocview);
@@ -89,14 +93,11 @@ public class HomeFragment extends Fragment {
         loc = root.findViewById(R.id.locview);
         totaluse = root.findViewById(R.id.totlauview);
         misscall = root.findViewById(R.id.nocallview);
+        mdata = new Dataoperation(usenm,totaluse,nomark);
+        mThread = new Thread(mdata);
+        mThread.start();
         mBroadcastManager = LocalBroadcastManager.getInstance(getContext());
-        if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
-            ringm.setText("Normal");
-        } else if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) {
-            ringm.setText("Vibrate");
-        } else if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT)
-            ringm.setText("Silent");
-
+      getexecuted();
         mBroadcastManager.registerReceiver(mBroadcastReceiver =
                 new BroadcastReceiver() {
                     @Override
@@ -125,7 +126,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Dataoperation mdata = new Dataoperation();
         mThread = new Thread(mdata);
         mThread.start();
         getexecuted();
@@ -142,28 +142,6 @@ public class HomeFragment extends Fragment {
         } else if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT)
             ringm.setText("Silent");
 
-//        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
-//               mBroadcastReceiver =  new BroadcastReceiver() {
-//                    @Override
-//                    public void onReceive(Context context, Intent intent) {
-//                        Log.d("Pause","Received");
-//                        String latitude = intent.getStringExtra(MyService.EXTRA_LATITUDE);
-//                        String longitude = intent.getStringExtra(MyService.EXTRA_LONGITUDE);
-//                        String name = intent.getStringExtra("Name");
-//                        String status1 = intent.getStringExtra("STATE");
-//
-//                        if (latitude != null && longitude != null) {
-//                            loc.setText(name);
-//                        }
-//                        if(status1.equals("true"))
-//                        {
-//                            state.setText("Inside");
-//                        }else if(status1.equals("false"))
-//                            state.setText("Outside");
-//
-//                    }
-//                }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
-//        );
     }
 
     @Override
@@ -173,17 +151,27 @@ public class HomeFragment extends Fragment {
 
     }
 
-    public class Dataoperation implements Runnable {
+    public  static class Dataoperation implements Runnable {
         DatabaseReference local;
         FirebaseUser mUser;
         String name;
+        long a;
+        private final WeakReference<TextView> usenm,totaluse,nomark;
+//        Handler mHandler = new Handler(Looper.getMainLooper());
+        private long b;
+
+        public Dataoperation(TextView textView,TextView mtext,TextView ntext) {
+           this.usenm = new WeakReference<>(textView);
+            this.totaluse = new WeakReference<>(mtext);
+            this.nomark = new WeakReference<>(ntext);
+        }
 
         @Override
         public void run() {
             Log.d("Thr", "Thread created");
             mUser = FirebaseAuth.getInstance().getCurrentUser();
             local = FirebaseDatabase.getInstance().getReference();
-            local.child("user").child(mUser.getUid()).addValueEventListener(mValueEventListener = new ValueEventListener() {
+            local.child("user").child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
@@ -192,13 +180,10 @@ public class HomeFragment extends Fragment {
 
                         }
                     }
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d("Thr", "handler");
-                            usenm.setText(name);
-                        }
-                    });
+
+                            usenm.get().setText(name);
+
+
                 }
 
                 @Override
@@ -207,17 +192,17 @@ public class HomeFragment extends Fragment {
                 }
             });
 
-            local.child("user").addValueEventListener(mValueEventListener = new ValueEventListener() {
+            local.child("user").addValueEventListener( new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     a = dataSnapshot.getChildrenCount();
-                    mHandler.post(new Runnable() {
-                        @SuppressLint("SetTextI18n")
-                        @Override
-                        public void run() {
-                            totaluse.setText(a.toString());
-                        }
-                    });
+//                    mHandler.post(new Runnable() {
+//                        @SuppressLint("SetTextI18n")
+//                        @Override
+//                        public void run() {
+                            totaluse.get().setText(String.valueOf(a));
+//                        }
+//                    });
 
 
                 }
@@ -228,19 +213,23 @@ public class HomeFragment extends Fragment {
                 }
             });
 
-            local.child("Marked Location").addValueEventListener(mValueEventListener = new ValueEventListener() {
+            local.child("Marked Location").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     Log.d("Thr", "loc no");
                     b = dataSnapshot.getChildrenCount();
-                    mHandler.post(new Runnable() {
-                        @SuppressLint("SetTextI18n")
-                        @Override
-                        public void run() {
+//                    mHandler.post(new Runnable() {
+//                        @SuppressLint("SetTextI18n")
+//                        @Override
+//                        public void run() {
                             Log.d("Thr", "set loc no");
-                            nomark.setText(b.toString());
-                        }
-                    });
+                    try {
+                        nomark.get().setText(String.valueOf(b));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+//                        }
+//                    });
                 }
 
                 @Override
@@ -248,8 +237,7 @@ public class HomeFragment extends Fragment {
 
                 }
             });
-            mHandler.removeCallbacks(this);
-
+//            mHandler.removeCallbacks(this);
         }
     }
 }

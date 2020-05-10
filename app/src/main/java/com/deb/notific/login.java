@@ -2,7 +2,6 @@ package com.deb.notific;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -23,7 +22,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -33,9 +31,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
-import com.deb.notific.helper.*;
 public class login extends AppCompatActivity {
     private static final int RC_SIGN_IN = 2;
     SignInButton mSignInButton;
@@ -47,12 +42,20 @@ public class login extends AppCompatActivity {
     FirebaseAuth.AuthStateListener mAuthListener;
     String personName;
     String personEmail;
-    Intent intent;
-    ArrayList<LatLng> mLngs;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mAuth.removeAuthStateListener(mAuthListener);
+        root=null;
+        mAuth= null;
+        firebaseAuth=null;
+        mGoogleApiClient.disconnect();
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
-
         mAuth.addAuthStateListener(mAuthListener);
 
     }
@@ -63,9 +66,9 @@ public class login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         //Connect
         mSignInButton = findViewById(R.id.googlebtn);
-        txtEmail = (EditText)findViewById(R.id.emailtext);
-        txtPassword = (EditText)findViewById(R.id.passwordtext);
-        btn_login = (Button) findViewById(R.id.loginbtn);
+        txtEmail = findViewById(R.id.emailtext);
+        txtPassword = findViewById(R.id.passwordtext);
+        btn_login =  findViewById(R.id.loginbtn);
         btn_signup = findViewById(R.id.signupbtn);
 
         //Instance
@@ -92,7 +95,6 @@ public class login extends AppCompatActivity {
                 String email = txtEmail.getText().toString().trim();
                 String password = txtPassword.getText().toString().trim();
 
-
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(login.this, "Please Enter Email", Toast.LENGTH_SHORT).show();
                     return;
@@ -117,8 +119,6 @@ public class login extends AppCompatActivity {
                                     Toast.makeText(login.this, "Login failed or User not Available", Toast.LENGTH_SHORT).show();
 
                                 }
-
-                                // ...
                             }
                         });
 

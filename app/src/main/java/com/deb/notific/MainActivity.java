@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -24,13 +25,13 @@ import com.google.firebase.database.ValueEventListener;
 public class MainActivity extends AppCompatActivity {
     ProgressBar splashProgress;
     int SPLASH_TIME = 3000; //This is 3 seconds
-
+Boolean serv;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent intent = new Intent(this,MyService.class);
-        startService(intent);
+        loadData();
+
 
         //This is additional feature, used to run a progress bar
         splashProgress = findViewById(R.id.splashProgress);
@@ -58,6 +59,16 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }, SPLASH_TIME);
+    }
+
+    private void loadData() {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
+        serv = sharedPreferences.getBoolean("onswitch",true);
+        if(serv)
+        {
+            Intent intent = new Intent(this,MyService.class);
+            startService(intent);
+        }
     }
 
     private void setPref() {

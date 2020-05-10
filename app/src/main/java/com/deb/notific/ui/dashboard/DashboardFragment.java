@@ -1,12 +1,15 @@
 package com.deb.notific.ui.dashboard;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -15,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.deb.notific.Adapter;
 import com.deb.notific.MapsActivity;
+import com.deb.notific.MyService;
 import com.deb.notific.R;
 import com.deb.notific.login;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,11 +34,12 @@ import java.util.List;
 public class DashboardFragment extends Fragment {
 
 DatabaseReference rootref = FirebaseDatabase.getInstance().getReference();
-
+    public static final String SWITCH = "onswitch";
     Adapter mAdapter;
 ValueEventListener mValueEventListener;
     List<String>mList = new ArrayList<>();
     View root;
+    Switch onswitch;
     Button logbtn,location;
     LinearLayoutManager layoutManager;
     @Override
@@ -56,11 +61,20 @@ ValueEventListener mValueEventListener;
        final RecyclerView mRecyclerView = root.findViewById(R.id.recyclerView);
       location = root.findViewById(R.id.locbtn);
          logbtn = root.findViewById(R.id.logoutbtn);
+         onswitch = root.findViewById(R.id.onswitch);
          layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new Adapter(getContext(),mList);
         mRecyclerView.setAdapter(mAdapter);
+        onswitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                savestate();
+            }
+        });
+        loadData();
+
         rootref.child("Marked Location").addValueEventListener(
                mValueEventListener= new ValueEventListener() {
             @Override
@@ -93,5 +107,32 @@ ValueEventListener mValueEventListener;
             }
         });
         return root;
+    }
+
+    private void loadData() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
+        onswitch.setChecked(sharedPreferences.getBoolean(SWITCH,true));
+    }
+
+    private void savestate() {
+        if (onswitch.isChecked()) {
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.clear();
+            editor.putBoolean(SWITCH,true);
+            editor.commit();
+            onswitch.setChecked(true);
+            Intent intent = new Intent(getContext(), MyService.class);
+            getContext().startService(intent);
+        } else {
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.clear();
+            editor.putBoolean(SWITCH,false);
+            editor.commit();
+            onswitch.setChecked(false);
+            Intent intent = new Intent(getContext(), MyService.class);
+            getContext().stopService(intent);
+        }
     }
 }

@@ -1,10 +1,5 @@
 package com.deb.notific;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,22 +7,18 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.deb.notific.R;
-import com.deb.notific.helper.LocationHelper;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.deb.notific.helper.polylocation;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -40,38 +31,31 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, Dialog.DialogListener {
     private Button addloc, clear, loca;
     private GoogleMap mMap;
     private Marker marker;
-    private LatLng latLng, mLng;
+    private LatLng latLng;
     private String result;
-    private Polygon mPolygon;
-    private LocationListener locationListener;
+    private Polygon mPolygon,nPolygon;
     private LocationManager locationManager;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private List<Marker> markerList = new ArrayList<>();
     private DatabaseReference root, local;
     private Boolean flag = false, incr = false;
-    private String key;
-    private final static int polypoint = 5;
+    LocalBroadcastManager mBroadcastManager;
+    BroadcastReceiver mBroadcastReceiver;
     private List<LatLng> mLatLngs = new ArrayList<>();
     private List<polylocation> nLatLngs = new ArrayList<>();
-    private Handler mHandler = new Handler();
     SupportMapFragment mapFragment;
-    Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +67,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         locationManager =
                 (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
+        mBroadcastManager = LocalBroadcastManager.getInstance(this);
         //Connecting with view
         addloc = findViewById(R.id.marklocbtn);
         clear = findViewById(R.id.clrbtn);
@@ -101,30 +85,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             {Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_LOCATION_PERMISSION);
         } else {
-            timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
-                                          @Override
-                                          public void run() {
-                                              LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(
-                                                      new BroadcastReceiver() {
-                                                          @Override
-                                                          public void onReceive(Context context, Intent intent) {
-                                                              String lat = intent.getStringExtra(MyService.EXTRA_LATITUDE);
-                                                              String lon = intent.getStringExtra(MyService.EXTRA_LONGITUDE);
-                                                              String name = intent.getStringExtra("Name");
-                                                              latLng = new LatLng(Double.parseDouble(lat), Double.parseDouble(lon));
-                                                              updateLoc(latLng, name);
-
-                                                          }
-                                                      }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
-                                              );
-                                          }
-                                      },
-                    0, 1000);   // 1000 Millisecond  = 1 second
-
-
+            mBroadcastManager.registerReceiver( mBroadcastReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    String lat = intent.getStringExtra(MyService.EXTRA_LATITUDE);
+                    String lon = intent.getStringExtra(MyService.EXTRA_LONGITUDE);
+                    String name = intent.getStringExtra("Name");
+                    latLng = new LatLng(Double.parseDouble(lat), Double.parseDouble(lon));
+                    updateLoc(latLng, name);
+                }
+                }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
+            );
         }
     }
+// 1000 Millisecond  = 1 secon
+
 
     private void updateLoc(LatLng latLng, String result) {
         if (marker != null) {
@@ -155,14 +130,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     protected void onDestroy() {
-        if (locationManager != null && locationListener != null) {
-            locationManager.removeUpdates(locationListener);
-        }
-        if (timer != null) {
-            timer.cancel();
-        }
-        System.gc();
         super.onDestroy();
+        locationManager=null;
+        mapFragment = null;
+        root = null;
+        mBroadcastManager.unregisterReceiver(mBroadcastReceiver);
+        mMap=null;
+        System.gc();
 
     }
 
@@ -191,9 +165,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 markerList.add(marker);
                 if (mLatLngs.size() == 4) {
                     opendialog();
+
+                    PolygonOptions polygonOptions = new PolygonOptions().addAll(mLatLngs).clickable(true);
+                    nPolygon = mMap.addPolygon(polygonOptions);
+                    if (result != null) {
+                        nPolygon.setTag(result);
+                    }
+                    nPolygon.setStrokeColor(Color.BLACK);
+                    nPolygon.setFillColor(Color.BLACK);
+                    nLatLngs.clear();
+                    for (Marker marker1 : markerList) marker1.remove();
+                    incr = true;
                 }
-
-
             }
         });
         addloc.setOnClickListener(new View.OnClickListener() {
@@ -230,7 +213,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void opendialog() {
         Dialog mdialog = new Dialog();
-        mdialog.show(getSupportFragmentManager(), "Example Dialog");
+        mdialog.show(getSupportFragmentManager(),"Example Dialog");
     }
 
     @Override
@@ -239,6 +222,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             String key1 = j + "point";
             polylocation pol1 = new polylocation(mLatLngs.get(j).latitude, mLatLngs.get(j).longitude);
             local.child(name).child(key1).setValue(pol1);
+            result = name;
         }
     }
 }

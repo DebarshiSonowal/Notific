@@ -11,6 +11,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Address;
@@ -81,7 +82,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     String phoneNr;
     String result;
     Map<String, List<LatLng>> mDictionary = new Hashtable<>();
-    String number;
+    Integer number;
     BroadcastReceiver receiver;
     Context mContext;
     ValueEventListener mValueEventListener;
@@ -123,7 +124,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                 }
             }
 
-        getData();
+//        getData();
         createNotificationChannel();
 
         mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -150,7 +151,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                 .addApi(LocationServices.API).build();
 
         mLocationRequest.setInterval(3000);
-        mLocationRequest.setFastestInterval(2000);
+        mLocationRequest.setFastestInterval(3000);
 //        mLocationRequest.setSmallestDisplacement(10f);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationClient.connect();
@@ -176,14 +177,13 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                         }
                         mLng = new LatLng(latitude,longitude);
                         Log.d("MyService",mLng.toString());
-                        mLatLngs.clear();
                         mLatLngs.add(mLng);
-                        if(mLatLngs.size() == 4)
-                        {
-                            mDictionary.put(dataSnapshot1.getKey(),mLatLngs);
-                            namelist.add(dataSnapshot1.getKey());
-
-                        }
+//                        if(mLatLngs.size() == 4)
+//                        {
+//                            mDictionary.put(dataSnapshot1.getKey(),mLatLngs);
+//                            namelist.add(dataSnapshot1.getKey());
+//
+//                        }
 
                         Log.d("MyService","Got data");
                     }
@@ -195,6 +195,8 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
             }
         });
+        number = mLatLngs.size();
+
     }
 
     @Nullable
@@ -235,10 +237,10 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 //            check(location);
             mLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             Log.d("MyService",location.getLatitude()+ " " + location.getLongitude() +" A");
-//            getchecked();
-            get2checked();
-            mLatLngs.clear();
+
+//            get2checked();
             getData();
+            getchecked();
             sound(flag);
         }
     }
@@ -282,53 +284,51 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         }
 
 
-//    private void getchecked() {
-//        for(int i=0;i<mLatLngs.size()/4;i++)
-//        {
-//            Log.d("MyService", String.valueOf(i));
-//            for(int j =0;j<4;j++)
-//            {
-//                Log.d("MyService", String.valueOf(j)+"point");
-//                mLatLngList.add(mLatLngs.get(j));
-//                Log.d("MyService",mLatLngList.get(j).toString());
-//            }
-////            for(int j=4;j<8;j++)
-////            {
-////                Log.d("MyService", String.valueOf(j)+"point");
-////                mLatLngList.add(mLatLngs.get(j));
-////                Log.d("MyService",mLatLngList.get(j).toString());
-////            }
-//            mLatLngList.add(mLatLngs.get(0));
-//            Log.d("MyService",mLatLngs.get(0).toString());
-//            flag = PolyUtil.containsLocation(mLatLng,mLatLngList,true);
-//            Log.d("MyService",flag.toString());
-//            sound(flag);
-//            if(flag)
-//            {
-//                if (broad == null) {
-//                    startBroadcast();
-//                }
-//
-//            }
-//            else
-//            {
-//                if (broad != null) {
-//                    stopBroadcast();
-//                }
-//            }
-//            mLatLngs.remove(0);
-//            mLatLngs.remove(1);
-//            mLatLngs.remove(2);
-//            mLatLngs.remove(3);
-//            mLatLngList.clear();
-//        }
-//    }
+    private void getchecked() {
+        for(int i=0;i< number/4;i++)
+        {
+            Log.d("MyService", String.valueOf(i));
+            Log.d("MyService", String.valueOf(number/4));
+            for(int j =0;j<4;j++)
+            {
+                Log.d("MyService", String.valueOf(j)+"point");
+                mLatLngList.add(mLatLngs.get(j));
+                Log.d("MyService",mLatLngList.get(j).toString());
+            }
+            mLatLngList.add(mLatLngs.get(0));
+            Log.d("MyService",mLatLngs.get(0).toString());
+            flag = PolyUtil.containsLocation(mLatLng,mLatLngList,true);
+            Log.d("MyService",flag.toString());
+            sound(flag);
+            if(flag)
+            {
+                    startBroadcast();
+
+            }
+            else
+            {
+                    try {
+                        stopBroadcast();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+            }
+            if(flag){
+                break;
+            }
+            mLatLngList.clear();
+            mLatLngs.subList(0,3).clear();
+        }
+
+    }
 
     private void stopBroadcast() {
 
+        try {
             unregisterReceiver(broad);
-
-
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void startBroadcast() {
@@ -367,7 +367,10 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         try {
             List<Address> addresses =
                     geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            result = addresses.get(0).getLocality() + ":";
+
+            result = addresses.get(0).getLocality() + ",";
+            result += addresses.get(0).getSubLocality()+ ",";
+            result += addresses.get(0).getAdminArea()+ ",";
             result += addresses.get(0).getCountryName();
         } catch (Exception e) {
             e.printStackTrace();
@@ -400,6 +403,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
 
     private void sendMessageToUI(String lat ,String lng,String nm, Boolean state) {
+        saveData(nm);
         Intent intent = new Intent(ACTION_LOCATION_BROADCAST);
         intent.putExtra(EXTRA_LATITUDE,lat);
         intent.putExtra(EXTRA_LONGITUDE,lng);
@@ -407,6 +411,27 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         intent.putExtra("STATE",state.toString());
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
+
+    private void saveData( String nm) {
+        if (flag) {
+            SharedPreferences sharedPreferences = getSharedPreferences("Service", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.clear();
+            editor.putString("Status","Inside");
+            editor.commit();
+            editor.putString("Name",nm);
+            editor.commit();
+        } else {
+            SharedPreferences sharedPreferences = getSharedPreferences("Service", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.clear();
+            editor.putString("Status","Outside");
+            editor.commit();
+            editor.putString("Name",nm);
+            editor.commit();
+        }
+    }
+
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel serviceChannel = new NotificationChannel(

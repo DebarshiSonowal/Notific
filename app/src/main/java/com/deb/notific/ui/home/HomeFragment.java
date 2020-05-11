@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -93,6 +94,7 @@ public class HomeFragment extends Fragment {
         loc = root.findViewById(R.id.locview);
         totaluse = root.findViewById(R.id.totlauview);
         misscall = root.findViewById(R.id.nocallview);
+        loadData();
         mdata = new Dataoperation(usenm,totaluse,nomark);
         mThread = new Thread(mdata);
         mThread.start();
@@ -121,6 +123,12 @@ public class HomeFragment extends Fragment {
 
         return root;
 
+    }
+
+    private void loadData() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
+        state.setText(sharedPreferences.getString("State","Searching"));
+        loc.setText(sharedPreferences.getString("Name","Searching"));
     }
 
     @Override

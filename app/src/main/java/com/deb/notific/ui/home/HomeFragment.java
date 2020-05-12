@@ -114,9 +114,10 @@ public class HomeFragment extends Fragment {
                         }
                         if (status1.equals("true")) {
                             state.setText("Inside");
+                            getexecuted();
                         } else if (status1.equals("false"))
                             state.setText("Outside");
-
+                            getexecuted();
                     }
                 }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
         );

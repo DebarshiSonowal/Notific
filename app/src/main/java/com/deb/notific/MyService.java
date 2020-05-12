@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Looper;
 import android.provider.ContactsContract;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;

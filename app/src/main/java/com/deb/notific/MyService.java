@@ -74,7 +74,6 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     LatLng mLng,mLatLng;
     List<LatLng>mLatLngs = new ArrayList<>();
     List<LatLng>mLatLngList = new ArrayList<>();
-    List<String>namelist=new ArrayList<>();
     Double latitude,longitude;
     AudioManager mAudioManager;
     GoogleApiClient mLocationClient;
@@ -121,9 +120,9 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                 {
                     Intent intent1 = new Intent(this,MyService.class);
                     stopService(intent1);
+
                 }
             }
-
 //        getData();
         createNotificationChannel();
 
@@ -245,43 +244,43 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         }
     }
 
-    private void get2checked() {
-        for(int l=0;l<namelist.size();l++)
-        {
-
-            try {
-                mLatLngList.addAll(mDictionary.get(namelist.get(l)));
-            } catch (Exception e) {
-                Log.d("Check",e.getMessage());
-            }
-            try {
-                mLatLngList.add(mLatLngList.get(0));
-            } catch (IndexOutOfBoundsException e) {
-                Log.d("Check",e.getMessage());
-            }
-
-                flag = PolyUtil.containsLocation(mLatLng,mLatLngList,true);
-                sound(flag);
-                mLatLngList.clear();
-                if(flag)
-                {
-                    if (broad == null) {
-                        startBroadcast();
-                    }
-
-                }
-                else
-                {
-                    if (broad != null) {
-                        try {
-                            stopBroadcast();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        }
+//    private void get2checked() {
+//        for(int l=0;l<namelist.size();l++)
+//        {
+//
+//            try {
+//                mLatLngList.addAll(mDictionary.get(namelist.get(l)));
+//            } catch (Exception e) {
+//                Log.d("Check",e.getMessage());
+//            }
+//            try {
+//                mLatLngList.add(mLatLngList.get(0));
+//            } catch (IndexOutOfBoundsException e) {
+//                Log.d("Check",e.getMessage());
+//            }
+//
+//                flag = PolyUtil.containsLocation(mLatLng,mLatLngList,true);
+//                sound(flag);
+//                mLatLngList.clear();
+//                if(flag)
+//                {
+//                    if (broad == null) {
+//                        startBroadcast();
+//                    }
+//
+//                }
+//                else
+//                {
+//                    if (broad != null) {
+//                        try {
+//                            stopBroadcast();
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
 
     private void getchecked() {

@@ -11,8 +11,12 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -23,7 +27,9 @@ import com.google.firebase.database.ValueEventListener;
 
 
 public class MainActivity extends AppCompatActivity {
-    ProgressBar splashProgress;
+    Animation topAnim, bottomAnim;
+    ImageView image1, image2, image3, image4, image5, image6, image7, image8, image9, image10;
+    TextView logo, tag;
     int SPLASH_TIME = 3000; //This is 3 seconds
 Boolean serv;
     @Override
@@ -33,32 +39,48 @@ Boolean serv;
         loadData();
 
 
-        //This is additional feature, used to run a progress bar
-        splashProgress = findViewById(R.id.splashProgress);
-        splashProgress.getIndeterminateDrawable().setColorFilter(Color.parseColor("#FFFFFF"), android.graphics.PorterDuff.Mode.MULTIPLY);
-        playProgress();
 
-        //Code to start timer and take action after the timer ends
+        topAnim = AnimationUtils.loadAnimation(this,R.anim.top_animation);
+        bottomAnim = AnimationUtils.loadAnimation(this,R.anim.bottom_animation);
+
+        image1 = findViewById(R.id.top);
+        image2 = findViewById(R.id.left);
+        image3 = findViewById(R.id.right);
+        image4 = findViewById(R.id.bottom);
+        image5 = findViewById(R.id.bottomleft);
+        image6 = findViewById(R.id.bottomright);
+        image7 = findViewById(R.id.topleft);
+        image8 = findViewById(R.id.topright);
+        image9 = findViewById(R.id.worldm);
+        image10 = findViewById(R.id.markperson);
+
+        logo = findViewById(R.id.textView);
+        tag = findViewById(R.id.textView2);
+
+        image1.setAnimation(topAnim);
+        image2.setAnimation(topAnim);
+        image3.setAnimation(topAnim);
+        image4.setAnimation(topAnim);
+        image5.setAnimation(topAnim);
+        image6.setAnimation(topAnim);
+        image7.setAnimation(topAnim);
+        image8.setAnimation(topAnim);
+        image9.setAnimation(topAnim);
+        image10.setAnimation(topAnim);
+
+        logo.setAnimation(bottomAnim);
+        tag.setAnimation(bottomAnim);
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-//                SharedPreferences preferences = getSharedPreferences("prefs",MODE_PRIVATE);
-//                boolean firstStart = preferences.getBoolean("firstStart",true);
-//                if(firstStart)
-//                {
-//                    Intent myIntent = new Intent(MainActivity.this,Intro.class);
-//                   setPref();
-//                    startActivity(myIntent);
-//                }
-                //Do any action here. Now we are moving to next page
-                Intent mySuperIntent = new Intent(MainActivity.this, login.class);
-                startActivity(mySuperIntent);
 
-                //This 'finish()' is for exiting the app when back button pressed from Home page which is ActivityHome
+                Intent intent = new Intent(MainActivity.this,Intro.class);
+                startActivity(intent);
                 finish();
-
             }
-        }, SPLASH_TIME);
+        },SPLASH_TIME);
+
     }
 
     private void loadData() {
@@ -70,18 +92,13 @@ Boolean serv;
             startService(intent);
         }
     }
-
-    private void setPref() {
-        SharedPreferences preferences = getSharedPreferences("prefs",MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("firstStart",false);
-        editor.apply();
-    }
+//
+//    private void setPref() {
+//        SharedPreferences preferences = getSharedPreferences("prefs",MODE_PRIVATE);
+//        SharedPreferences.Editor editor = preferences.edit();
+//        editor.putBoolean("firstStart",false);
+//        editor.apply();
+//    }
 
     //Method to run progress bar for 5 seconds
-    private void playProgress() {
-        ObjectAnimator.ofInt(splashProgress, "progress", 100)
-                .setDuration(5000)
-                .start();
-    }
 }

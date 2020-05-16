@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -31,13 +32,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.shashank.sony.fancytoastlib.FancyToast;
 
 import java.lang.ref.WeakReference;
 
+import me.samlss.broccoli.Broccoli;
+
 public class HomeFragment extends Fragment {
     AudioManager mAudioManager;
+    Broccoli mBroccoli;
     Handler mHandler = new Handler();
     Long a, b;
+    FirebaseUser mUser;
     Dataoperation mdata;
     BroadcastReceiver mBroadcastReceiver;
     LocalBroadcastManager mBroadcastManager;
@@ -95,6 +101,11 @@ public class HomeFragment extends Fragment {
         totaluse = root.findViewById(R.id.totlauview);
         misscall = root.findViewById(R.id.nocallview);
         loadData();
+        mBroccoli = new Broccoli();
+        mBroccoli.addPlaceholders(getActivity(),R.id.unameview,R.id.locview);
+        mBroccoli.show();
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        FancyToast.makeText(getContext(),mUser.getUid(), FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
         mdata = new Dataoperation(usenm,totaluse,nomark);
         mThread = new Thread(mdata);
         mThread.start();
@@ -191,6 +202,7 @@ public class HomeFragment extends Fragment {
                     }
 
                             usenm.get().setText(name);
+
 
 
                 }

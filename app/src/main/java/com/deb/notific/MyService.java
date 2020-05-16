@@ -7,29 +7,19 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.media.AudioManager;
-import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Looper;
-import android.provider.ContactsContract;
-import android.telephony.PhoneStateListener;
-import android.telephony.SmsManager;
-import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,18 +27,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.android.internal.telephony.ITelephony;
-import com.deb.notific.helper.BusStation;
-import com.deb.notific.helper.Check;
-import com.deb.notific.helper.message;
-import com.deb.notific.helper.pnumber;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.Builder;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -57,14 +39,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.PolyUtil;
-import com.snatik.polygon.Point;
-import com.snatik.polygon.Polygon;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -99,7 +75,11 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         mLocationClient.disconnect();
         root.removeEventListener(mValueEventListener);
         if (broad != null) {
-            unregisterReceiver(broad);
+            try {
+                unregisterReceiver(broad);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         System.gc();
         super.onDestroy();
@@ -370,8 +350,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
             result = addresses.get(0).getLocality() + ",";
             result += addresses.get(0).getSubLocality()+ ",";
-            result += addresses.get(0).getAdminArea()+ ",";
-            result += addresses.get(0).getCountryName();
+            result += addresses.get(0).getAdminArea();
         } catch (Exception e) {
             e.printStackTrace();
         }

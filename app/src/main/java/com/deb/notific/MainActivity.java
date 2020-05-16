@@ -1,29 +1,18 @@
 package com.deb.notific;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.BounceInterpolator;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.shashank.sony.fancytoastlib.FancyToast;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -88,6 +77,7 @@ Boolean serv;
         serv = sharedPreferences.getBoolean("onswitch",true);
         if(serv)
         {
+            FancyToast.makeText(this,"Service Started",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true);
             Intent intent = new Intent(this,MyService.class);
             startService(intent);
         }

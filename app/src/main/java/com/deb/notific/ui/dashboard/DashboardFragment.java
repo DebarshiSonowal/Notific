@@ -3,16 +3,21 @@ package com.deb.notific.ui.dashboard;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Switch;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LifecycleService;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +32,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.skydoves.balloon.ArrowOrientation;
+import com.skydoves.balloon.Balloon;
+import com.skydoves.balloon.BalloonAnimation;
+import com.skydoves.balloon.OnBalloonClickListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,12 +47,14 @@ public class DashboardFragment extends Fragment {
 DatabaseReference rootref = FirebaseDatabase.getInstance().getReference();
     public static final String SWITCH = "onswitch";
     Adapter mAdapter;
+    LifecycleOwner mLifecycleOwner;
 ValueEventListener mValueEventListener;
     List<String>mList = new ArrayList<>();
     View root;
     Switch onswitch;
     Button logbtn,location;
     LinearLayoutManager layoutManager;
+    Balloon balloon;
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -62,11 +75,13 @@ ValueEventListener mValueEventListener;
       location = root.findViewById(R.id.locbtn);
          logbtn = root.findViewById(R.id.logoutbtn);
          onswitch = root.findViewById(R.id.onswitch);
+         mLifecycleOwner = new LifecycleService();
          layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new Adapter(getContext(),mList);
         mRecyclerView.setAdapter(mAdapter);
+
         onswitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,7 +89,38 @@ ValueEventListener mValueEventListener;
             }
         });
         loadData();
+        balloon = new Balloon.Builder(getContext())
+                .setArrowSize(10)
+                .setArrowOrientation(ArrowOrientation.TOP)
+                .setArrowVisible(true)
+                .setWidthRatio(1.0f)
+                .setHeight(65)
+                .setTextSize(15f)
+                .setArrowPosition(0.62f)
+                .setCornerRadius(4f)
+                .setAlpha(0.9f)
+                .setText("You can access your profile from now on.")
+                .setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent))
+                .setIconDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_home_black_24dp))
+                .setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary))
+                .setLifecycleOwner(mLifecycleOwner)
+                .setOnBalloonClickListener(new OnBalloonClickListener() {
+                    @Override
+                    public void onBalloonClick(@NotNull View view) {
+                        balloon.dismiss();
+                    }
+                })
+                .setBalloonAnimation(BalloonAnimation.FADE)
+                .build();
 
+        balloon.dismissWithDelay(100L);
+        onswitch.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+        balloon.show(onswitch);
+                return false;
+            }
+        });
         rootref.child("Marked Location").addValueEventListener(
                mValueEventListener= new ValueEventListener() {
             @Override

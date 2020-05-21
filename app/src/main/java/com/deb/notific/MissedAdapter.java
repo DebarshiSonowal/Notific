@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,13 +29,13 @@ public class MissedAdapter extends RecyclerView.Adapter<MissedAdapter.MissedView
     }
     public class MissedViewHolder extends RecyclerView.ViewHolder{
         TextView name,time,number;
-        ConstraintLayout mConstraintLayout;
+        ImageButton call;
         public MissedViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.contactname);
             time = itemView.findViewById(R.id.timeview);
             number = itemView.findViewById(R.id.numberview);
-            mConstraintLayout = itemView.findViewById(R.id.calllaay);
+            call = itemView.findViewById(R.id.callbtn);
         }
     }
 
@@ -58,7 +59,7 @@ public class MissedAdapter extends RecyclerView.Adapter<MissedAdapter.MissedView
         holder.time.setText(time);
         holder.number.setText(number);
         holder.itemView.setTag(id);
-        holder.mConstraintLayout.setOnClickListener(new View.OnClickListener() {
+        holder.call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Uri number1 = Uri.parse( "tel:"+"+91" +number);

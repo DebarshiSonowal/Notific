@@ -328,7 +328,8 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
             {
                 if(mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_SILENT)
                 {
-                    mAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                        mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+
                 }
 
             }
@@ -336,7 +337,9 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         else
             if(mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL)
             {
-                mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                if (mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL) {
+                    mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                }
             }
 
 

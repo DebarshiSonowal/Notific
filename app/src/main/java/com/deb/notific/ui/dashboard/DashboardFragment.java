@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Switch;
 
 import androidx.annotation.NonNull;
@@ -52,7 +53,7 @@ ValueEventListener mValueEventListener;
     List<String>mList = new ArrayList<>();
     View root;
     Switch onswitch;
-    Button logbtn,location;
+    ImageButton logbtn,location;
     LinearLayoutManager layoutManager;
     Balloon balloon;
     @Override

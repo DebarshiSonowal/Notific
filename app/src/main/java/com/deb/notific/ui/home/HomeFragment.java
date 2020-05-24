@@ -10,6 +10,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.shashank.sony.fancytoastlib.FancyToast;
+import com.wooplr.spotlight.utils.SpotlightSequence;
 
 import java.lang.ref.WeakReference;
 
@@ -41,14 +43,22 @@ import me.samlss.broccoli.Broccoli;
 public class HomeFragment extends Fragment {
     AudioManager mAudioManager;
     Broccoli mBroccoli;
+    private static final String FIRST = "permission";
+    private static final String SECOND = "settings";
+    private static final String THIRD = "try";
+    private static final String FOURTH = "tradad";
+    private static final String FIFTH = "tragagaga";
+    private static final String SIXTH = "tr14314adad";
     Handler mHandler = new Handler();
     Long a, b;
     FirebaseUser mUser;
+    SharedPreferences preferences;
     Dataoperation mdata;
     BroadcastReceiver mBroadcastReceiver;
     LocalBroadcastManager mBroadcastManager;
     Thread mThread;
     View root;
+    Boolean mBoolean;
     FragmentManager fragMan;
     TextView ringm, nomark, usenm, loc, totaluse, misscall, state;
     ValueEventListener mValueEventListener;
@@ -90,6 +100,9 @@ public class HomeFragment extends Fragment {
     @SuppressLint("SetTextI18n")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        Context context;
+         preferences = getActivity().getSharedPreferences("instruction",Context.MODE_PRIVATE);
+        mBoolean = preferences.getBoolean("first",true);
         fragMan = getChildFragmentManager();
         root = inflater.inflate(R.layout.fragment_home, container, false);
         mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
@@ -100,6 +113,9 @@ public class HomeFragment extends Fragment {
         loc = root.findViewById(R.id.locview);
         totaluse = root.findViewById(R.id.totlauview);
         misscall = root.findViewById(R.id.nocallview);
+        if (mBoolean) {
+            showinfo();
+        }
         loadData();
         mBroccoli = new Broccoli();
         mBroccoli.addPlaceholders(getActivity(),R.id.unameview,R.id.locview);
@@ -134,6 +150,20 @@ public class HomeFragment extends Fragment {
         );
 
         return root;
+
+    }
+
+    private void showinfo() {
+        SpotlightSequence.getInstance(getActivity(),null)
+                .addSpotlight(root.findViewById(R.id.Status1),"Status","Here you can see if you are inside of any marked location",FIRST)
+                .addSpotlight(root.findViewById(R.id.Noloc1),"Marked Locations","Here you can see how many locations you have marked",SECOND)
+                .addSpotlight(root.findViewById(R.id.Ring1),"Ringer mode","Here you can see the current ringing mode of your phone",THIRD)
+                .addSpotlight(root.findViewById(R.id.Loc1),"Current Location","Here you can see your current location",FOURTH)
+                .addSpotlight(root.findViewById(R.id.Total1),"No Users","Here you can see how many people are using our app",FIFTH)
+                .addSpotlight(root.findViewById(R.id.Nocall1),"No calls","Here you can see how many calls you have missed when you are inside",SIXTH)
+                .startSequence();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("first",false);
 
     }
 

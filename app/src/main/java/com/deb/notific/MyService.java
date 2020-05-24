@@ -99,8 +99,12 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
             if(intent.hasExtra("ACTION")){
                 if(intent.getStringExtra("ACTION").equals("STOP"))
                 {
-                    Intent intent1 = new Intent(this,MyService.class);
-                    stopService(intent1);
+//                    Intent intent1 = new Intent(this,MyService.class);
+//                    stopService(intent1);
+//                    System.exit(0);
+                    mAudioManager.setMode(AudioManager.RINGER_MODE_NORMAL);
+                    stopSelf();
+                    return START_NOT_STICKY;
 
                 }
             }
@@ -315,6 +319,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.intent.action.PHONE_STATE");
+        filter.addAction("android.provider.Telephony.SMS_RECEIVED");
         filter.addAction("android.intent.action.NEW_OUTGOING_CALL");
         filter.addAction("android.media.RINGER_MODE_CHANGED");
         registerReceiver(broad, filter);
@@ -372,9 +377,10 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         Notification notification =  new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("The locaton service is running")
                 .setContentText(result)
-                .setSmallIcon(R.drawable.address)
+                .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
+                .setSmallIcon(R.drawable.health)
                 .setContentIntent(pendingIntent)
-                .addAction(R.drawable.address,"Stop",stop)
+                .addAction(R.drawable.health,"Stop",stop)
                 .build();
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

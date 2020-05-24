@@ -30,7 +30,7 @@ public class Intro extends AppIntro {
                 R.drawable.bell, ContextCompat.getColor(getApplicationContext(), R.color.thirdColor)));
         setFadeAnimation();
         askForPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION},1);
-        askForPermissions(new String[]{android.Manifest.permission.INTERNET,Manifest.permission.SEND_SMS,Manifest.permission_group.STORAGE},2);
+        askForPermissions(new String[]{android.Manifest.permission.INTERNET,Manifest.permission.SEND_SMS,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},2);
         askForPermissions(new String[]{android.Manifest.permission.READ_CALL_LOG,Manifest.permission.READ_CONTACTS},3);
 //        askForPermissions(new String[]{Manifest.permission.SEND_SMS},4,true);
         sharedPreferences = getApplicationContext().getSharedPreferences("MinePreferences", Context.MODE_PRIVATE);

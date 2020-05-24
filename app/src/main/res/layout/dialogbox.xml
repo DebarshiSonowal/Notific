@@ -7,9 +7,9 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_view"
-        android:layout_width="265dp"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="center"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@+id/guideline26"
         app:layout_constraintEnd_toStartOf="@+id/guideline37"
         app:layout_constraintHorizontal_bias="0.486"
@@ -41,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.06" />
+        app:layout_constraintGuide_percent="0.01" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline36"
@@ -55,14 +55,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.96" />
+        app:layout_constraintGuide_percent="0.99" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline38"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.046296295" />
+        app:layout_constraintGuide_percent="0.0" />
 
     <EditText
         android:id="@+id/locname"
@@ -83,5 +83,5 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.6" />
+        app:layout_constraintGuide_percent="0.53" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -69,6 +69,7 @@
         app:layout_constraintTop_toTopOf="@+id/guideline10" >
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/Total1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/lightblue">
@@ -130,6 +131,7 @@
         app:layout_constraintTop_toTopOf="@+id/guideline10" >
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/Nocall1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/lightblue">
@@ -191,6 +193,7 @@
         app:layout_constraintTop_toTopOf="@+id/guideline9">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/Ring1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/lightblue">
@@ -300,6 +303,7 @@
         app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/Status1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/lightblue">
@@ -373,6 +377,7 @@
         app:layout_constraintVertical_bias="0.459">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/Noloc1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/lightblue">
@@ -431,6 +436,7 @@
         app:layout_constraintTop_toTopOf="@+id/guideline9">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/Loc1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/lightblue">

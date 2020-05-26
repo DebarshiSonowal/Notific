@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,6 +28,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.deb.notific.MyService;
 import com.deb.notific.R;
+import com.deb.notific.helper.Contract;
+import com.deb.notific.helper.DatabaseHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -50,7 +54,7 @@ public class HomeFragment extends Fragment {
     private static final String FIFTH = "tragagaga";
     private static final String SIXTH = "tr14314adad";
     Handler mHandler = new Handler();
-    Long a, b;
+    Long  count;
     FirebaseUser mUser;
     SharedPreferences preferences;
     Dataoperation mdata;
@@ -100,7 +104,6 @@ public class HomeFragment extends Fragment {
     @SuppressLint("SetTextI18n")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        Context context;
          preferences = getActivity().getSharedPreferences("instruction",Context.MODE_PRIVATE);
         mBoolean = preferences.getBoolean("first",true);
         fragMan = getChildFragmentManager();
@@ -116,6 +119,7 @@ public class HomeFragment extends Fragment {
         if (mBoolean) {
             showinfo();
         }
+        getCall();
         loadData();
         mBroccoli = new Broccoli();
         mBroccoli.addPlaceholders(getActivity(),R.id.unameview,R.id.locview);
@@ -148,9 +152,17 @@ public class HomeFragment extends Fragment {
                     }
                 }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
         );
-
+        misscall.setText(count.toString());
         return root;
 
+    }
+
+    private long getCall() {
+        DatabaseHelper databaseHelper = new DatabaseHelper(getContext());
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+      count = DatabaseUtils.queryNumEntries(db, Contract.MissedCalls.TABLE_NAME);
+        db.close();
+        return count;
     }
 
     private void showinfo() {
@@ -164,6 +176,7 @@ public class HomeFragment extends Fragment {
                 .startSequence();
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean("first",false);
+        editor.commit();
 
     }
 

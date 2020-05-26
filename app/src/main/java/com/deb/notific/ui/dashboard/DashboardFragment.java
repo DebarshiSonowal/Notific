@@ -33,10 +33,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.shashank.sony.fancytoastlib.FancyToast;
 import com.skydoves.balloon.ArrowOrientation;
 import com.skydoves.balloon.Balloon;
 import com.skydoves.balloon.BalloonAnimation;
 import com.skydoves.balloon.OnBalloonClickListener;
+import com.wooplr.spotlight.utils.SpotlightSequence;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -46,12 +48,18 @@ import java.util.List;
 public class DashboardFragment extends Fragment {
 
 DatabaseReference rootref = FirebaseDatabase.getInstance().getReference();
+    private static final String FIRST = "permissioadasdn";
+    private static final String SECOND = "sedfhedttings";
+    private static final String THIRD = "trh4eyhy";
+    private static final String FOURTH = "t2345radad";
     public static final String SWITCH = "onswitch";
+
     Adapter mAdapter;
     LifecycleOwner mLifecycleOwner;
 ValueEventListener mValueEventListener;
     List<String>mList = new ArrayList<>();
     View root;
+    Boolean mBoolean;
     Switch onswitch;
     ImageButton logbtn,location;
     LinearLayoutManager layoutManager;
@@ -82,7 +90,15 @@ ValueEventListener mValueEventListener;
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new Adapter(getContext(),mList);
         mRecyclerView.setAdapter(mAdapter);
-
+        SharedPreferences preferences = getContext().getSharedPreferences("dash",Context.MODE_PRIVATE);
+         mBoolean= preferences.getBoolean("first4",true);
+        FancyToast.makeText(getContext(),mBoolean.toString(), FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+        if (mBoolean) {
+            startinfo();
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("first4",false);
+            editor.commit();
+        }
         onswitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,6 +170,16 @@ ValueEventListener mValueEventListener;
             }
         });
         return root;
+    }
+
+    private void startinfo() {
+        SpotlightSequence.getInstance(getActivity(),null)
+                .addSpotlight(root.findViewById(R.id.locbtn),"Mark Location","Here you can mark new locations",FIRST)
+                .addSpotlight(root.findViewById(R.id.onswitch),"Service","Here you can turn the service on or off",SECOND)
+                .addSpotlight(root.findViewById(R.id.logoutbtn),"Log out","Here you can log out from your current account",THIRD)
+                .addSpotlight(root.findViewById(R.id.recyclerView),"Marked Locations","You can view all of your marked locations here",FOURTH)
+                .startSequence();
+
     }
 
     private void loadData() {

@@ -96,6 +96,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 //        if(intent.hasExtra())
+        mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
             if(intent.hasExtra("ACTION")){
                 if(intent.getStringExtra("ACTION").equals("STOP"))
                 {
@@ -111,7 +112,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 //        getData();
         createNotificationChannel();
 
-        mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+
 
 
         Intent notificationIntent = new Intent(this, Main2Activity.class);

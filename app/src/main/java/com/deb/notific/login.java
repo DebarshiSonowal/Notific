@@ -63,7 +63,7 @@ public class login extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.login);
         //Connect
         mSignInButton = findViewById(R.id.googlebtn);
         txtEmail = findViewById(R.id.emailtext);

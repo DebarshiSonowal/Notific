@@ -25,7 +25,6 @@
     <uses-permission android:name="android.permission.PROCESS_INCOMING_CALLS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
-    <uses-permission android:name="android.media.RINGER_MODE_CHANGED" />
 
     <application
         android:allowBackup="true"
@@ -84,6 +83,7 @@
 
         <activity android:name=".login" />
         <activity android:name=".signup" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,5 +1,7 @@
 package com.deb.notific;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -10,11 +12,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.Telephony;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.core.app.NotificationCompat;
 
 import com.deb.notific.helper.Contract;
 import com.deb.notific.helper.DatabaseHelper;
@@ -26,11 +31,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 public class Phone extends BroadcastReceiver {
     List<String>pnum = new ArrayList<>();
     List<String>namelist= new ArrayList<>();
     List<String>time = new ArrayList<>();
-
+    public static final String CHANNEL_ID = "MessageChannel";
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy h:mm a", Locale.getDefault());
     String number,nm;
     String sflag;
@@ -39,6 +46,7 @@ SQLiteDatabase mDatabase;
     public void onReceive(final Context context, Intent intent) {
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         mDatabase =  databaseHelper.getWritableDatabase();
+        String action = intent.getAction();
                             try {
                                 String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
                                 if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_RINGING))
@@ -78,12 +86,14 @@ SQLiteDatabase mDatabase;
                             {
                                 e.printStackTrace();
                             }
-        if(intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")){
+
+        if(action.equals("android.provider.Telephony.SMS_RECEIVED")){
             Bundle bundle = intent.getExtras();           //---get the SMS message passed in---
             SmsMessage[] msgs = null;
             String msg_from;
             if (bundle != null){
                 //---retrieve the SMS message received---
+
                 try{
                     Object[] pdus = (Object[]) bundle.get("pdus");
                     msgs = new SmsMessage[pdus.length];
@@ -92,9 +102,17 @@ SQLiteDatabase mDatabase;
                         msg_from = msgs[i].getOriginatingAddress();
                         String msgBody = msgs[i].getMessageBody();
                         Toast.makeText(context,"Message From:"+msg_from+"/"+msgBody,Toast.LENGTH_SHORT).show();
+//                        Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
+//                                .setContentTitle("New Message")
+//                                .setContentText(msgBody)
+////                .addAction(R.drawable.address,"Stop",stop)
+//                                .build();
+//                        NotificationManager manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+//                        manager.notify(2,notification);
                     }
                 }catch(Exception e){
 //                            Log.d("Exception caught",e.getMessage());
+
                 }
             }
         }
@@ -107,6 +125,7 @@ SQLiteDatabase mDatabase;
         SmsManager smsManager = SmsManager.getDefault();
         smsManager.sendTextMessage(number, null, "I am busy please call me later ", null, null);
         Log.d("Message sfsffs",number);
+
     }
 
     public static String getContactName(Context context, String phoneNumber) {
@@ -126,6 +145,9 @@ SQLiteDatabase mDatabase;
         }
 
         return contactName;
+    }
+    private void conversation(){
+
     }
 }
 

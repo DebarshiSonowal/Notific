@@ -72,7 +72,11 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
     @Override
     public void onDestroy() {
-        mLocationClient.disconnect();
+        try {
+            mLocationClient.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         root.removeEventListener(mValueEventListener);
         if (broad != null) {
             try {
@@ -323,6 +327,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         filter.addAction("android.provider.Telephony.SMS_RECEIVED");
         filter.addAction("android.intent.action.NEW_OUTGOING_CALL");
         filter.addAction("android.media.RINGER_MODE_CHANGED");
+        filter.addAction(android.telephony.TelephonyManager.ACTION_PHONE_STATE_CHANGED);
         registerReceiver(broad, filter);
     }
 

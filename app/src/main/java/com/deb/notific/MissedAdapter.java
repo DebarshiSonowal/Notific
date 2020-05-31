@@ -21,7 +21,7 @@ public class MissedAdapter extends RecyclerView.Adapter<MissedAdapter.MissedView
     private Context mContext;
     private LayoutInflater mLayoutInflater;
     private Cursor mCursor;
-    String name,number,time;
+    String name,number1,time;
     public MissedAdapter(Context context, Cursor cursor) {
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
@@ -47,23 +47,23 @@ public class MissedAdapter extends RecyclerView.Adapter<MissedAdapter.MissedView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MissedAdapter.MissedViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MissedAdapter.MissedViewHolder holder, int position) {
         if (!mCursor.moveToPosition(position)) {
             return;
         }
        name = mCursor.getString(mCursor.getColumnIndex(Contract.MissedCalls.COLUMN_NAME));
-        number = mCursor.getString(mCursor.getColumnIndex(Contract.MissedCalls.COLUMN_NUMBER));
+        number1 = mCursor.getString(mCursor.getColumnIndex(Contract.MissedCalls.COLUMN_NUMBER));
         time = mCursor.getString(mCursor.getColumnIndex(Contract.MissedCalls.COLUMN_TIME));
         long id = mCursor.getLong(mCursor.getColumnIndex(Contract.MissedCalls._ID));
         holder.name.setText(name);
         holder.time.setText(time);
-        holder.number.setText(number);
+        holder.number.setText(number1);
         holder.itemView.setTag(id);
         holder.call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri number1 = Uri.parse( "tel:"+"+91" +number);
-                Intent callIntent = new Intent(Intent.ACTION_DIAL, number1);
+                Uri number2 = Uri.parse( "tel:"+"+91" +holder.number.getText());
+                Intent callIntent = new Intent(Intent.ACTION_DIAL, number2);
                 mContext.startActivity(callIntent);
             }
         });

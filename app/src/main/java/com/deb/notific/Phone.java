@@ -86,8 +86,13 @@ SQLiteDatabase mDatabase;
                             {
                                 e.printStackTrace();
                             }
-
-        if(action.equals("android.provider.Telephony.SMS_RECEIVED")){
+//        if (Telephony.Sms.Intents.SMS_RECEIVED_ACTION.equals(intent.getAction())) {
+//            for (SmsMessage smsMessage : Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
+//                String messageBody = smsMessage.getMessageBody();
+//                Toast.makeText(context,messageBody+"",Toast.LENGTH_SHORT);
+//            }
+//        }
+        if(intent.getAction().equals("SMS_RECEIVED")){
             Bundle bundle = intent.getExtras();           //---get the SMS message passed in---
             SmsMessage[] msgs = null;
             String msg_from;
@@ -111,10 +116,11 @@ SQLiteDatabase mDatabase;
 //                        manager.notify(2,notification);
                     }
                 }catch(Exception e){
-//                            Log.d("Exception caught",e.getMessage());
+                    Toast.makeText(context,e.getMessage()+"",Toast.LENGTH_SHORT).show();
 
                 }
             }
+        }else {
         }
                         }
 

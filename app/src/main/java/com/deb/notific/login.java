@@ -114,6 +114,12 @@ public class login extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                    Intent intent = new Intent(login.this,MyService.class);
+                                    try {
+                                        startService(intent);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 } else {
 
                                     Toast.makeText(login.this, "Login failed or User not Available", Toast.LENGTH_SHORT).show();
@@ -132,6 +138,12 @@ public class login extends AppCompatActivity {
                 if(firebaseAuth.getCurrentUser() != null){
                     Intent ml = new Intent(login.this,Main2Activity.class);
                     startActivity(ml);
+                    Intent intent = new Intent(login.this,MyService.class);
+                    try {
+                        startService(intent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         };

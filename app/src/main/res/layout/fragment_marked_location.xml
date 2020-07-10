@@ -22,18 +22,19 @@
         android:id="@+id/constraintLayout"
         android:layout_width="0dp"
         android:layout_height="79dp"
-        android:background="#D1C1C1"
+        android:background="#00D1C1C1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline39">
+        app:layout_constraintTop_toTopOf="@+id/guideline39" >
 
         <Spinner
             android:id="@+id/spinner2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#FFFFFF"
+            android:popupBackground="@drawable/abcwhite"
+            android:spinnerMode="dialog"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

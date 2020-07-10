@@ -7,12 +7,51 @@
     android:background="@drawable/abcwhite"
     tools:context=".ui.dashboard.DashboardFragment">
 
+    <com.github.angads25.toggle.widget.LabeledSwitch
+        android:id="@+id/onswitch"
+        android:layout_width="107dp"
+        android:layout_height="34dp"
+        android:layout_margin="16dp"
+        android:layout_marginBottom="28dp"
+        android:textSize="14sp"
+        app:colorBorder="@color/colorAccent"
+        app:layout_constraintBottom_toTopOf="@+id/guideline19"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:on="false" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline15"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="1.0" />
+
+    <com.skydoves.elasticviews.ElasticImageView
+        android:id="@+id/abbtn"
+        android:layout_width="58dp"
+        android:layout_height="53dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline18"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline19"
+        app:layout_constraintVertical_bias="0.268"
+        app:srcCompat="@drawable/ic_info" />
+
+    <com.skydoves.elasticviews.ElasticImageView
+        android:id="@+id/locbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="44dp"
+        android:background="#00FFFFFF"
+        android:scaleType="fitCenter"
+        app:imageView_duration="300"
+        app:imageView_scale="0.7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline19"
+        app:srcCompat="@drawable/ic_track" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline16"
@@ -56,20 +95,6 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
-    <Switch
-        android:id="@+id/onswitch"
-        android:layout_width="143dp"
-        android:layout_height="50dp"
-        android:textColor="#000000"
-        android:textOn="On"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/guideline19"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline20"
-        app:layout_constraintVertical_bias="0.7" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
@@ -96,33 +121,19 @@
         app:layout_constraintTop_toTopOf="@+id/guideline19"
         app:layout_constraintVertical_bias="0.956" />
 
-    <ImageButton
-        android:id="@+id/locbtn"
-        android:layout_width="79dp"
-        android:layout_height="75dp"
-        android:background="#00FFFFFF"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_track"
-        app:layout_constraintBottom_toTopOf="@+id/guideline18"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.253"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline19"
-        app:layout_constraintVertical_bias="0.302" />
-
-    <ImageButton
+    <com.skydoves.elasticviews.ElasticImageView
         android:id="@+id/logoutbtn"
-        android:layout_width="78dp"
-        android:layout_height="73dp"
+        android:layout_width="58dp"
+        android:layout_height="53dp"
         android:background="#00FFFFFF"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_web"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.732"
+        app:layout_constraintHorizontal_bias="0.866"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline19"
-        app:layout_constraintVertical_bias="0.298" />
+        app:layout_constraintVertical_bias="0.268"
+        app:srcCompat="@drawable/ic_web" />
 
     <TextView
         android:id="@+id/textView11"
@@ -133,7 +144,7 @@
         android:text="@string/mark_location"
         android:textColor="#000000"
         app:layout_constraintEnd_toStartOf="@+id/guideline21"
-        app:layout_constraintHorizontal_bias="0.682"
+        app:layout_constraintHorizontal_bias="0.186"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/locbtn" />
 
@@ -146,8 +157,20 @@
         android:text="Log out"
         android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.232"
+        app:layout_constraintHorizontal_bias="0.741"
         app:layout_constraintStart_toStartOf="@+id/guideline21"
         app:layout_constraintTop_toBottomOf="@+id/logoutbtn" />
+
+    <TextView
+        android:id="@+id/textView21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="About"
+        android:textColor="#000000"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/abbtn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

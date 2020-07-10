@@ -2,10 +2,12 @@ package com.deb.notific.ui.home;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
@@ -28,6 +30,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.deb.notific.MyService;
 import com.deb.notific.R;
+import com.deb.notific.call_sms;
 import com.deb.notific.helper.Contract;
 import com.deb.notific.helper.DatabaseHelper;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,11 +45,11 @@ import com.wooplr.spotlight.utils.SpotlightSequence;
 
 import java.lang.ref.WeakReference;
 
-import me.samlss.broccoli.Broccoli;
+
 
 public class HomeFragment extends Fragment {
     AudioManager mAudioManager;
-    Broccoli mBroccoli;
+
     private static final String FIRST = "permission";
     private static final String SECOND = "settings";
     private static final String THIRD = "try";
@@ -61,6 +64,7 @@ public class HomeFragment extends Fragment {
     BroadcastReceiver mBroadcastReceiver;
     LocalBroadcastManager mBroadcastManager;
     Thread mThread;
+    String latitude,longitude,name,status1;
     View root;
     Boolean mBoolean;
     FragmentManager fragMan;
@@ -71,6 +75,51 @@ public class HomeFragment extends Fragment {
     public void onStart() {
         super.onStart();
         getexecuted();
+        mBroadcastManager.registerReceiver(mBroadcastReceiver =
+                        new BroadcastReceiver() {
+                            @Override
+                            public void onReceive(Context context, Intent intent) {
+                                latitude = intent.getStringExtra(MyService.EXTRA_LATITUDE);
+                                longitude = intent.getStringExtra(MyService.EXTRA_LONGITUDE);
+                                name = intent.getStringExtra("Name");
+                                status1 = intent.getStringExtra("STATE");
+
+                                if (name != null) {
+                                    try {
+                                        loc.setText(name);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                if (status1.equals("true")) {
+                                    try {
+                                        state.setText("Inside");
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+//                            PackageManager pm  = getActivity().getPackageManager();
+//                            ComponentName componentName = new ComponentName( getActivity(), call_sms.class);
+//
+//                            pm.setComponentEnabledSetting(componentName,PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+//                                    PackageManager.DONT_KILL_APP);
+                                    getexecuted();
+                                } else if (status1.equals("false")){
+                                    try {
+                                        state.setText("Outside");
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+//                        PackageManager pm  = getActivity().getPackageManager();
+//                        ComponentName componentName = new ComponentName( getActivity(), call_sms.class);
+//
+//                        pm.setComponentEnabledSetting(componentName,PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+//                                PackageManager.DONT_KILL_APP);
+                                getexecuted();
+                            }
+                        }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
+        );
     }
 
     @Override
@@ -121,11 +170,9 @@ public class HomeFragment extends Fragment {
         }
         getCall();
         loadData();
-        mBroccoli = new Broccoli();
-        mBroccoli.addPlaceholders(getActivity(),R.id.unameview,R.id.locview);
-        mBroccoli.show();
+
         mUser = FirebaseAuth.getInstance().getCurrentUser();
-        FancyToast.makeText(getContext(),mUser.getUid(), FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+        FancyToast.makeText(getContext(),mUser.getUid(), FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,false).show();
         mdata = new Dataoperation(usenm,totaluse,nomark);
         mThread = new Thread(mdata);
         mThread.start();
@@ -135,19 +182,33 @@ public class HomeFragment extends Fragment {
                 new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        String latitude = intent.getStringExtra(MyService.EXTRA_LATITUDE);
-                        String longitude = intent.getStringExtra(MyService.EXTRA_LONGITUDE);
-                        String name = intent.getStringExtra("Name");
-                        String status1 = intent.getStringExtra("STATE");
+                     latitude = intent.getStringExtra(MyService.EXTRA_LATITUDE);
+                     longitude = intent.getStringExtra(MyService.EXTRA_LONGITUDE);
+                     name = intent.getStringExtra("Name");
+                     status1 = intent.getStringExtra("STATE");
 
-                        if (latitude != null && longitude != null) {
-                            loc.setText(name);
+                        if (name != null) {
+                            try {
+                                loc.setText(name);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                         if (status1.equals("true")) {
-                            state.setText("Inside");
+                            try {
+                                state.setText("Inside");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             getexecuted();
-                        } else if (status1.equals("false"))
-                            state.setText("Outside");
+                        } else if (status1.equals("false")){
+                            try {
+                                state.setText("Outside");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
                             getexecuted();
                     }
                 }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
@@ -192,18 +253,41 @@ public class HomeFragment extends Fragment {
         mThread = new Thread(mdata);
         mThread.start();
         getexecuted();
-
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Values",Context.MODE_PRIVATE);
+       name = sharedPreferences.getString("location","Searching");
+        status1 = sharedPreferences.getString("status","true");
+        try {
+            loc.setText(name);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (status1.equals("true")) {
+            try {
+                state.setText("Inside");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (status1.equals("false"))
+            try {
+                state.setText("Outside");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
     }
 
     private void getexecuted() {
-        mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-        Log.d("Pause", "It is resume");
-        if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
-            ringm.setText("Normal");
-        } else if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) {
-            ringm.setText("Vibrate");
-        } else if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT)
-            ringm.setText("Silent");
+        try {
+            mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+            Log.d("Pause", "It is resume");
+            if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
+                ringm.setText("Normal");
+            } else if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) {
+                ringm.setText("Vibrate");
+            } else if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT)
+                ringm.setText("Silent");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -211,6 +295,14 @@ public class HomeFragment extends Fragment {
     public void onPause() {
         super.onPause();
         Log.d("Pause", "It is paused");
+        Context context;
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Vallues",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.putString("location",name);
+        editor.apply();
+        editor.putString("status",status1);
+        editor.commit();
 
     }
 
@@ -220,7 +312,7 @@ public class HomeFragment extends Fragment {
         String name;
         long a;
         private final WeakReference<TextView> usenm,totaluse,nomark;
-//        Handler mHandler = new Handler(Looper.getMainLooper());
+
         private long b;
 
         public Dataoperation(TextView textView,TextView mtext,TextView ntext) {
@@ -240,12 +332,14 @@ public class HomeFragment extends Fragment {
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                         if (dataSnapshot1.getKey().equals("Username")) {
                             name = (String) dataSnapshot1.getValue();
-
                         }
                     }
 
-                            usenm.get().setText(name);
-
+                    try {
+                        usenm.get().setText(name);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
 
                 }
@@ -264,7 +358,11 @@ public class HomeFragment extends Fragment {
 //                        @SuppressLint("SetTextI18n")
 //                        @Override
 //                        public void run() {
-                            totaluse.get().setText(String.valueOf(a));
+                    try {
+                        totaluse.get().setText(String.valueOf(a));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 //                        }
 //                    });
 
@@ -277,7 +375,7 @@ public class HomeFragment extends Fragment {
                 }
             });
 
-            local.child("Marked Location").addValueEventListener(new ValueEventListener() {
+            local.child("Marked Location").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     Log.d("Thr", "loc no");

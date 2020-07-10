@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,17 +48,20 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>  {
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+        String  id = namelist.get(position);
         holder.nam.setText(namelist.get(position));
+        holder.itemView.setTag(id);
         holder.mDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Marked Location").child(namelist.get(position));
+                mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Marked Location").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(namelist.get(position));
                 mDatabaseReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         FancyToast.makeText(mContext,"Successfully deleated",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true);
                     }
                 });
+                notifyDataSetChanged();
             }
         });
     }

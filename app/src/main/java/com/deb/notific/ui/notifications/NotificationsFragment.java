@@ -13,10 +13,12 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.deb.notific.MapsActivity;
 import com.deb.notific.MissedAdapter;
 import com.deb.notific.R;
 import com.deb.notific.helper.Contract;
 import com.deb.notific.helper.DatabaseHelper;
+import com.pd.chocobar.ChocoBar;
 
 import java.util.List;
 
@@ -28,6 +30,11 @@ public class NotificationsFragment extends Fragment {
     public void onDestroy() {
         System.gc();
         super.onDestroy();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -64,6 +71,13 @@ public class NotificationsFragment extends Fragment {
         mDatabase.delete(Contract.MissedCalls.TABLE_NAME,
                 Contract.MissedCalls._ID + "=" + id, null);
         mAdapter.swapCursor(getAllItems());
+        ChocoBar.builder().setActivity(getActivity())
+                .setText("Deleted")
+                .setDuration(ChocoBar.LENGTH_SHORT)
+                .setActionText(android.R.string.ok)
+                .red()   // in built red ChocoBar
+                .show();
+
     }
 
     private Cursor getAllItems() {

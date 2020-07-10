@@ -11,11 +11,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.deb.notific.helper.Contract;
-import com.deb.notific.helper.pnumber;
 
 public class MissedAdapter extends RecyclerView.Adapter<MissedAdapter.MissedViewHolder> {
     private Context mContext;

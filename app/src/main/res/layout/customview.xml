@@ -38,7 +38,7 @@
         android:layout_height="0dp"
         app:cardBackgroundColor="#F1F8DD"
         app:cardCornerRadius="30dp"
-        app:cardElevation="20dp"
+        app:cardElevation="5dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline24"
         app:layout_constraintEnd_toStartOf="@+id/guideline22"
         app:layout_constraintStart_toStartOf="@+id/guideline23"
@@ -64,8 +64,8 @@
 
             <ImageButton
                 android:id="@+id/button3"
-                android:layout_width="62dp"
-                android:layout_height="73dp"
+                android:layout_width="52dp"
+                android:layout_height="53dp"
                 android:background="#00FFFFFF"
                 android:scaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="parent"

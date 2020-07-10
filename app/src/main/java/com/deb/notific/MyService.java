@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -15,6 +16,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,12 +29,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.airbnb.lottie.L;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,7 +51,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-public class MyService extends Service implements GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class MyService extends Service implements GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener, LocationListener{
     private static final String TAG = MyService.class.getSimpleName();
     DatabaseReference root = FirebaseDatabase.getInstance().getReference();
     LatLng mLng,mLatLng;
@@ -55,11 +61,9 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     AudioManager mAudioManager;
     GoogleApiClient mLocationClient;
     Boolean flag =false;
-    String phoneNr;
-    String result;
+    String result,result1;
     Map<String, List<LatLng>> mDictionary = new Hashtable<>();
     Integer number;
-    BroadcastReceiver receiver;
     Context mContext;
     ValueEventListener mValueEventListener;
     LocationRequest mLocationRequest = new LocationRequest();
@@ -69,15 +73,21 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     public static final String EXTRA_LATITUDE = "extra_latitude";
     public static final String EXTRA_LONGITUDE = "extra_longitude";
     Phone broad;
+    call_sms mCallsms;
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         try {
             mLocationClient.disconnect();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        root.removeEventListener(mValueEventListener);
+        try {
+            root.removeEventListener(mValueEventListener);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (broad != null) {
             try {
                 unregisterReceiver(broad);
@@ -85,8 +95,15 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                 e.printStackTrace();
             }
         }
+        if (mCallsms != null) {
+            try {
+                unregisterReceiver(mCallsms);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         System.gc();
-        super.onDestroy();
+
 
     }
 
@@ -95,25 +112,30 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         super.onCreate();
         mContext = this;
        broad = new Phone();
+       mCallsms = new call_sms();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-//        if(intent.hasExtra())
         mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
             if(intent.hasExtra("ACTION")){
                 if(intent.getStringExtra("ACTION").equals("STOP"))
                 {
-//                    Intent intent1 = new Intent(this,MyService.class);
-//                    stopService(intent1);
-//                    System.exit(0);
                     mAudioManager.setMode(AudioManager.RINGER_MODE_NORMAL);
-                    stopSelf();
+                    try {
+                        stopSelf();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+//                    try {
+//                        stopForeground(true);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
                     return START_NOT_STICKY;
-
                 }
             }
-//        getData();
+
         createNotificationChannel();
 
 
@@ -140,41 +162,36 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                 .addApi(LocationServices.API).build();
 
         mLocationRequest.setInterval(3000);
-        mLocationRequest.setFastestInterval(3000);
-//        mLocationRequest.setSmallestDisplacement(10f);
+        mLocationRequest.setFastestInterval(10000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationClient.connect();
 
         return START_REDELIVER_INTENT;
     }
     private void getData() {
-        root.child("Marked Location").addValueEventListener( mValueEventListener =  new ValueEventListener() {
+        root.child("Marked Location").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener( mValueEventListener =  new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren())
-                {
-                    for(DataSnapshot dataSnapshot2:dataSnapshot1.getChildren())
+                if (dataSnapshot.exists()) {
+                    for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren())
                     {
-                        for(DataSnapshot dataSnapshot3: dataSnapshot2.getChildren())
+                        for(DataSnapshot dataSnapshot2:dataSnapshot1.getChildren())
                         {
-                            if(dataSnapshot3.getKey().equals("latitude"))
+                            for(DataSnapshot dataSnapshot3: dataSnapshot2.getChildren())
                             {
-                                latitude = Double.parseDouble(dataSnapshot3.getValue().toString()) ;
+                                if(dataSnapshot3.getKey().equals("latitude"))
+                                {
+                                    latitude = Double.parseDouble(dataSnapshot3.getValue().toString()) ;
+                                }
+                                else
+                                    longitude =  Double.parseDouble(dataSnapshot3.getValue().toString()) ;
                             }
-                            else
-                                longitude =  Double.parseDouble(dataSnapshot3.getValue().toString()) ;
-                        }
-                        mLng = new LatLng(latitude,longitude);
-                        Log.d("MyService",mLng.toString());
-                        mLatLngs.add(mLng);
-//                        if(mLatLngs.size() == 4)
-//                        {
-//                            mDictionary.put(dataSnapshot1.getKey(),mLatLngs);
-//                            namelist.add(dataSnapshot1.getKey());
-//
-//                        }
+                            mLng = new LatLng(latitude,longitude);
+                            Log.d("MyService",mLng.toString());
+                            mLatLngs.add(mLng);
 
-                        Log.d("MyService","Got data");
+                            Log.d("MyService","Got data");
+                        }
                     }
                 }
             }
@@ -201,7 +218,11 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
             Log.d(TAG, "== Error On onConnected() Permission not granted");
             return;
         }
-        LocationServices.FusedLocationApi.requestLocationUpdates(mLocationClient,mLocationRequest,this);
+        try {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mLocationClient,mLocationRequest,this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Log.d(TAG,"Connected to Google API");
 
     }
@@ -222,56 +243,11 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         Log.d(TAG, "Location changed");
         if(location != null)
         {
+            result1 = result;
+            Log.d("Loc",result1+"");
             send(location);
-//            check(location);
-            mLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-            Log.d("MyService",location.getLatitude()+ " " + location.getLongitude() +" A");
-
-//            get2checked();
-            getData();
-            getchecked();
-            sound(flag);
         }
     }
-
-//    private void get2checked() {
-//        for(int l=0;l<namelist.size();l++)
-//        {
-//
-//            try {
-//                mLatLngList.addAll(mDictionary.get(namelist.get(l)));
-//            } catch (Exception e) {
-//                Log.d("Check",e.getMessage());
-//            }
-//            try {
-//                mLatLngList.add(mLatLngList.get(0));
-//            } catch (IndexOutOfBoundsException e) {
-//                Log.d("Check",e.getMessage());
-//            }
-//
-//                flag = PolyUtil.containsLocation(mLatLng,mLatLngList,true);
-//                sound(flag);
-//                mLatLngList.clear();
-//                if(flag)
-//                {
-//                    if (broad == null) {
-//                        startBroadcast();
-//                    }
-//
-//                }
-//                else
-//                {
-//                    if (broad != null) {
-//                        try {
-//                            stopBroadcast();
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            }
-//        }
-
 
     private void getchecked() {
         for(int i=0;i< number/4;i++)
@@ -288,15 +264,13 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
             Log.d("MyService",mLatLngs.get(0).toString());
             flag = PolyUtil.containsLocation(mLatLng,mLatLngList,true);
             Log.d("MyService",flag.toString());
-            sound(flag);
             if(flag)
             {
-                    startBroadcast();
-
+                startBroadcast();
             }
             else
             {
-                    try {
+                try {
                         stopBroadcast();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -310,9 +284,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         }
 
     }
-
     private void stopBroadcast() {
-
         try {
             unregisterReceiver(broad);
         } catch (Exception e) {
@@ -321,12 +293,12 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     }
 
     private void startBroadcast() {
-
         IntentFilter filter = new IntentFilter();
+        filter.setPriority(1000);
         filter.addAction("android.intent.action.PHONE_STATE");
-        filter.addAction("android.provider.Telephony.SMS_RECEIVED");
         filter.addAction("android.intent.action.NEW_OUTGOING_CALL");
         filter.addAction("android.media.RINGER_MODE_CHANGED");
+        filter.addAction("android.provider.Telephony.SMS_RECEIVED");
         filter.addAction(android.telephony.TelephonyManager.ACTION_PHONE_STATE_CHANGED);
         registerReceiver(broad, filter);
     }
@@ -334,42 +306,58 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     private void sound(Boolean flag) {
         if(flag)
         {
-
-            if(mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_VIBRATE)
-            {
-                if(mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_SILENT)
-                {
-                        mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-
-                }
-
+            try {
+                mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
         }
-        else
-            if(mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL)
-            {
-                if (mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL) {
-                    mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+
+        else{
+            try {
+                mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+
+                } catch (Exception e) {
+                e.printStackTrace();
                 }
             }
-
-
     }
+
+
+
+
 
     private void send(Location location) {
         Geocoder geocoder = new Geocoder(this);
         try {
             List<Address> addresses =
                     geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-
             result = addresses.get(0).getLocality() + ",";
             result += addresses.get(0).getSubLocality()+ ",";
             result += addresses.get(0).getAdminArea();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        sendnotific(result);
-        sendMessageToUI(String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()),result,flag);
+        if (result1 != null) {
+            if (result1.equals(result)) {
+                mLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                Log.d("MyService",location.getLatitude()+ " " + location.getLongitude() +" A");
+                getData();
+                getchecked();
+                sound(flag);
+                sendMessageToUI(String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()),result,flag);
+                sendnotific(result);
+            }
+        } else {
+            mLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            Log.d("MyService",location.getLatitude()+ " " + location.getLongitude() +" A");
+            getData();
+            getchecked();
+            sound(flag);
+            sendMessageToUI(String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()),result,flag);
+            sendnotific(result);
+        }
     }
 
 
@@ -438,16 +426,4 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
             manager.createNotificationChannel(serviceChannel);
         }
     }
-
-//    public class mybroad extends BroadcastReceiver{
-//    Context mContext;
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            mContext = context;
-//        }
-//
-//        public Context getContext() {
-//            return mContext;
-//        }
-//    }
 }

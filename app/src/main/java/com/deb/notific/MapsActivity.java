@@ -7,13 +7,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -32,22 +28,24 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.pd.chocobar.ChocoBar;
+import com.shreyaspatil.MaterialDialog.MaterialDialog;
+import com.shreyaspatil.MaterialDialog.interfaces.DialogInterface;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, Dialog.DialogListener {
-    private Button addloc, clear, loca;
+//    private FitButton addloc, clear, loca;
     private GoogleMap mMap;
     private Marker marker;
     private LatLng latLng;
     private String result;
-    private Polygon mPolygon,nPolygon;
+    private Polygon mPolygon, nPolygon;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private List<Marker> markerList = new ArrayList<>();
     private DatabaseReference root, local;
@@ -58,24 +56,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<LatLng> mLatLngs = new ArrayList<>();
     private List<polylocation> nLatLngs = new ArrayList<>();
     SupportMapFragment mapFragment;
-
+String uid;
+FirebaseAuth mFirebaseAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
-
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        uid = mFirebaseAuth.getCurrentUser().getUid();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        mapFragment= (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapView);
         mapFragment.getMapAsync(this);
         locationManager =
                 (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mBroadcastManager = LocalBroadcastManager.getInstance(this);
         //Connecting with view
-        addloc = findViewById(R.id.marklocbtn);
-        clear = findViewById(R.id.clrbtn);
-        loca = findViewById(R.id.locbtn);
+//        addloc = findViewById(R.id.marklocbtn);
+//        clear = findViewById(R.id.clrbtn);
+
 
         //Database Operations
         root = FirebaseDatabase.getInstance().getReference();
@@ -89,16 +88,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             {Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_LOCATION_PERMISSION);
         } else {
-            mBroadcastManager.registerReceiver( mBroadcastReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    String lat = intent.getStringExtra(MyService.EXTRA_LATITUDE);
-                    String lon = intent.getStringExtra(MyService.EXTRA_LONGITUDE);
-                    String name = intent.getStringExtra("Name");
-                    latLng = new LatLng(Double.parseDouble(lat), Double.parseDouble(lon));
-                    updateLoc(latLng, name);
-                }
-                }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
+            mBroadcastManager.registerReceiver(mBroadcastReceiver = new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            String lat = intent.getStringExtra(MyService.EXTRA_LATITUDE);
+                            String lon = intent.getStringExtra(MyService.EXTRA_LONGITUDE);
+                            String name = intent.getStringExtra("Name");
+                            latLng = new LatLng(Double.parseDouble(lat), Double.parseDouble(lon));
+                            updateLoc(latLng, name);
+                        }
+                    }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
             );
         }
     }
@@ -135,11 +134,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        locationManager=null;
+        locationManager = null;
         mapFragment = null;
         root = null;
         mBroadcastManager.unregisterReceiver(mBroadcastReceiver);
-        mMap=null;
+        mMap = null;
         System.gc();
 
     }
@@ -151,6 +150,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setBuildingsEnabled(true);
         mMap.setMinZoomPreference(1.0f);
         mMap.setMaxZoomPreference(25.0f);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
@@ -183,35 +186,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
-        addloc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PolygonOptions polygonOptions = new PolygonOptions().addAll(mLatLngs).clickable(true);
-//                boolean inside = PolyUtil.containsLocation(new LatLng(...), poly, true);
-                mPolygon = mMap.addPolygon(polygonOptions);
-                mPolygon.setTag("First Location");
-                mPolygon.setStrokeColor(Color.BLACK);
-                mPolygon.setFillColor(Color.BLACK);
-                mLatLngs.clear();
-                for (Marker marker : markerList) marker.remove();
-                incr = true;
-            }
-        });
-        clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mPolygon != null) mPolygon.remove();
-                for (Marker marker : markerList) marker.remove();
-                mLatLngs.clear();
-            }
-        });
-        loca.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                flag = true;
-
-            }
-        });
 
     }
 
@@ -225,7 +199,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (int j = 0; j < 4; j++) {
             String key1 = j + "point";
             polylocation pol1 = new polylocation(mLatLngs.get(j).latitude, mLatLngs.get(j).longitude);
-            local.child(name).child(key1).setValue(pol1);
+            local.child(uid).child(name).child(key1).setValue(pol1).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    ChocoBar.builder().setActivity(MapsActivity.this)
+                            .setText("New location added")
+                            .setDuration(ChocoBar.LENGTH_SHORT)
+                            .setActionText(android.R.string.ok)
+                            .green()   // in built red ChocoBar
+                            .show();
+                }
+            });
             result = name;
         }
     }

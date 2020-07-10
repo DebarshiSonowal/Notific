@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView image1, image2, image3, image4, image5, image6, image7, image8, image9, image10;
     TextView logo, tag;
     int SPLASH_TIME = 3000; //This is 3 seconds
-Boolean serv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,14 +73,7 @@ Boolean serv;
     }
 
     private void loadData() {
-        SharedPreferences sharedPreferences = this.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
-        serv = sharedPreferences.getBoolean("onswitch",true);
-        if(serv)
-        {
-            FancyToast.makeText(this,"Service Started",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true);
-            Intent intent = new Intent(this,MyService.class);
-            startService(intent);
-        }
+
     }
 //
 //    private void setPref() {

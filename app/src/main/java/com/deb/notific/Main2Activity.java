@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
@@ -17,11 +18,13 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.shashank.sony.fancytoastlib.FancyToast;
 
 public class Main2Activity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_READ_PHONE_STATE =1 ;
     BottomNavigationView navView;
     NavController navController;
+    Boolean serv;
     NotificationManager notificationManager;
     @Override
     protected void onDestroy() {
@@ -37,7 +40,14 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-
+        SharedPreferences sharedPreferences = this.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE);
+        serv = sharedPreferences.getBoolean("onswitch",true);
+        if(serv)
+        {
+            FancyToast.makeText(this,"Service Started",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true);
+            Intent intent = new Intent(this,MyService.class);
+            startService(intent);
+        }
         getWindow().setStatusBarColor(Color.parseColor("#000000"));
         navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each

@@ -1,10 +1,13 @@
 package com.deb.notific;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -27,11 +30,14 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.shreyaspatil.MaterialDialog.MaterialDialog;
+import com.shreyaspatil.MaterialDialog.interfaces.DialogInterface;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -42,26 +48,40 @@ import java.util.Map;
 
 public class MarkedLocation extends Fragment {
     List<LatLng> mLatLngs = new ArrayList<>();
-    List<LatLng>mLatLngList = new ArrayList<>();
+    List<LatLng> mLatLngList = new ArrayList<>();
     LatLng mLatLng;
     DatabaseReference local;
-    Double lat,lon;
+    Double lat, lon;
     Polygon mPolygon;
     SupportMapFragment mapFragment;
     ValueEventListener mValueEventListener;
     Spinner mSpinner;
-    int j=0,k=0;
+    int j = 0, k = 0;
     int a;
+
     ArrayAdapter<String> mAdapter;
-    List<String>arrayList = new ArrayList<>();
-    Dictionary mDictionary=new Hashtable<String, LatLng>();
+    List<String> arrayList = new ArrayList<>();
+    Dictionary mDictionary = new Hashtable<String, LatLng>();
+    String uid;
+    FirebaseAuth mAuth;
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
         @Override
         public void onMapReady(final GoogleMap googleMap) {
+
             googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
             googleMap.setBuildingsEnabled(true);
             googleMap.setMinZoomPreference(1.0f);
             googleMap.setMaxZoomPreference(25.0f);
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             googleMap.setMyLocationEnabled(true);
             googleMap.getUiSettings().setZoomControlsEnabled(true);
             googleMap.getUiSettings().setCompassEnabled(true);
@@ -70,41 +90,46 @@ public class MarkedLocation extends Fragment {
 //           networkop runnable = new networkop(googleMap);
 //           new Thread(runnable).start();
             local = FirebaseDatabase.getInstance().getReference();
-            local.child("Marked Location").addValueEventListener(mValueEventListener =  new ValueEventListener() {
+            local.child("Marked Location").child(uid).addValueEventListener(mValueEventListener =  new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren())
-                    {
-
-                        for(DataSnapshot dataSnapshot2:dataSnapshot1.getChildren())
+                    if (dataSnapshot.exists()) {
+                        for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren())
                         {
-                            for(DataSnapshot dataSnapshot3:dataSnapshot2.getChildren())
-                            {
-                                if(dataSnapshot3.getKey().equals("latitude")){
-                                    lat = Double.parseDouble(dataSnapshot3.getValue().toString()) ;
-                                    Log.d("Map",lat+"");
-                                }
-                                else if(dataSnapshot3.getKey().equals("longitude"))
-                                {
-                                    lon = Double.parseDouble(dataSnapshot3.getValue().toString()) ;
-                                    Log.d("Map",lon+"");
-                                }
-                            }
-                            mLatLng = new LatLng(lat, lon);
-                            mLatLngs.add(mLatLng);
 
+                            for(DataSnapshot dataSnapshot2:dataSnapshot1.getChildren())
+                            {
+                                for(DataSnapshot dataSnapshot3:dataSnapshot2.getChildren())
+                                {
+                                    if(dataSnapshot3.getKey().equals("latitude")){
+                                        lat = Double.parseDouble(dataSnapshot3.getValue().toString()) ;
+                                        Log.d("Map",lat+"");
+                                    }
+                                    else if(dataSnapshot3.getKey().equals("longitude"))
+                                    {
+                                        lon = Double.parseDouble(dataSnapshot3.getValue().toString()) ;
+                                        Log.d("Map",lon+"");
+                                    }
+                                }
+                                mLatLng = new LatLng(lat, lon);
+                                mLatLngs.add(mLatLng);
+
+                            }
+                            arrayList.add(dataSnapshot1.getKey().toString());
+                            PolygonOptions polygonOptions = new PolygonOptions().addAll(mLatLngs).clickable(true);
+                            mPolygon = googleMap.addPolygon(polygonOptions);
+                            mPolygon.setTag(dataSnapshot1.getKey());
+                            mPolygon.setStrokeColor(Color.BLACK);
+                            mPolygon.setFillColor(Color.BLACK);;
+                            mLatLngList.addAll(mLatLngs);
+                            mLatLngs.clear();
                         }
-                        arrayList.add(dataSnapshot1.getKey().toString());
-                        PolygonOptions polygonOptions = new PolygonOptions().addAll(mLatLngs).clickable(true);
-                        mPolygon = googleMap.addPolygon(polygonOptions);
-                        mPolygon.setTag(dataSnapshot1.getKey());
-                        mPolygon.setStrokeColor(Color.BLACK);
-                        mPolygon.setFillColor(Color.BLACK);;
-                        mLatLngList.addAll(mLatLngs);
-                        mLatLngs.clear();
+                        mAdapter.notifyDataSetChanged();
+                    }else {
+
                     }
 
-                    mAdapter.notifyDataSetChanged();
+
                 }
 
                 @Override
@@ -157,11 +182,16 @@ public class MarkedLocation extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View root =inflater.inflate(R.layout.fragment_marked_location, container, false);
         mSpinner = root.findViewById(R.id.spinner2);
+        mAuth = FirebaseAuth.getInstance();
         mAdapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_spinner_dropdown_item,arrayList);
         mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(mAdapter);
         mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        uid = mAuth.getCurrentUser().getUid();
+
+
+        // Show Dialog
 
         return root;
     }

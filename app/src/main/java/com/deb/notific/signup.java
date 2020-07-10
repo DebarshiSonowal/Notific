@@ -23,7 +23,6 @@ import com.deb.notific.helper.*;
 public class signup extends AppCompatActivity {
     EditText  txtUserName,txtEmail, txtPassword, txtConfirmPassword;
     Button btn_register,btn_login;
-    ProgressBar progressBar;
     private FirebaseAuth firebaseAuth;
     DatabaseReference databaseReference;
 
@@ -37,7 +36,6 @@ public class signup extends AppCompatActivity {
         txtPassword =  findViewById(R.id.txt_password);
         txtConfirmPassword =  findViewById(R.id.txt_confirm_password);
         btn_register = findViewById(R.id.buttonRegister);
-        progressBar =  findViewById(R.id.progressBar);
         btn_login = findViewById(R.id.loginbtn);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -80,7 +78,6 @@ public class signup extends AppCompatActivity {
                 }
 
 
-                progressBar.setVisibility(View.VISIBLE);
 
 
                 if (password.equals(confirmPassword)) {
@@ -89,7 +86,7 @@ public class signup extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
 
-                                    progressBar.setVisibility(View.GONE);
+
 
                                     if (task.isSuccessful()) {
                                         user information = new user(
@@ -114,7 +111,6 @@ public class signup extends AppCompatActivity {
                             });
                 } else {
                     Toast.makeText(signup.this, "Password did not match", Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.GONE);
                 }
 
             }

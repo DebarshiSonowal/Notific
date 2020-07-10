@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Notific</string>
+    <string name="app_name">Zone</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
@@ -13,4 +13,6 @@
     <string name="title_activity_maps">Map</string>
     <string name="marked_locations">Marked Locations</string>
     <string name="select_the_desired_marked_location">Select the desired marked location</string>
+    <string name="to_contact_us">To contact us</string>
+    <string name="Credits"> Icons made by Freepik from www.flaticon.com \n Animation made by Josephwoo Woo from Dribble \n</string>
 </resources>

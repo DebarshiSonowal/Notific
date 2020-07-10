@@ -44,6 +44,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "208362279267-gq97nasq05ldjmnd2do4lr37tk8aie6l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deb.notific",
+            "certificate_hash": "a811250c388194aec02d0be825f7c80a025040e0"
+          }
+        },
+        {
           "client_id": "208362279267-j7faf2c927e34i5ehgvrlpaaqb4qlau5.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -35,10 +35,12 @@
         android:icon="@mipmap/icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/icon_round"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".About"></activity>
-        <activity android:name=".Intro"></activity>
+        <activity android:name=".blank"></activity>
+        <activity android:name=".About" />
+        <activity android:name=".Intro" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -77,11 +79,11 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Main2Activity"
             android:label="@string/title_activity_main2"
-            android:theme="@style/AppTheme.NoActionBar"></activity> <!-- <receiver android:name=".call_sms" android:enabled="true" -->
+            android:theme="@style/AppTheme.NoActionBar" /> <!-- <receiver android:name=".call_sms" android:enabled="true" -->
         <!-- android:permission="android.permission.BROADCAST_SMS"> -->
         <!-- <intent-filter > -->
         <!-- <action android:name="android.intent.action.PHONE_STATE" /> -->

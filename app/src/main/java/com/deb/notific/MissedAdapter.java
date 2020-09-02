@@ -75,7 +75,6 @@ public class MissedAdapter extends RecyclerView.Adapter<MissedAdapter.MissedView
         if (mCursor != null) {
             mCursor.close();
         }
-
         mCursor = newCursor;
 
         if (newCursor != null) {

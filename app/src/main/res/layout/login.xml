@@ -30,19 +30,22 @@
         app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/bluewhitethree" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline28"
+    <TextView
+        android:id="@+id/textView22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:text="Don't have an Account?"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toTopOf="@+id/signupbtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gifImageView"
-        app:srcCompat="@drawable/ic_comment" />
+        app:layout_constraintTop_toBottomOf="@+id/cardView2"
+        app:layout_constraintVertical_bias="0.24" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="331dp"
-        android:layout_height="69dp"
+        android:layout_width="@dimen/_250sdp"
+        android:layout_height="@dimen/_60sdp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -65,17 +68,22 @@
             android:textColor="#000000"
             android:textSize="20sp" />
 
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:srcCompat="@drawable/ic_comment" />
+
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout3"
-        android:layout_width="336dp"
-        android:layout_height="69dp"
+        android:layout_width="@dimen/_250sdp"
+        android:layout_height="@dimen/_60sdp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.474"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.486">
@@ -104,10 +112,10 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.858" />
+        app:layout_constraintVertical_bias="0.841" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView2"
@@ -140,31 +148,29 @@
         android:background="#00FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.957">
+        app:layout_constraintVertical_bias="0.96">
 
     </com.google.android.gms.common.SignInButton>
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="224dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="11dp"
-        android:text="Don't have an Account?"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Other methods"
         android:textSize="17sp"
-        app:layout_constraintBottom_toTopOf="@+id/signupbtn"
+        app:layout_constraintBottom_toTopOf="@+id/googlebtn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.604"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView2"
-        app:layout_constraintVertical_bias="0.608" />
+        app:layout_constraintTop_toBottomOf="@+id/signupbtn"
+        app:layout_constraintVertical_bias="0.533" />
 
     <TextView
         android:id="@+id/textView4"
-        android:layout_width="147dp"
-        android:layout_height="63dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:fontFamily="@font/alfa_slab_one"
         android:gravity="center"

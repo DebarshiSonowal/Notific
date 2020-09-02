@@ -252,8 +252,8 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     private void getchecked() {
         for(int i=0;i< number/4;i++)
         {
-            Log.d("MyService", String.valueOf(i));
-            Log.d("MyService", String.valueOf(number/4));
+//            Log.d("MyService", String.valueOf(i));
+//            Log.d("MyService", String.valueOf(number/4));
             for(int j =0;j<4;j++)
             {
                 Log.d("MyService", String.valueOf(j)+"point");

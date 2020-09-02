@@ -1,7 +1,5 @@
 package com.deb.notific;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -10,16 +8,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.provider.Telephony;
 import android.telephony.SmsManager;
-import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
-
-import androidx.core.app.NotificationCompat;
 
 import com.deb.notific.helper.Contract;
 import com.deb.notific.helper.DatabaseHelper;
@@ -30,8 +23,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class Phone extends BroadcastReceiver {
     List<String>pnum = new ArrayList<>();
@@ -92,36 +83,36 @@ SQLiteDatabase mDatabase;
 //                Toast.makeText(context,messageBody+"",Toast.LENGTH_SHORT);
 //            }
 //        }
-        if(intent.getAction().equals("SMS_RECEIVED")){
-            Bundle bundle = intent.getExtras();           //---get the SMS message passed in---
-            SmsMessage[] msgs = null;
-            String msg_from;
-            if (bundle != null){
-                //---retrieve the SMS message received---
-
-                try{
-                    Object[] pdus = (Object[]) bundle.get("pdus");
-                    msgs = new SmsMessage[pdus.length];
-                    for(int i=0; i<msgs.length; i++){
-                        msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
-                        msg_from = msgs[i].getOriginatingAddress();
-                        String msgBody = msgs[i].getMessageBody();
-                        Toast.makeText(context,"Message From:"+msg_from+"/"+msgBody,Toast.LENGTH_SHORT).show();
-//                        Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
-//                                .setContentTitle("New Message")
-//                                .setContentText(msgBody)
-////                .addAction(R.drawable.address,"Stop",stop)
-//                                .build();
-//                        NotificationManager manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-//                        manager.notify(2,notification);
-                    }
-                }catch(Exception e){
-                    Toast.makeText(context,e.getMessage()+"",Toast.LENGTH_SHORT).show();
-
-                }
-            }
-        }else {
-        }
+//        if(intent.getAction().equals("SMS_RECEIVED")){
+//            Bundle bundle = intent.getExtras();           //---get the SMS message passed in---
+//            SmsMessage[] msgs = null;
+//            String msg_from;
+//            if (bundle != null){
+//                //---retrieve the SMS message received---
+//
+//                try{
+//                    Object[] pdus = (Object[]) bundle.get("pdus");
+//                    msgs = new SmsMessage[pdus.length];
+//                    for(int i=0; i<msgs.length; i++){
+//                        msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
+//                        msg_from = msgs[i].getOriginatingAddress();
+//                        String msgBody = msgs[i].getMessageBody();
+//                        Toast.makeText(context,"Message From:"+msg_from+"/"+msgBody,Toast.LENGTH_SHORT).show();
+////                        Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
+////                                .setContentTitle("New Message")
+////                                .setContentText(msgBody)
+//////                .addAction(R.drawable.address,"Stop",stop)
+////                                .build();
+////                        NotificationManager manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+////                        manager.notify(2,notification);
+//                    }
+//                }catch(Exception e){
+//                    Toast.makeText(context,e.getMessage()+"",Toast.LENGTH_SHORT).show();
+//
+//                }
+//            }
+//        }else {
+//        }
                         }
 
 
@@ -151,9 +142,6 @@ SQLiteDatabase mDatabase;
         }
 
         return contactName;
-    }
-    private void conversation(){
-
     }
 }
 

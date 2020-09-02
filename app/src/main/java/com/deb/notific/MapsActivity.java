@@ -172,7 +172,6 @@ FirebaseAuth mFirebaseAuth;
                 markerList.add(marker);
                 if (mLatLngs.size() == 4) {
                     opendialog();
-
                     PolygonOptions polygonOptions = new PolygonOptions().addAll(mLatLngs).clickable(true);
                     nPolygon = mMap.addPolygon(polygonOptions);
                     if (result != null) {

@@ -172,7 +172,7 @@ public class HomeFragment extends Fragment {
         loadData();
 
         mUser = FirebaseAuth.getInstance().getCurrentUser();
-        FancyToast.makeText(getContext(),mUser.getUid(), FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,false).show();
+//        FancyToast.makeText(getContext(),mUser.getUid(), FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,false).show();
         mdata = new Dataoperation(usenm,totaluse,nomark);
         mThread = new Thread(mdata);
         mThread.start();

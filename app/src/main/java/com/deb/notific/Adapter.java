@@ -61,7 +61,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>  {
                         FancyToast.makeText(mContext,"Successfully deleated",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true);
                     }
                 });
-                notifyDataSetChanged();
+                notifyItemRemoved(position);
             }
         });
     }

@@ -58,6 +58,7 @@ DatabaseReference rootref = FirebaseDatabase.getInstance().getReference();
 ValueEventListener mValueEventListener;
     List<String>mList ;
     View root;
+RecyclerView mRecyclerView;
     Boolean mBoolean;
     Switch onswitch;
     AudioManager mAudioManager;
@@ -83,6 +84,7 @@ ValueEventListener mValueEventListener;
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
+                            mList.clear();
                             for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren()){
                                 mList.add(dataSnapshot1.getKey());
                                 Log.d("Recycler",dataSnapshot1.getKey().toString());
@@ -101,7 +103,7 @@ ValueEventListener mValueEventListener;
                              final ViewGroup container, Bundle savedInstanceState) {
 
         root = inflater.inflate(R.layout.fragment_dashboard, container, false);
-       final RecyclerView mRecyclerView = root.findViewById(R.id.recyclerView);
+        mRecyclerView = root.findViewById(R.id.recyclerView);
        mList= new ArrayList<>();
       location = root.findViewById(R.id.locbtn);
         mAudioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
@@ -134,7 +136,7 @@ ValueEventListener mValueEventListener;
         });
         SharedPreferences preferences = getContext().getSharedPreferences("dash",Context.MODE_PRIVATE);
          mBoolean= preferences.getBoolean("first4",true);
-        FancyToast.makeText(getContext(),mBoolean.toString(), FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+//        FancyToast.makeText(getContext(),mBoolean.toString(), FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
         if (mBoolean) {
             startinfo();
             SharedPreferences.Editor editor = preferences.edit();
@@ -185,6 +187,7 @@ ValueEventListener mValueEventListener;
             public void onSuccess(Void aVoid) {
                 FancyToast.makeText(getContext(),"Successfully deleated",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true);
                 mAdapter.notifyDataSetChanged();
+                mRecyclerView.invalidate();
             }
         });
 

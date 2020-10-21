@@ -70,49 +70,13 @@ SQLiteDatabase mDatabase;
                                 }
                                 if(state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_IDLE)) {
                                     Toast.makeText(context, "Idle", Toast.LENGTH_SHORT).show();
-//                nm =  checa(number);
+
                                     Log.d("Message sfsffs",nm);
                                 }
                             }catch (Exception e)
                             {
                                 e.printStackTrace();
                             }
-//        if (Telephony.Sms.Intents.SMS_RECEIVED_ACTION.equals(intent.getAction())) {
-//            for (SmsMessage smsMessage : Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
-//                String messageBody = smsMessage.getMessageBody();
-//                Toast.makeText(context,messageBody+"",Toast.LENGTH_SHORT);
-//            }
-//        }
-//        if(intent.getAction().equals("SMS_RECEIVED")){
-//            Bundle bundle = intent.getExtras();           //---get the SMS message passed in---
-//            SmsMessage[] msgs = null;
-//            String msg_from;
-//            if (bundle != null){
-//                //---retrieve the SMS message received---
-//
-//                try{
-//                    Object[] pdus = (Object[]) bundle.get("pdus");
-//                    msgs = new SmsMessage[pdus.length];
-//                    for(int i=0; i<msgs.length; i++){
-//                        msgs[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
-//                        msg_from = msgs[i].getOriginatingAddress();
-//                        String msgBody = msgs[i].getMessageBody();
-//                        Toast.makeText(context,"Message From:"+msg_from+"/"+msgBody,Toast.LENGTH_SHORT).show();
-////                        Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
-////                                .setContentTitle("New Message")
-////                                .setContentText(msgBody)
-//////                .addAction(R.drawable.address,"Stop",stop)
-////                                .build();
-////                        NotificationManager manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-////                        manager.notify(2,notification);
-//                    }
-//                }catch(Exception e){
-//                    Toast.makeText(context,e.getMessage()+"",Toast.LENGTH_SHORT).show();
-//
-//                }
-//            }
-//        }else {
-//        }
                         }
 
 

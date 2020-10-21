@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.shashank.sony.fancytoastlib.FancyToast;
 
 
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(MainActivity.this,Intro.class);
                 startActivity(intent);
+                Animatoo.animateZoom(MainActivity.this);
                 finish();
             }
         },SPLASH_TIME);

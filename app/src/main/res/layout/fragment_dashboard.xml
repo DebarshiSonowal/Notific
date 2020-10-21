@@ -4,173 +4,251 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/abcwhite"
+    android:background="@drawable/comp1"
     tools:context=".ui.dashboard.DashboardFragment">
 
-    <com.github.angads25.toggle.widget.LabeledSwitch
-        android:id="@+id/onswitch"
-        android:layout_width="107dp"
-        android:layout_height="34dp"
-        android:layout_margin="16dp"
-        android:layout_marginBottom="28dp"
-        android:textSize="14sp"
-        app:colorBorder="@color/colorAccent"
-        app:layout_constraintBottom_toTopOf="@+id/guideline19"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:on="false" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline15"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="1.0" />
-
-    <com.skydoves.elasticviews.ElasticImageView
-        android:id="@+id/abbtn"
-        android:layout_width="58dp"
-        android:layout_height="53dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline18"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline19"
-        app:layout_constraintVertical_bias="0.268"
-        app:srcCompat="@drawable/ic_info" />
-
-    <com.skydoves.elasticviews.ElasticImageView
-        android:id="@+id/locbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="44dp"
-        android:background="#00FFFFFF"
-        android:scaleType="fitCenter"
-        app:imageView_duration="300"
-        app:imageView_scale="0.7"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline19"
-        app:srcCompat="@drawable/ic_track" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline16"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.81" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline17"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.59" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline18"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.41" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline19"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.13" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline20"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.0" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline21"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline15"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline18"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="173dp"
-        android:layout_height="34dp"
-        android:gravity="center"
-        android:text="Marked locations"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/guideline18"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline19"
-        app:layout_constraintVertical_bias="0.956" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.skydoves.elasticviews.ElasticImageView
-        android:id="@+id/logoutbtn"
-        android:layout_width="58dp"
-        android:layout_height="53dp"
-        android:background="#00FFFFFF"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.866"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline19"
-        app:layout_constraintVertical_bias="0.268"
-        app:srcCompat="@drawable/ic_web" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="509dp"
+            android:layout_weight="1.7">
 
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="99dp"
-        android:layout_height="26dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:text="@string/mark_location"
-        android:textColor="#000000"
-        app:layout_constraintEnd_toStartOf="@+id/guideline21"
-        app:layout_constraintHorizontal_bias="0.186"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/locbtn" />
+            <com.github.angads25.toggle.widget.LabeledSwitch
+                android:id="@+id/onswitch"
+                android:layout_width="107dp"
+                android:layout_height="34dp"
+                android:layout_margin="16dp"
+                android:layout_marginTop="40dp"
+                android:textSize="14sp"
+                app:colorBorder="@color/colorAccent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView25"
+                app:layout_constraintVertical_bias="0.33"
+                app:on="false" />
 
-    <TextView
-        android:id="@+id/textView14"
-        android:layout_width="89dp"
-        android:layout_height="26dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:text="Log out"
-        android:textColor="#000000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.741"
-        app:layout_constraintStart_toStartOf="@+id/guideline21"
-        app:layout_constraintTop_toBottomOf="@+id/logoutbtn" />
+            <TextView
+                android:id="@+id/textView25"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/aclonica"
+                android:gravity="center"
+                android:text="Settings"
+                android:textColor="#FFF9F9"
+                android:textSize="@dimen/_30sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView21"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="About"
-        android:textColor="#000000"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/abbtn" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/_9sdp"
+                android:layout_weight="7"
+                android:elevation="20dp"
+                app:cardBackgroundColor="#E2E6F3"
+                app:cardCornerRadius="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:id="@+id/textView27"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight=".7"
+                        android:fontFamily="@font/aladin"
+                        android:gravity="center"
+                        android:text="Navigation"
+                        android:textColor="#05336E"
+                        android:textSize="@dimen/_20sdp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight=".3"
+                        android:orientation="horizontal"
+                        android:weightSum="3">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:weightSum="1">
+
+                            <com.skydoves.elasticviews.ElasticImageView
+                                android:id="@+id/locbtn"
+                                android:layout_width="match_parent"
+                                android:layout_height="42dp"
+                                android:layout_margin="@dimen/_10sdp"
+                                android:layout_weight=".7"
+                                android:scaleType="fitCenter"
+                                app:srcCompat="@drawable/ic_location__2_" />
+
+                            <TextView
+                                android:id="@+id/textView28"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/_7sdp"
+                                android:layout_weight=".3"
+                                android:gravity="center"
+                                android:text="Mark Location"
+                                android:textColor="#05336E"
+                                android:textSize="@dimen/_12sdp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:weightSum="1">
+
+                            <com.skydoves.elasticviews.ElasticImageView
+                                android:id="@+id/addbtn"
+                                android:layout_width="match_parent"
+                                android:layout_height="36dp"
+                                android:layout_margin="@dimen/_10sdp"
+                                android:layout_weight=".7"
+                                app:srcCompat="@drawable/ic_baseline_info_24" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/_7sdp"
+                                android:layout_weight=".3"
+                                android:gravity="center"
+                                android:text="About"
+                                android:textColor="#05336E"
+                                android:textSize="@dimen/_12sdp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:weightSum="1">
+
+                            <com.skydoves.elasticviews.ElasticImageView
+                                android:id="@+id/logoutbtn"
+                                android:layout_width="match_parent"
+                                android:layout_height="39dp"
+                                android:layout_margin="@dimen/_10sdp"
+                                android:layout_weight=".7"
+                                android:scaleType="fitCenter"
+                                app:srcCompat="@drawable/ic_logout__1_" />
+
+                            <TextView
+
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/_7sdp"
+                                android:layout_weight=".3"
+                                android:gravity="center"
+                                android:text="Logout"
+                                android:textColor="#05336E"
+                                android:textSize="@dimen/_12sdp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/_9sdp"
+                android:layout_marginEnd="@dimen/_9sdp"
+                android:layout_marginBottom="@dimen/_3sdp"
+                android:layout_weight="4"
+                android:elevation="20dp"
+                app:cardBackgroundColor="#E2E6F3"
+                app:cardCornerRadius="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:id="@+id/textView30"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight=".9"
+                        android:fontFamily="@font/aladin"
+                        android:gravity="center"
+                        android:text="Marked Locations"
+                        android:textColor="#05336E"
+                        android:textSize="@dimen/_20sdp"
+                        android:textStyle="bold" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/frameLayout4"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight=".1"
+                        android:background="#00FFFFFF"
+                        tools:context=".OrderStatusFragment">
+
+                        <com.vlonjatg.progressactivity.ProgressRelativeLayout
+                            android:id="@+id/loadingLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:background="#00FFFFFF"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:emptyBackgroundColor="#fbc02d"
+                            tools:errorBackgroundColor="#42a5f5"
+                            tools:loadingBackgroundColor="#FFFFFF">
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/recyclerView"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="#00FFFFFF"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </com.vlonjatg.progressactivity.ProgressRelativeLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:layout_weight="2.7"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-4889618202360309/4122676322" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

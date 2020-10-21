@@ -4,14 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.deb.notific.helper.user;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,10 +18,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.deb.notific.helper.*;
+import com.skydoves.elasticviews.ElasticButton;
+
 public class signup extends AppCompatActivity {
     EditText  txtUserName,txtEmail, txtPassword, txtConfirmPassword;
-    Button btn_register,btn_login;
+    ElasticButton btn_register,btn_login;
     private FirebaseAuth firebaseAuth;
     DatabaseReference databaseReference;
 
@@ -35,8 +35,8 @@ public class signup extends AppCompatActivity {
         txtEmail =  findViewById(R.id.txt_email);
         txtPassword =  findViewById(R.id.txt_password);
         txtConfirmPassword =  findViewById(R.id.txt_confirm_password);
-        btn_register = findViewById(R.id.buttonRegister);
-        btn_login = findViewById(R.id.loginbtn);
+        btn_register = findViewById(R.id.signupbtn3);
+        btn_login = findViewById(R.id.loginbtn3);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -46,6 +46,7 @@ public class signup extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(signup.this,login.class));
+                Animatoo.animateZoom(signup.this);
             }
         });
 
@@ -101,6 +102,7 @@ public class signup extends AppCompatActivity {
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 Toast.makeText(signup.this, "Registration Complete", Toast.LENGTH_SHORT).show();
                                                 startActivity(new Intent(getApplicationContext(), login.class));
+                                                Animatoo.animateZoom(signup.this);
                                             }
                                         });
 
@@ -116,4 +118,11 @@ public class signup extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Animatoo.animateZoom(signup.this);
+    }
+
 }

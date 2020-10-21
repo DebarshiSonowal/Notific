@@ -7,13 +7,14 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.deb.notific.helper.Contract;
+import com.github.nikartm.button.FitButton;
 
 public class MissedAdapter extends RecyclerView.Adapter<MissedAdapter.MissedViewHolder> {
     private Context mContext;
@@ -27,13 +28,13 @@ public class MissedAdapter extends RecyclerView.Adapter<MissedAdapter.MissedView
     }
     public class MissedViewHolder extends RecyclerView.ViewHolder{
         TextView name,time,number;
-        ImageButton call;
+       FitButton call;
         public MissedViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.contactname);
             time = itemView.findViewById(R.id.timeview);
             number = itemView.findViewById(R.id.numberview);
-            call = itemView.findViewById(R.id.callbtn);
+            call = itemView.findViewById(R.id.fbtn);
         }
     }
 
@@ -63,6 +64,7 @@ public class MissedAdapter extends RecyclerView.Adapter<MissedAdapter.MissedView
                 Uri number2 = Uri.parse( "tel:"+"+91" +holder.number.getText());
                 Intent callIntent = new Intent(Intent.ACTION_DIAL, number2);
                 mContext.startActivity(callIntent);
+                Animatoo.animateZoom(mContext);
             }
         });
     }

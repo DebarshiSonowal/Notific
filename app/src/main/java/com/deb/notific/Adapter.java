@@ -23,20 +23,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.shashank.sony.fancytoastlib.FancyToast;
+import com.skydoves.elasticviews.ElasticImageView;
 
 import java.util.List;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>  {
     private LayoutInflater mLayoutInflater;
     private List<String> namelist;
+    private List<String> area;
     DatabaseReference mDatabaseReference;
     Context mContext;
 //    private List<LatLng> mLatLngs;
 
-    public Adapter(Context context ,List<String> namelist) {
+    public Adapter(Context context ,List<String> namelist,List<String>area) {
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
         this.namelist = namelist;
+        this.area = area;
     }
 
     @NonNull
@@ -51,6 +54,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>  {
         String  id = namelist.get(position);
         holder.nam.setText(namelist.get(position));
         holder.itemView.setTag(id);
+        holder.Area.setText(area.get(position)+" sq m");
         holder.mDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,12 +75,13 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>  {
         return namelist.size();
     }
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        TextView nam;
-        ImageButton mDel;
+        TextView nam,Area;
+        ElasticImageView mDel;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             nam = itemView.findViewById(R.id.textView5);
-            mDel = itemView.findViewById(R.id.button3);
+            mDel = itemView.findViewById(R.id.imageView11);
+            Area = itemView.findViewById(R.id.textView32);
         }
     }
 }

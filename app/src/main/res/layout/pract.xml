@@ -31,8 +31,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#E2E6F3"
-            app:textTint="#000000"
+            app:textTint="#ffffff"
             android:popupBackground="#2A5081"
+            android:textColor="#000000"
             android:spinnerMode="dialog"/>
     </RelativeLayout>
 </RelativeLayout>

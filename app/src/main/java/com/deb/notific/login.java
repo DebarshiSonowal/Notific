@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.deb.notific.helper.user;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -31,9 +32,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.shobhitpuri.custombuttons.GoogleSignInButton;
+
 public class login extends AppCompatActivity {
     private static final int RC_SIGN_IN = 2;
-    SignInButton mSignInButton;
+    GoogleSignInButton mSignInButton;
     EditText txtEmail, txtPassword;
     Button btn_login,btn_signup;
     FirebaseAuth mAuth,firebaseAuth;
@@ -81,6 +84,7 @@ public class login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(login.this,signup.class));
+                Animatoo.animateZoom(login.this);
             }
         });
         mSignInButton.setOnClickListener(new View.OnClickListener() {
@@ -114,6 +118,7 @@ public class login extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                    Animatoo.animateZoom(login.this);
                                     Intent intent = new Intent(login.this,MyService.class);
                                     try {
                                         startService(intent);
@@ -197,6 +202,7 @@ public class login extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Animatoo.animateZoom(login.this);
         finishAffinity();
     }
 

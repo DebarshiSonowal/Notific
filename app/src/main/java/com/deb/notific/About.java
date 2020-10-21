@@ -10,16 +10,24 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.skydoves.elasticviews.ElasticImageView;
 
 public class About extends AppCompatActivity {
     ElasticImageView mailbtn;
     TextView email;
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Animatoo.animateZoom(About.this);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
-        mailbtn = findViewById(R.id.mailbtn);
+        mailbtn = findViewById(R.id.loginbtn);
         email = findViewById(R.id.email);
         mailbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -31,6 +39,7 @@ public class About extends AppCompatActivity {
                 Uri uri = Uri.parse(uriText);
                 send.setData(uri);
                 startActivity(Intent.createChooser(send, "Send mail..."));
+                Animatoo.animateZoom(About.this);
             }
         });
         email.setOnClickListener(new View.OnClickListener() {

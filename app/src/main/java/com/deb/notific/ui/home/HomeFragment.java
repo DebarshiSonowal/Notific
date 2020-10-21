@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,11 +29,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 
+import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.deb.notific.MyService;
 import com.deb.notific.R;
 import com.deb.notific.call_sms;
 import com.deb.notific.helper.Contract;
 import com.deb.notific.helper.DatabaseHelper;
+import com.deb.notific.login;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,16 +43,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.labo.kaji.fragmentanimations.CubeAnimation;
+import com.labo.kaji.fragmentanimations.MoveAnimation;
 import com.shashank.sony.fancytoastlib.FancyToast;
+import com.skydoves.elasticviews.ElasticImageView;
 import com.wooplr.spotlight.utils.SpotlightSequence;
 
 import java.lang.ref.WeakReference;
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 
 public class HomeFragment extends Fragment {
     AudioManager mAudioManager;
-
+    ElasticImageView logbtn;
     private static final String FIRST = "permission";
     private static final String SECOND = "settings";
     private static final String THIRD = "try";
@@ -68,9 +76,15 @@ public class HomeFragment extends Fragment {
     View root;
     Boolean mBoolean;
     FragmentManager fragMan;
-    TextView ringm, nomark, usenm, loc, totaluse, misscall, state;
+    TextView ringm, nomark, usenm, loc, totaluse, misscall, state,date;
     ValueEventListener mValueEventListener;
-
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+//        if(enter){
+          return MoveAnimation.create(MoveAnimation.RIGHT, enter, 500);
+//        }else
+//            return MoveAnimation.create(MoveAnimation.LEFT, enter, 1000);
+    }
     @Override
     public void onStart() {
         super.onStart();
@@ -154,10 +168,13 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
          preferences = getActivity().getSharedPreferences("instruction",Context.MODE_PRIVATE);
+         Date m = new Date();
+         SimpleDateFormat sdf=  new SimpleDateFormat("dd,MMMM,yyyy", Locale.getDefault());
         mBoolean = preferences.getBoolean("first",true);
         fragMan = getChildFragmentManager();
         root = inflater.inflate(R.layout.fragment_home, container, false);
         mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+        logbtn=root.findViewById(R.id.logout);
         state = root.findViewById(R.id.statusview);
         usenm = root.findViewById(R.id.unameview);
         nomark = root.findViewById(R.id.nolocview);
@@ -165,8 +182,23 @@ public class HomeFragment extends Fragment {
         loc = root.findViewById(R.id.locview);
         totaluse = root.findViewById(R.id.totlauview);
         misscall = root.findViewById(R.id.nocallview);
+        date = root.findViewById(R.id.date);
+        date.setText(sdf.format(m));
+        logbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().stopService(new Intent(getContext(),MyService.class));
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getContext(), login.class));
+                Animatoo.animateZoom(getContext());
+            }
+        });
         if (mBoolean) {
-            showinfo();
+            try {
+                showinfo();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         getCall();
         loadData();
@@ -336,7 +368,7 @@ public class HomeFragment extends Fragment {
                     }
 
                     try {
-                        usenm.get().setText(name);
+                        usenm.get().setText("Hello,"+name);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

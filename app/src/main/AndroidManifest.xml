@@ -38,7 +38,6 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".blank"></activity>
         <activity android:name=".About" />
         <activity android:name=".Intro" />
         <!--
@@ -58,20 +57,7 @@
             android:enabled="true"
             android:exported="true"
             android:stopWithTask="false">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.permission.ACCESS_FINE_LOCATION" /> -->
-            <!-- <action android:name="android.permission.INTERNET" /> -->
-            <!-- <action android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
-            <!-- </intent-filter> -->
-
-        </service> <!-- <receiver android:name=".Phone"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.PHONE_STATE" /> -->
-        <!-- <action android:name="android.intent.action.NEW_OUTGOING_CALL" /> -->
-        <!-- <action android:name="android.media.RINGER_MODE_CHANGED" /> -->
-        <!-- </intent-filter> -->
-        <!-- </receiver> -->
+        </service>
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
@@ -83,15 +69,8 @@
         <activity
             android:name=".Main2Activity"
             android:label="@string/title_activity_main2"
-            android:theme="@style/AppTheme.NoActionBar" /> <!-- <receiver android:name=".call_sms" android:enabled="true" -->
-        <!-- android:permission="android.permission.BROADCAST_SMS"> -->
-        <!-- <intent-filter > -->
-        <!-- <action android:name="android.intent.action.PHONE_STATE" /> -->
-        <!-- <action android:name="android.intent.action.NEW_OUTGOING_CALL" /> -->
-        <!-- <action android:name="android.media.RINGER_MODE_CHANGED" /> -->
-        <!-- <action android:name="android.provider.Telephony.SMS_RECEIVED"/> -->
-        <!-- </intent-filter> -->
-        <!-- </receiver> -->
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity android:name=".login" />
         <activity android:name=".signup" />
         <activity android:name=".MainActivity">
@@ -101,6 +80,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-4889618202360309~3326007238"/>
     </application>
 
 </manifest>

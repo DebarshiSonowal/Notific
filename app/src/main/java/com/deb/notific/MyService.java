@@ -38,6 +38,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,7 +46,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.PolyUtil;
+import com.google.maps.android.SphericalUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -57,11 +60,12 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     LatLng mLng,mLatLng;
     List<LatLng>mLatLngs = new ArrayList<>();
     List<LatLng>mLatLngList = new ArrayList<>();
+    List<Double>area = new ArrayList<>();
     Double latitude,longitude;
     AudioManager mAudioManager;
     GoogleApiClient mLocationClient;
     Boolean flag =false;
-    String result,result1;
+    String result,result1,getResult;
     Map<String, List<LatLng>> mDictionary = new Hashtable<>();
     Integer number;
     Context mContext;
@@ -127,11 +131,6 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-//                    try {
-//                        stopForeground(true);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
                     return START_NOT_STICKY;
                 }
             }
@@ -144,9 +143,6 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         Intent notificationIntent = new Intent(this, Main2Activity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
-//        Intent stopService = new Intent(this,MyService.class);
-//        stopService.setAction("STOP");
-//        PendingIntent stop = PendingIntent.getService(this,0,stopService,PendingIntent.FLAG_CANCEL_CURRENT);
         CharSequence input = "Checking";
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Foreground Service")
@@ -156,7 +152,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                 .build();
 
         startForeground(1, notification);
-        mLocationClient = new GoogleApiClient.Builder(this)
+               mLocationClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API).build();
@@ -249,7 +245,9 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         }
     }
 
-    private void getchecked() {
+    private void getchecked() throws IOException {
+        Geocoder geocoder = new Geocoder(this);
+        area.clear();
         for(int i=0;i< number/4;i++)
         {
 //            Log.d("MyService", String.valueOf(i));
@@ -263,6 +261,8 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
             mLatLngList.add(mLatLngs.get(0));
             Log.d("MyService",mLatLngs.get(0).toString());
             flag = PolyUtil.containsLocation(mLatLng,mLatLngList,true);
+            area.add(SphericalUtil.computeArea(mLatLngList));
+            Log.d("Area",SphericalUtil.computeArea(mLatLngList)+"");
             Log.d("MyService",flag.toString());
             if(flag)
             {
@@ -344,7 +344,11 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                 mLatLng = new LatLng(location.getLatitude(), location.getLongitude());
                 Log.d("MyService",location.getLatitude()+ " " + location.getLongitude() +" A");
                 getData();
-                getchecked();
+                try {
+                    getchecked();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 sound(flag);
                 sendMessageToUI(String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()),result,flag);
                 sendnotific(result);
@@ -353,7 +357,11 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
             mLatLng = new LatLng(location.getLatitude(), location.getLongitude());
             Log.d("MyService",location.getLatitude()+ " " + location.getLongitude() +" A");
             getData();
-            getchecked();
+            try {
+                getchecked();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             sound(flag);
             sendMessageToUI(String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()),result,flag);
             sendnotific(result);

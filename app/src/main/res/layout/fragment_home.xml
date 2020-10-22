@@ -22,15 +22,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:weightSum="3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="569dp"
-            android:layout_weight="2">
+            android:layout_height="match_parent"
+            android:layout_weight="3">
 
             <TextView
                 android:id="@+id/textView25"
@@ -82,144 +81,146 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.071"
+                app:layout_constraintHorizontal_bias="0.067"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.793" />
+                app:layout_constraintVertical_bias="0.796" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:weightSum="3"
-            android:orientation="vertical">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:weightSum="2"
-                    android:layout_weight="1">
+            android:orientation="vertical"
+            android:weightSum="3">
 
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="@dimen/_5sdp"
-                        app:cardCornerRadius="@dimen/_13sdp"
-                        android:elevation="20dp"
-                        android:layout_weight="1"
-                        app:cardBackgroundColor="#F9FAFE">
-
-                        <LinearLayout
-                            android:id="@+id/Status1"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:weightSum="1">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight=".4"
-                                android:fontFamily="@font/aladin"
-                                android:gravity="center"
-                                android:text="Status"
-                                android:textColor="#05336E"
-                                android:textSize="@dimen/_15sdp" />
-
-                            <ImageView
-                                android:id="@+id/imageView9"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginStart="@dimen/_10sdp"
-                                android:layout_marginTop="@dimen/_4sdp"
-                                android:layout_marginEnd="@dimen/_10sdp"
-                                android:layout_marginBottom="@dimen/_4sdp"
-                                android:layout_weight=".2"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/signal" />
-
-                            <TextView
-                                android:id="@+id/statusview"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight=".4"
-                                android:fontFamily="@font/aclonica"
-                                android:gravity="center"
-                                android:text="Inside"
-                                android:textColor="#05336E"
-                                android:textSize="@dimen/_12sdp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="@dimen/_5sdp"
-                        app:cardCornerRadius="@dimen/_13sdp"
-                        android:elevation="20dp"
-                        android:layout_weight="1"
-                        app:cardBackgroundColor="#F9FAFE">
-
-                        <LinearLayout
-                            android:id="@+id/Noloc1"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:weightSum="1">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight=".4"
-                                android:fontFamily="@font/aladin"
-                                android:gravity="center"
-                                android:text="No. of Locations"
-                                android:textColor="#05336E"
-                                android:textSize="@dimen/_15sdp" />
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginStart="@dimen/_10sdp"
-                                android:layout_marginTop="@dimen/_4sdp"
-                                android:layout_marginEnd="@dimen/_10sdp"
-                                android:layout_marginBottom="@dimen/_4sdp"
-                                android:layout_weight=".2"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/business" />
-
-                            <TextView
-                                android:id="@+id/nolocview"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginBottom="@dimen/_3sdp"
-                                android:layout_weight=".4"
-                                android:fontFamily="@font/aclonica"
-                                android:gravity="center"
-                                android:text="10"
-                                android:textColor="#05336E"
-                                android:textSize="@dimen/_12sdp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
-                </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:orientation="horizontal"
-                android:weightSum="2"
-                android:layout_weight="1">
+                android:weightSum="2">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"
-                    app:cardCornerRadius="@dimen/_13sdp"
-                    android:elevation="20dp"
                     android:layout_weight="1"
-                    app:cardBackgroundColor="#F9FAFE">
+                    android:elevation="20dp"
+                    app:cardBackgroundColor="#F9FAFE"
+                    app:cardCornerRadius="@dimen/_13sdp">
+
+                    <LinearLayout
+                        android:id="@+id/Status1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight=".4"
+                            android:fontFamily="@font/aladin"
+                            android:gravity="center"
+                            android:text="Status"
+                            android:textColor="#05336E"
+                            android:textSize="@dimen/_15sdp" />
+
+                        <ImageView
+                            android:id="@+id/imageView9"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            android:layout_marginTop="@dimen/_4sdp"
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:layout_marginBottom="@dimen/_4sdp"
+                            android:layout_weight=".2"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/signal" />
+
+                        <TextView
+                            android:id="@+id/statusview"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight=".4"
+                            android:fontFamily="@font/aclonica"
+                            android:gravity="center"
+                            android:text="Inside"
+                            android:textColor="#05336E"
+                            android:textSize="@dimen/_12sdp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:elevation="20dp"
+                    app:cardBackgroundColor="#F9FAFE"
+                    app:cardCornerRadius="@dimen/_13sdp">
+
+                    <LinearLayout
+                        android:id="@+id/Noloc1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight=".4"
+                            android:fontFamily="@font/aladin"
+                            android:gravity="center"
+                            android:text="No. of Locations"
+                            android:textColor="#05336E"
+                            android:textSize="@dimen/_15sdp" />
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            android:layout_marginTop="@dimen/_4sdp"
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:layout_marginBottom="@dimen/_4sdp"
+                            android:layout_weight=".2"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/business" />
+
+                        <TextView
+                            android:id="@+id/nolocview"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="@dimen/_3sdp"
+                            android:layout_weight=".4"
+                            android:fontFamily="@font/aclonica"
+                            android:gravity="center"
+                            android:text="10"
+                            android:textColor="#05336E"
+                            android:textSize="@dimen/_12sdp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:elevation="20dp"
+                    app:cardBackgroundColor="#F9FAFE"
+                    app:cardCornerRadius="@dimen/_13sdp">
 
                     <LinearLayout
                         android:id="@+id/Ring1"
@@ -268,10 +269,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"
-                    app:cardCornerRadius="@dimen/_13sdp"
-                    android:elevation="20dp"
                     android:layout_weight="1"
-                    app:cardBackgroundColor="#F9FAFE">
+                    android:elevation="20dp"
+                    app:cardBackgroundColor="#F9FAFE"
+                    app:cardCornerRadius="@dimen/_13sdp">
 
                     <LinearLayout
                         android:id="@+id/Loc1"
@@ -309,26 +310,27 @@
                             android:gravity="center"
                             android:text="Joysagar,Assam"
                             android:textColor="#05336E"
-                            android:textSize="@dimen/_10sdp"
+                            android:textSize="@dimen/_9sdp"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:orientation="horizontal"
-                android:weightSum="2"
-                android:layout_weight="1">
+                android:weightSum="2">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"
-                    app:cardCornerRadius="@dimen/_13sdp"
-                    android:elevation="20dp"
                     android:layout_weight="1"
-                    app:cardBackgroundColor="#F9FAFE">
+                    android:elevation="20dp"
+                    app:cardBackgroundColor="#F9FAFE"
+                    app:cardCornerRadius="@dimen/_13sdp">
 
                     <LinearLayout
                         android:id="@+id/Total1"
@@ -377,10 +379,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"
-                    app:cardCornerRadius="@dimen/_13sdp"
-                    android:elevation="20dp"
                     android:layout_weight="1"
-                    app:cardBackgroundColor="#F9FAFE">
+                    android:elevation="20dp"
+                    app:cardBackgroundColor="#F9FAFE"
+                    app:cardCornerRadius="@dimen/_13sdp">
 
                     <LinearLayout
                         android:id="@+id/Nocall1"

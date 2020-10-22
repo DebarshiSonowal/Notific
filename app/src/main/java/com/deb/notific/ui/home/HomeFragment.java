@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -46,8 +48,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.labo.kaji.fragmentanimations.CubeAnimation;
 import com.labo.kaji.fragmentanimations.MoveAnimation;
 import com.shashank.sony.fancytoastlib.FancyToast;
+import com.skydoves.balloon.ArrowConstraints;
+import com.skydoves.balloon.ArrowOrientation;
+import com.skydoves.balloon.Balloon;
+import com.skydoves.balloon.BalloonAnimation;
+import com.skydoves.balloon.OnBalloonClickListener;
 import com.skydoves.elasticviews.ElasticImageView;
 import com.wooplr.spotlight.utils.SpotlightSequence;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -66,6 +75,7 @@ public class HomeFragment extends Fragment {
     private static final String SIXTH = "tr14314adad";
     Handler mHandler = new Handler();
     Long  count;
+    Balloon statusballon,locballon,ringmodebaloon,currentballon,userballon,callballon;
     FirebaseUser mUser;
     SharedPreferences preferences;
     Dataoperation mdata;
@@ -246,6 +256,210 @@ public class HomeFragment extends Fragment {
                 }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
         );
         misscall.setText(count.toString());
+
+        //Ballons
+       statusballon = new Balloon.Builder(getContext())
+                .setArrowSize(10)
+               .setArrowOrientation(ArrowOrientation.BOTTOM)
+                .setArrowConstraints(ArrowConstraints.ALIGN_ANCHOR)
+                .setArrowPosition(0.5f)
+                .setArrowVisible(true)
+               .setWidth(300)
+                .setHeight(65)
+                .setTextSize(15f)
+                .setCornerRadius(4f)
+                .setAlpha(0.9f)
+                .setText("Here you can see the status of your location")
+                .setTextColor(Color.parseColor("#FFFFFF"))
+                .setTextIsHtml(true)
+                .setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary))
+                .setOnBalloonClickListener(new OnBalloonClickListener() {
+                    @Override
+                    public void onBalloonClick(@NotNull View view) {
+                        statusballon.dismissWithDelay(500);
+                    }
+                })
+                .setBalloonAnimation(BalloonAnimation.FADE)
+               .setAutoDismissDuration(1500)
+               .setDismissWhenTouchOutside(true)
+                .build();
+
+        locballon = new Balloon.Builder(getContext())
+                .setArrowSize(10)
+                .setArrowOrientation(ArrowOrientation.BOTTOM)
+                .setArrowConstraints(ArrowConstraints.ALIGN_ANCHOR)
+                .setArrowPosition(0.5f)
+                .setArrowVisible(true)
+                .setWidth(300)
+                .setHeight(65)
+                .setTextSize(15f)
+                .setCornerRadius(4f)
+                .setAlpha(0.9f)
+                .setText("Here you can see the no of location you set")
+                .setTextIsHtml(true)
+                .setTextColor(Color.parseColor("#FFFFFF"))
+                .setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary))
+                .setOnBalloonClickListener(new OnBalloonClickListener() {
+                    @Override
+                    public void onBalloonClick(@NotNull View view) {
+                        locballon.dismissWithDelay(500);
+                    }
+                })
+                .setDismissWhenTouchOutside(true)
+                .setAutoDismissDuration(1500)
+                .setBalloonAnimation(BalloonAnimation.FADE)
+                .build();
+
+        ringmodebaloon = new Balloon.Builder(getContext())
+                .setArrowSize(10)
+                .setArrowOrientation(ArrowOrientation.BOTTOM)
+                .setArrowConstraints(ArrowConstraints.ALIGN_ANCHOR)
+                .setArrowPosition(0.5f)
+                .setArrowVisible(true)
+                .setWidth(300)
+                .setHeight(65)
+                .setTextSize(15f)
+                .setCornerRadius(4f)
+                .setAlpha(0.9f)
+                .setText("Here you can see the status of your phone")
+                .setTextIsHtml(true)
+                .setTextColor(Color.parseColor("#FFFFFF"))
+                .setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary))
+                .setOnBalloonClickListener(new OnBalloonClickListener() {
+                    @Override
+                    public void onBalloonClick(@NotNull View view) {
+                        ringmodebaloon.dismissWithDelay(500);
+                    }
+                })
+                .setDismissWhenTouchOutside(true)
+                .setAutoDismissDuration(1500)
+                .setBalloonAnimation(BalloonAnimation.FADE)
+                .build();
+
+        currentballon = new Balloon.Builder(getContext())
+                .setArrowSize(10)
+                .setArrowOrientation(ArrowOrientation.BOTTOM)
+                .setArrowConstraints(ArrowConstraints.ALIGN_ANCHOR)
+                .setArrowPosition(0.5f)
+                .setArrowVisible(true)
+                .setWidth(300)
+                .setHeight(65)
+                .setTextSize(15f)
+                .setCornerRadius(4f)
+                .setAlpha(0.9f)
+                .setText("Here you can see your current status location")
+                .setTextIsHtml(true)
+                .setTextColor(Color.parseColor("#FFFFFF"))
+                .setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary))
+                .setOnBalloonClickListener(new OnBalloonClickListener() {
+                    @Override
+                    public void onBalloonClick(@NotNull View view) {
+                        currentballon.dismissWithDelay(500);
+                    }
+                })
+                .setDismissWhenTouchOutside(true)
+                .setAutoDismissDuration(1500)
+                .setBalloonAnimation(BalloonAnimation.FADE)
+                .build();
+
+        userballon = new Balloon.Builder(getContext())
+                .setArrowSize(10)
+                .setArrowOrientation(ArrowOrientation.BOTTOM)
+                .setArrowConstraints(ArrowConstraints.ALIGN_ANCHOR)
+                .setArrowPosition(0.5f)
+                .setArrowVisible(true)
+                .setWidth(300)
+                .setHeight(65)
+                .setTextSize(15f)
+                .setCornerRadius(4f)
+                .setAlpha(0.9f)
+                .setText("Here you can see the no of users of this app")
+                .setTextIsHtml(true)
+                .setTextColor(Color.parseColor("#FFFFFF"))
+                .setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary))
+                .setOnBalloonClickListener(new OnBalloonClickListener() {
+                    @Override
+                    public void onBalloonClick(@NotNull View view) {
+                        userballon.dismissWithDelay(500);
+                    }
+                })
+                .setAutoDismissDuration(1500)
+                .setDismissWhenTouchOutside(true)
+                .setBalloonAnimation(BalloonAnimation.FADE)
+                .build();
+
+        callballon = new Balloon.Builder(getContext())
+                .setArrowSize(10)
+                .setArrowOrientation(ArrowOrientation.BOTTOM)
+                .setArrowConstraints(ArrowConstraints.ALIGN_ANCHOR)
+                .setArrowPosition(0.5f)
+                .setArrowVisible(true)
+                .setWidth(300)
+                .setHeight(65)
+                .setTextSize(15f)
+                .setCornerRadius(4f)
+                .setAlpha(0.9f)
+                .setText("Here you can see the no of missed calls")
+                .setTextIsHtml(true)
+                .setTextColor(Color.parseColor("#FFFFFF"))
+                .setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary))
+                .setOnBalloonClickListener(new OnBalloonClickListener() {
+                    @Override
+                    public void onBalloonClick(@NotNull View view) {
+                        callballon.dismissWithDelay(500);
+                    }
+                })
+                .setDismissWhenTouchOutside(true)
+                .setAutoDismissDuration(1500)
+                .setBalloonAnimation(BalloonAnimation.FADE)
+                .build();
+
+//
+        state.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                statusballon.show(root.findViewById(R.id.statusview));
+            }
+        });
+        loc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                locballon.show(root.findViewById(R.id.nolocview));
+            }
+        });
+        ringm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ringmodebaloon.show(root.findViewById(R.id.ringmodview));
+            }
+        });
+        loc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentballon.show(root.findViewById(R.id.locview));
+            }
+        });
+        totaluse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userballon.show(root.findViewById(R.id.totlauview));
+            }
+        });
+        misscall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callballon.show(root.findViewById(R.id.nocallview));
+            }
+        });
+        nomark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                locballon.show(root.findViewById(R.id.nolocview));
+            }
+        });
+
+
+
         return root;
 
     }
@@ -259,17 +473,21 @@ public class HomeFragment extends Fragment {
     }
 
     private void showinfo() {
-        SpotlightSequence.getInstance(getActivity(),null)
-                .addSpotlight(root.findViewById(R.id.Status1),"Status","Here you can see if you are inside of any marked location",FIRST)
-                .addSpotlight(root.findViewById(R.id.Noloc1),"Marked Locations","Here you can see how many locations you have marked",SECOND)
-                .addSpotlight(root.findViewById(R.id.Ring1),"Ringer mode","Here you can see the current ringing mode of your phone",THIRD)
-                .addSpotlight(root.findViewById(R.id.Loc1),"Current Location","Here you can see your current location",FOURTH)
-                .addSpotlight(root.findViewById(R.id.Total1),"No Users","Here you can see how many people are using our app",FIFTH)
-                .addSpotlight(root.findViewById(R.id.Nocall1),"No calls","Here you can see how many calls you have missed when you are inside",SIXTH)
-                .startSequence();
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("first",false);
-        editor.commit();
+        try {
+            SpotlightSequence.getInstance(getActivity(),null)
+                    .addSpotlight(root.findViewById(R.id.Status1),"Status","Here you can see if you are inside of any marked location",FIRST)
+                    .addSpotlight(root.findViewById(R.id.Noloc1),"Marked Locations","Here you can see how many locations you have marked",SECOND)
+                    .addSpotlight(root.findViewById(R.id.Ring1),"Ringer mode","Here you can see the current ringing mode of your phone",THIRD)
+                    .addSpotlight(root.findViewById(R.id.Loc1),"Current Location","Here you can see your current location",FOURTH)
+                    .addSpotlight(root.findViewById(R.id.Total1),"No Users","Here you can see how many people are using our app",FIFTH)
+                    .addSpotlight(root.findViewById(R.id.Nocall1),"No calls","Here you can see how many calls you have missed when you are inside",SIXTH)
+                    .startSequence();
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("first",false);
+            editor.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

@@ -3,6 +3,7 @@ package com.deb.notific.ui.dashboard;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,10 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.widget.ImageButton;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleService;
@@ -24,7 +26,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
 import com.deb.notific.About;
 import com.deb.notific.Adapter;
-import com.deb.notific.MainActivity;
 import com.deb.notific.MapsActivity;
 import com.deb.notific.MyService;
 import com.deb.notific.R;
@@ -35,7 +36,6 @@ import com.github.angads25.toggle.model.ToggleableView;
 import com.github.angads25.toggle.widget.LabeledSwitch;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
@@ -48,20 +48,25 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.SphericalUtil;
-import com.labo.kaji.fragmentanimations.CubeAnimation;
 import com.labo.kaji.fragmentanimations.MoveAnimation;
 import com.pd.chocobar.ChocoBar;
 import com.shashank.sony.fancytoastlib.FancyToast;
+import com.skydoves.balloon.ArrowConstraints;
+import com.skydoves.balloon.ArrowOrientation;
+import com.skydoves.balloon.Balloon;
+import com.skydoves.balloon.BalloonAnimation;
+import com.skydoves.balloon.OnBalloonClickListener;
+import com.skydoves.balloon.OnBalloonDismissListener;
 import com.skydoves.elasticviews.ElasticImageView;
 import com.vlonjatg.progressactivity.ProgressRelativeLayout;
 import com.wooplr.spotlight.utils.SpotlightSequence;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class DashboardFragment extends Fragment {
-
 DatabaseReference rootref = FirebaseDatabase.getInstance().getReference();
     private static final String FIRST = "permissioadasdn";
     private static final String SECOND = "sedfhedttings";
@@ -71,6 +76,8 @@ DatabaseReference rootref = FirebaseDatabase.getInstance().getReference();
     Adapter mAdapter;
     String getResult;
     AdView mAdView;
+   Balloon mMark,mAbout,mlog;
+    TextView mark,abouttext,log;
     LabeledSwitch labeledSwitch;
     LifecycleOwner mLifecycleOwner;
 ValueEventListener mValueEventListener;
@@ -177,7 +184,9 @@ RecyclerView mRecyclerView;
         mAdView = root.findViewById(R.id.adView2);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
-
+        mark = root.findViewById(R.id.textView28);
+        abouttext = root.findViewById(R.id.abouttext);
+        log = root.findViewById(R.id.log);
         mAudioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
          logbtn = root.findViewById(R.id.logoutbtn);
 //         onswitch = root.findViewById(R.id.onswitch);
@@ -199,7 +208,96 @@ RecyclerView mRecyclerView;
             }
 
         });
+        mMark = new Balloon.Builder(getContext())
+                .setArrowSize(10)
+                .setArrowOrientation(ArrowOrientation.BOTTOM)
+                .setArrowConstraints(ArrowConstraints.ALIGN_ANCHOR)
+                .setArrowPosition(0.5f)
+                .setArrowVisible(true)
+                .setWidth(300)
+                .setHeight(65)
+                .setTextSize(15f)
+                .setCornerRadius(4f)
+                .setAlpha(0.9f)
+                .setText("Here you can mark new areas")
+                .setTextColor(Color.parseColor("#FFFFFF"))
+                .setTextIsHtml(true)
+                .setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary))
+                .setOnBalloonClickListener(new OnBalloonClickListener() {
+                    @Override
+                    public void onBalloonClick(@NotNull View view) {
+                        mMark.dismissWithDelay(500);
+                    }
+                })
+                .setBalloonAnimation(BalloonAnimation.FADE)
+                .setAutoDismissDuration(1500)
+                .setDismissWhenTouchOutside(true)
+                .build();
 
+        mAbout = new Balloon.Builder(getContext())
+                .setArrowSize(10)
+                .setArrowOrientation(ArrowOrientation.BOTTOM)
+                .setArrowConstraints(ArrowConstraints.ALIGN_ANCHOR)
+                .setArrowPosition(0.5f)
+                .setArrowVisible(true)
+                .setWidth(300)
+                .setHeight(65)
+                .setTextSize(15f)
+                .setCornerRadius(4f)
+                .setAlpha(0.9f)
+                .setText("Here you can see about the app")
+                .setTextColor(Color.parseColor("#FFFFFF"))
+                .setTextIsHtml(true)
+                .setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary))
+                .setOnBalloonClickListener(new OnBalloonClickListener() {
+                    @Override
+                    public void onBalloonClick(@NotNull View view) {
+                        mAbout.dismissWithDelay(500);
+                    }
+                })
+                .setBalloonAnimation(BalloonAnimation.FADE)
+                .setAutoDismissDuration(1500)
+                .setDismissWhenTouchOutside(true)
+                .build();
+        mlog = new Balloon.Builder(getContext())
+                .setArrowSize(10)
+                .setArrowOrientation(ArrowOrientation.BOTTOM)
+                .setArrowConstraints(ArrowConstraints.ALIGN_ANCHOR)
+                .setArrowPosition(0.5f)
+                .setArrowVisible(true)
+                .setWidth(300)
+                .setHeight(65)
+                .setTextSize(15f)
+                .setCornerRadius(4f)
+                .setAlpha(0.9f)
+                .setText("Logout")
+                .setTextColor(Color.parseColor("#FFFFFF"))
+                .setTextIsHtml(true)
+                .setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary))
+                .setOnBalloonClickListener(new OnBalloonClickListener() {
+                    @Override
+                    public void onBalloonClick(@NotNull View view) {
+                        mlog.dismissWithDelay(500);
+                    }
+                })
+                .setBalloonAnimation(BalloonAnimation.FADE)
+                .setAutoDismissDuration(1500)
+                .setDismissWhenTouchOutside(true)
+                .build();
+
+            mMark.show(mark);
+            mMark.setOnBalloonDismissListener(new OnBalloonDismissListener() {
+                @Override
+                public void onBalloonDismiss() {
+                    mAbout.show(abouttext);
+                }
+            });
+            mAbout.setOnBalloonDismissListener(new OnBalloonDismissListener() {
+                @Override
+                public void onBalloonDismiss() {
+                    mlog.show(log);
+                }
+            });
         about.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

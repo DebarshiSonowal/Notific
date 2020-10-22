@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -54,8 +55,11 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import static androidx.core.app.ActivityCompat.requestPermissions;
+
 public class MyService extends Service implements GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener, LocationListener{
     private static final String TAG = MyService.class.getSimpleName();
+    private static final int PERMISSION_REQUEST_READ_PHONE_STATE =1 ;
     DatabaseReference root = FirebaseDatabase.getInstance().getReference();
     LatLng mLng,mLatLng;
     List<LatLng>mLatLngs = new ArrayList<>();
@@ -117,6 +121,34 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         mContext = this;
        broad = new Phone();
        mCallsms = new call_sms();
+        createNotificationChannel();
+
+        Intent notificationIntent = new Intent(this, Main2Activity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                0, notificationIntent, 0);
+        CharSequence input = "Checking";
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Foreground Service")
+                .setContentText(input)
+                .setContentIntent(pendingIntent)
+//                .addAction(R.drawable.address,"Stop",stop)
+                .build();
+
+        startForeground(1, notification);
+        mLocationClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build();
+
+        mLocationRequest.setInterval(3000);
+        mLocationRequest.setFastestInterval(10000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationClient.connect();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -135,32 +167,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                 }
             }
 
-        createNotificationChannel();
 
-
-
-
-        Intent notificationIntent = new Intent(this, Main2Activity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                0, notificationIntent, 0);
-        CharSequence input = "Checking";
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Foreground Service")
-                .setContentText(input)
-                .setContentIntent(pendingIntent)
-//                .addAction(R.drawable.address,"Stop",stop)
-                .build();
-
-        startForeground(1, notification);
-               mLocationClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API).build();
-
-        mLocationRequest.setInterval(3000);
-        mLocationRequest.setFastestInterval(10000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationClient.connect();
 
         return START_REDELIVER_INTENT;
     }
@@ -211,15 +218,16 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "== Error On onConnected() Permission not granted");
-            return;
+            Log.d("IWANTLOCATION", "== Error On onConnected() Permission not granted");
+//            try {
+
+            return ;
         }
-        try {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mLocationClient,mLocationRequest,this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG,"Connected to Google API");
+        LocationServices.FusedLocationApi.requestLocationUpdates(mLocationClient,mLocationRequest,this);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+        Log.d("IWANTLOCATION","Connected to Google API");
 
     }
 
@@ -231,7 +239,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "Failed to connect to Google API");
+        Log.d("IWANTLOCATION", "Failed to connect to Google API");
     }
 
     @Override

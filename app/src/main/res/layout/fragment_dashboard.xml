@@ -17,8 +17,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="509dp"
-            android:layout_weight="1.7">
+            android:layout_height="match_parent"
+            android:layout_weight="2.5">
 
             <com.github.angads25.toggle.widget.LabeledSwitch
                 android:id="@+id/onswitch"
@@ -69,14 +69,13 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:weightSum="1">
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/textView27"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight=".7"
+                        android:layout_weight="5"
                         android:fontFamily="@font/aladin"
                         android:gravity="center"
                         android:text="Navigation"
@@ -87,7 +86,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight=".3"
+                        android:layout_weight="2"
                         android:orientation="horizontal"
                         android:weightSum="3">
 
@@ -95,15 +94,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:weightSum="1">
+                            android:orientation="vertical">
 
                             <com.skydoves.elasticviews.ElasticImageView
                                 android:id="@+id/locbtn"
                                 android:layout_width="match_parent"
-                                android:layout_height="42dp"
+                                android:layout_height="match_parent"
                                 android:layout_margin="@dimen/_10sdp"
-                                android:layout_weight=".7"
+                                android:layout_weight="6"
                                 android:scaleType="fitCenter"
                                 app:srcCompat="@drawable/ic_location__2_" />
 
@@ -123,18 +121,18 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:weightSum="1">
+                            android:orientation="vertical">
 
                             <com.skydoves.elasticviews.ElasticImageView
                                 android:id="@+id/addbtn"
                                 android:layout_width="match_parent"
-                                android:layout_height="36dp"
+                                android:layout_height="match_parent"
                                 android:layout_margin="@dimen/_10sdp"
-                                android:layout_weight=".7"
+                                android:layout_weight="6"
                                 app:srcCompat="@drawable/ic_baseline_info_24" />
 
                             <TextView
+                                android:id="@+id/abouttext"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/_7sdp"
@@ -149,20 +147,20 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:weightSum="1">
+                            android:orientation="vertical">
 
                             <com.skydoves.elasticviews.ElasticImageView
                                 android:id="@+id/logoutbtn"
                                 android:layout_width="match_parent"
-                                android:layout_height="39dp"
+                                android:layout_height="match_parent"
                                 android:layout_margin="@dimen/_10sdp"
-                                android:layout_weight=".7"
+                                android:layout_weight="6"
                                 android:scaleType="fitCenter"
                                 app:srcCompat="@drawable/ic_logout__1_" />
 
                             <TextView
 
+                                android:id="@+id/log"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/_7sdp"
@@ -231,6 +229,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:background="#00FFFFFF"
+                                android:padding="@dimen/_3sdp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"

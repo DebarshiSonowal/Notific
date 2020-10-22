@@ -32,6 +32,7 @@
             android:layout_height="match_parent"
             android:background="#E2E6F3"
             app:textTint="#000000"
+            app:arrowDrawable="@drawable/ic_arrow"
             android:popupBackground="#2A5081"
             android:spinnerMode="dialog"/>
     </RelativeLayout>

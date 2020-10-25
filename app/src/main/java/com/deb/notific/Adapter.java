@@ -63,9 +63,13 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>  {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         FancyToast.makeText(mContext,"Successfully deleated",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true);
+                        namelist.remove(position);
+                        area.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, namelist.size());
                     }
                 });
-                notifyItemRemoved(position);
+
             }
         });
     }
@@ -83,5 +87,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder>  {
             mDel = itemView.findViewById(R.id.imageView11);
             Area = itemView.findViewById(R.id.textView32);
         }
+    }
+    public void remove(int position){
+        namelist.remove(position);
+        area.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, namelist.size());
     }
 }

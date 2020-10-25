@@ -32,6 +32,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 
 import com.blogspot.atifsoftwares.animatoolib.Animatoo;
+import com.deb.notific.Main2Activity;
 import com.deb.notific.MyService;
 import com.deb.notific.R;
 import com.deb.notific.call_sms;
@@ -82,6 +83,7 @@ public class HomeFragment extends Fragment {
     BroadcastReceiver mBroadcastReceiver;
     LocalBroadcastManager mBroadcastManager;
     Thread mThread;
+    Boolean isConnected;
     String latitude,longitude,name,status1;
     View root;
     Boolean mBoolean;
@@ -107,7 +109,7 @@ public class HomeFragment extends Fragment {
                                 longitude = intent.getStringExtra(MyService.EXTRA_LONGITUDE);
                                 name = intent.getStringExtra("Name");
                                 status1 = intent.getStringExtra("STATE");
-
+                                isConnected = intent.getBooleanExtra("Internet",false);
                                 if (name != null) {
                                     try {
                                         loc.setText(name);
@@ -561,6 +563,7 @@ public class HomeFragment extends Fragment {
         FirebaseUser mUser;
         String name;
         long a;
+        Main2Activity main2Activity;
         private final WeakReference<TextView> usenm,totaluse,nomark;
 
         private long b;
@@ -569,6 +572,7 @@ public class HomeFragment extends Fragment {
            this.usenm = new WeakReference<>(textView);
             this.totaluse = new WeakReference<>(mtext);
             this.nomark = new WeakReference<>(ntext);
+            main2Activity  = new Main2Activity();
         }
 
         @Override
@@ -576,6 +580,7 @@ public class HomeFragment extends Fragment {
             Log.d("Thr", "Thread created");
             mUser = FirebaseAuth.getInstance().getCurrentUser();
             local = FirebaseDatabase.getInstance().getReference();
+            main2Activity.showContent();
             local.child("user").child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

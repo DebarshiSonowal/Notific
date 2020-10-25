@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:progressActivity="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#00000000"
     tools:context=".Main2Activity">
-
-    <fragment
-        android:id="@+id/nav_host_fragment"
-        android:name="androidx.navigation.fragment.NavHostFragment"
+    <com.vlonjatg.progressactivity.ProgressRelativeLayout
+        android:id="@+id/loadingLayout"
+        progressActivity:errorBackgroundColor="#42a5f5"
+        progressActivity:emptyTitleTextSize="14dp"
+        progressActivity:emptyContentTextSize="12dp"
+        progressActivity:emptyTitleTextColor="#42a5f5"
+        progressActivity:loadingBackgroundColor="#FFFFFF"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:defaultNavHost="true"
@@ -19,15 +23,22 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0"
-        app:navGraph="@navigation/mobile_navigation" />
+        app:layout_constraintVertical_bias="0">
+        <fragment
+            android:id="@+id/nav_host_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/mobile_navigation" />
+    </com.vlonjatg.progressactivity.ProgressRelativeLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline11"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.89" />
+        app:layout_constraintGuide_percent="0.93" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"

@@ -6,8 +6,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -17,8 +15,9 @@ import android.content.res.Configuration;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -30,16 +29,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.airbnb.lottie.L;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,8 +49,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-
-import static androidx.core.app.ActivityCompat.requestPermissions;
 
 public class MyService extends Service implements GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener, LocationListener{
     private static final String TAG = MyService.class.getSimpleName();
@@ -73,6 +66,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     Map<String, List<LatLng>> mDictionary = new Hashtable<>();
     Integer number;
     Context mContext;
+    Main2Activity mMain2Activity = new Main2Activity();
     ValueEventListener mValueEventListener;
     LocationRequest mLocationRequest = new LocationRequest();
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
@@ -82,7 +76,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     public static final String EXTRA_LONGITUDE = "extra_longitude";
     Phone broad;
     call_sms mCallsms;
-
+    boolean isConnected;
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -153,6 +147,13 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+//        mViewwModel = ViewModelProviders.of(intent).get(InternetConnectionViewwModel.class);
+        ConnectivityManager cm =
+                (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
         mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
             if(intent.hasExtra("ACTION")){
                 if(intent.getStringExtra("ACTION").equals("STOP"))
@@ -172,6 +173,8 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         return START_REDELIVER_INTENT;
     }
     private void getData() {
+        Log.d("MyService","Inside");
+
         root.child("Marked Location").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener( mValueEventListener =  new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

@@ -91,7 +91,7 @@ RecyclerView mRecyclerView;
     ElasticImageView logbtn,location,about;
     LinearLayoutManager layoutManager;
     private List<LatLng> mLatLngList;
-
+    Boolean isConnected;
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -151,6 +151,7 @@ RecyclerView mRecyclerView;
                             mRecyclerView.setAdapter(mAdapter);
                             layoutManager = new LinearLayoutManager(getContext());
                             mRecyclerView.setLayoutManager(layoutManager);
+                            mRecyclerView.setHasFixedSize(false);
                             mAdapter.notifyDataSetChanged();
                         }
                     }
@@ -197,6 +198,11 @@ RecyclerView mRecyclerView;
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new Adapter(getContext(),mList,area);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setHasFixedSize(false);
+        if(mAdapter.getItemCount() == 0){
+            mEmptyView.showEmpty(R.drawable.ic_empty_box_open,"No items in the cart","Add items to the cart");
+        }else
+            mEmptyView.showContent();
         labeledSwitch = root.findViewById(R.id.onswitch);
         labeledSwitch.setOnToggledListener(new OnToggledListener() {
             @Override
@@ -285,7 +291,7 @@ RecyclerView mRecyclerView;
                 .setDismissWhenTouchOutside(true)
                 .build();
 
-            mMark.show(mark);
+//            mMark.show(mark);
             mMark.setOnBalloonDismissListener(new OnBalloonDismissListener() {
                 @Override
                 public void onBalloonDismiss() {
@@ -334,7 +340,8 @@ RecyclerView mRecyclerView;
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewholder, int direction) {
-                removeItem((String) viewholder.itemView.getTag());
+
+                removeItem((String) viewholder.itemView.getTag(),viewholder.getAdapterPosition());
             }
         }).attachToRecyclerView(mRecyclerView);
 
@@ -358,13 +365,13 @@ RecyclerView mRecyclerView;
         return root;
     }
 
-    private void removeItem(String tag) {
+    private void removeItem(String tag,int position) {
         rootref.child("Marked Location").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(tag).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 FancyToast.makeText(getContext(),"Successfully deleated",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true);
-                mAdapter.notifyDataSetChanged();
-                mRecyclerView.invalidate();
+                mAdapter.remove(position);
+
             }
         });
 

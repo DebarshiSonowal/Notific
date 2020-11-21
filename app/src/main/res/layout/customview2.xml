@@ -56,7 +56,7 @@
                         android:paddingEnd="@dimen/_7sdp"
                         android:text="Unknown"
                         android:textColor="#000000"
-                        android:textSize="@dimen/_14sdp"
+                        android:textSize="@dimen/_12sdp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -86,7 +86,7 @@
                         android:paddingEnd="@dimen/_7sdp"
                         android:text="7896208559"
                         android:textColor="#000000"
-                        android:textSize="@dimen/_14sdp"
+                        android:textSize="@dimen/_12sdp"
                         android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
@@ -102,18 +102,19 @@
                     android:id="@+id/fbtn"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="16dp"
+                    android:layout_marginStart="@dimen/_42sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginEnd="@dimen/_42sdp"
+                    android:layout_marginBottom="@dimen/_4sdp"
                     android:layout_weight=".2"
                     android:gravity="center"
                     app:fb_backgroundColor="#E2E6F3"
                     app:fb_borderColor="#E2E6F3"
                     app:fb_icon="@drawable/ic_contact_us"
-                    app:fb_iconHeight="70dp"
-                    app:fb_iconWidth="70dp"
+                    app:fb_iconHeight="@dimen/_55sdp"
+                    app:fb_iconWidth="@dimen/_60sdp"
                     app:fb_rippleColor="#3359D3"
-                    app:fb_shape="circle"
-                    app:fb_textPaddingEnd="16dp"
-                    app:fb_textPaddingStart="16dp" />
+                    app:fb_shape="circle" />
 
                 <TextView
                     android:id="@+id/timeview"
@@ -124,7 +125,7 @@
                     android:paddingEnd="@dimen/_7sdp"
                     android:text="12/2/2020"
                     android:textColor="#000000"
-                    android:textSize="@dimen/_14sdp"
+                    android:textSize="@dimen/_10sdp"
                     android:textStyle="bold" />
             </LinearLayout>
 

@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
@@ -55,6 +56,17 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_logout" />
 
+            <com.skydoves.elasticviews.ElasticImageView
+                android:id="@+id/help"
+                android:layout_width="62dp"
+                android:layout_height="52dp"
+                android:layout_marginTop="92dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_help_a"
+                />
+
             <TextView
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
@@ -102,6 +114,7 @@
                 android:weightSum="2">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/statuscard"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"
@@ -154,6 +167,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/NoLoc"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"
@@ -214,6 +228,7 @@
                 android:weightSum="2">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/RingCard"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"
@@ -266,6 +281,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/Current"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"
@@ -324,6 +340,7 @@
                 android:weightSum="2">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/TotalUser"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"
@@ -376,6 +393,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/NoCall"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"

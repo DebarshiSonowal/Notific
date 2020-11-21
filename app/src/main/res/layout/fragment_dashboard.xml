@@ -59,6 +59,7 @@
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/a"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/_9sdp"
@@ -89,7 +90,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:orientation="horizontal"
-                        android:weightSum="3">
+                        android:weightSum="4">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -114,6 +115,32 @@
                                 android:layout_weight=".3"
                                 android:gravity="center"
                                 android:text="Mark Location"
+                                android:textColor="#05336E"
+                                android:textSize="@dimen/_10sdp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <com.skydoves.elasticviews.ElasticImageView
+                                android:id="@+id/helpbtn"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="@dimen/_10sdp"
+                                android:layout_weight="6"
+                                android:scaleType="fitCenter"
+                                app:srcCompat="@drawable/ic_help" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/_7sdp"
+                                android:layout_weight=".3"
+                                android:gravity="center"
+                                android:text="Help"
                                 android:textColor="#05336E"
                                 android:textSize="@dimen/_12sdp" />
                         </LinearLayout>
@@ -176,6 +203,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/b"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/_9sdp"
@@ -221,10 +249,10 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            progressActivity:errorBackgroundColor="#42a5f5"
-                            progressActivity:emptyTitleTextSize="14dp"
                             progressActivity:emptyContentTextSize="12dp"
                             progressActivity:emptyTitleTextColor="#42a5f5"
+                            progressActivity:emptyTitleTextSize="14dp"
+                            progressActivity:errorBackgroundColor="#42a5f5"
                             progressActivity:loadingBackgroundColor="#FFFFFF">
 
                             <androidx.recyclerview.widget.RecyclerView

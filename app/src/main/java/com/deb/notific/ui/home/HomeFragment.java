@@ -1,5 +1,6 @@
 package com.deb.notific.ui.home;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -12,6 +13,7 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -25,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -46,6 +49,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.labo.kaji.fragmentanimations.CubeAnimation;
 import com.labo.kaji.fragmentanimations.MoveAnimation;
 import com.shashank.sony.fancytoastlib.FancyToast;
@@ -62,19 +70,24 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
+import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 
 public class HomeFragment extends Fragment {
     AudioManager mAudioManager;
-    ElasticImageView logbtn;
+    ElasticImageView logbtn,help;
     private static final String FIRST = "permission";
     private static final String SECOND = "settings";
     private static final String THIRD = "try";
     private static final String FOURTH = "tradad";
     private static final String FIFTH = "tragagaga";
     private static final String SIXTH = "tr14314adad";
-    Handler mHandler = new Handler();
+   Context mContext;
     Long  count;
     Balloon statusballon,locballon,ringmodebaloon,currentballon,userballon,callballon;
     FirebaseUser mUser;
@@ -88,19 +101,111 @@ public class HomeFragment extends Fragment {
     View root;
     Boolean mBoolean;
     FragmentManager fragMan;
+    Date m;
     TextView ringm, nomark, usenm, loc, totaluse, misscall, state,date;
-    ValueEventListener mValueEventListener;
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-//        if(enter){
+
           return MoveAnimation.create(MoveAnimation.RIGHT, enter, 500);
-//        }else
-//            return MoveAnimation.create(MoveAnimation.LEFT, enter, 1000);
+
     }
     @Override
     public void onStart() {
         super.onStart();
         getexecuted();
+        help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new GuideView.Builder(getContext())
+                        .setTitle("Status Card")
+                        .setContentText("Here you can see the status of your location")
+                        .setTargetView(root.findViewById(R.id.statuscard))
+                        .setDismissType(DismissType.anywhere) //optional - default dismissible by TargetView
+                        .setContentTextSize(12)//optional
+                        .setTitleTextSize(14)//optional
+                        .setGuideListener(new GuideListener() {
+                            @Override
+                            public void onDismiss(View view) {
+                                new GuideView.Builder(getContext())
+                                        .setTitle("No Location")
+                                        .setContentText("Here you can see the no of locations")
+                                        .setTargetView(root.findViewById(R.id.Noloc1))
+                                        .setDismissType(DismissType.anywhere) //optional - default dismissible by TargetView
+                                        .setContentTextSize(12)//optional
+                                        .setTitleTextSize(14)//optional
+                                        .setGuideListener(new GuideListener() {
+                                            @Override
+                                            public void onDismiss(View view) {
+                                                new GuideView.Builder(getContext())
+                                                        .setTitle("Ringing Mode")
+                                                        .setContentText("Here you can see the status of ringing mode")
+                                                        .setTargetView(root.findViewById(R.id.RingCard))
+                                                        .setDismissType(DismissType.anywhere) //optional - default dismissible by TargetView
+                                                        .setContentTextSize(12)//optional
+                                                        .setTitleTextSize(14)//optional
+                                                        .setGuideListener(new GuideListener() {
+                                                            @Override
+                                                            public void onDismiss(View view) {
+                                                                new GuideView.Builder(getContext())
+                                                                        .setTitle("Current Location")
+                                                                        .setContentText("Here you can see your current location")
+                                                                        .setTargetView(root.findViewById(R.id.Current))
+                                                                        .setDismissType(DismissType.anywhere) //optional - default dismissible by TargetView
+                                                                        .setContentTextSize(12)//optional
+                                                                        .setTitleTextSize(14)//optional
+                                                                        .setGuideListener(new GuideListener() {
+                                                                            @Override
+                                                                            public void onDismiss(View view) {
+                                                                                new GuideView.Builder(getContext())
+                                                                                        .setTitle("Total Users")
+                                                                                        .setContentText("Here you can see total users of the app")
+                                                                                        .setTargetView(root.findViewById(R.id.TotalUser))
+                                                                                        .setDismissType(DismissType.anywhere) //optional - default dismissible by TargetView
+                                                                                        .setContentTextSize(12)//optional
+                                                                                        .setTitleTextSize(14)//optional
+                                                                                        .setGuideListener(new GuideListener() {
+                                                                                            @Override
+                                                                                            public void onDismiss(View view) {
+                                                                                                new GuideView.Builder(getContext())
+                                                                                                        .setTitle("No of calls")
+                                                                                                        .setContentText("Here you can see no of missed calls")
+                                                                                                        .setTargetView(root.findViewById(R.id.NoCall))
+                                                                                                        .setDismissType(DismissType.anywhere) //optional - default dismissible by TargetView
+                                                                                                        .setContentTextSize(12)//optional
+                                                                                                        .setTitleTextSize(14)//optional
+                                                                                                        .setGuideListener(new GuideListener() {
+                                                                                                            @Override
+                                                                                                            public void onDismiss(View view) {
+
+                                                                                                            }
+                                                                                                        })
+                                                                                                        .build()
+                                                                                                        .show();
+                                                                                            }
+                                                                                        })
+                                                                                        .build()
+                                                                                        .show();
+                                                                            }
+                                                                        })
+                                                                        .build()
+                                                                        .show();
+                                                            }
+                                                        })
+                                                        .build()
+                                                        .show();
+                                            }
+                                        })
+                                        .build()
+                                        .show();
+                            }
+                        })
+                        .build()
+                        .show();
+            }
+        });
+
+
+        mBroadcastManager = LocalBroadcastManager.getInstance(mContext);
         mBroadcastManager.registerReceiver(mBroadcastReceiver =
                         new BroadcastReceiver() {
                             @Override
@@ -123,11 +228,6 @@ public class HomeFragment extends Fragment {
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
-//                            PackageManager pm  = getActivity().getPackageManager();
-//                            ComponentName componentName = new ComponentName( getActivity(), call_sms.class);
-//
-//                            pm.setComponentEnabledSetting(componentName,PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-//                                    PackageManager.DONT_KILL_APP);
                                     getexecuted();
                                 } else if (status1.equals("false")){
                                     try {
@@ -136,12 +236,6 @@ public class HomeFragment extends Fragment {
                                         e.printStackTrace();
                                     }
                                 }
-
-//                        PackageManager pm  = getActivity().getPackageManager();
-//                        ComponentName componentName = new ComponentName( getActivity(), call_sms.class);
-//
-//                        pm.setComponentEnabledSetting(componentName,PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-//                                PackageManager.DONT_KILL_APP);
                                 getexecuted();
                             }
                         }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
@@ -160,30 +254,62 @@ public class HomeFragment extends Fragment {
         loc = null;
         mAudioManager = null;
         fragMan = null;
+        date = null;
         misscall = null;
-        mBroadcastManager.unregisterReceiver(mBroadcastReceiver);
-//        mdata.local.child("user").removeEventListener(mValueEventListener);
-//        mdata.local.child("user").child(mdata.mUser.getUid()).removeEventListener(mValueEventListener);
-//        mdata.local.child("user").removeEventListener(mValueEventListener);
-//        mHandler.removeCallbacks(mThread);
+        try {
+            mBroadcastManager.unregisterReceiver(mBroadcastReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mBroadcastReceiver = null;
+        mBroadcastManager = null;
         mdata = null;
         nomark = null;
         ringm = null;
         totaluse = null;
         usenm = null;
         state = null;
+        m = null;
         System.gc();
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("SetTextI18n")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-         preferences = getActivity().getSharedPreferences("instruction",Context.MODE_PRIVATE);
-         Date m = new Date();
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Dexter.withContext(container.getContext())
+                        .withPermissions(
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.READ_CONTACTS,
+                                Manifest.permission.READ_CALL_LOG,
+                                Manifest.permission.CALL_PHONE,
+                                Manifest.permission.MODIFY_PHONE_STATE,
+                                Manifest.permission.READ_SMS,
+                                Manifest.permission.SEND_SMS,
+                                Manifest.permission.RECEIVE_SMS,
+                                Manifest.permission.READ_PHONE_NUMBERS,
+                                Manifest.permission.READ_PHONE_STATE,
+                                Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.ACCESS_NOTIFICATION_POLICY,
+                                Manifest.permission.ACCESS_NETWORK_STATE,
+                                Manifest.permission.INTERNET
+                        ).withListener(new MultiplePermissionsListener() {
+                    @Override public void onPermissionsChecked(MultiplePermissionsReport report) {/* ... */}
+                    @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {/* ... */}
+                }).check();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        preferences = getActivity().getSharedPreferences("instruction",Context.MODE_PRIVATE);
+         m = new Date();
          SimpleDateFormat sdf=  new SimpleDateFormat("dd,MMMM,yyyy", Locale.getDefault());
         mBoolean = preferences.getBoolean("first",true);
-        fragMan = getChildFragmentManager();
         root = inflater.inflate(R.layout.fragment_home, container, false);
         mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
         logbtn=root.findViewById(R.id.logout);
@@ -192,10 +318,12 @@ public class HomeFragment extends Fragment {
         nomark = root.findViewById(R.id.nolocview);
         ringm = root.findViewById(R.id.ringmodview);
         loc = root.findViewById(R.id.locview);
+        help = root.findViewById(R.id.help);
         totaluse = root.findViewById(R.id.totlauview);
         misscall = root.findViewById(R.id.nocallview);
         date = root.findViewById(R.id.date);
         date.setText(sdf.format(m));
+        mContext = getContext();
         logbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -216,11 +344,10 @@ public class HomeFragment extends Fragment {
         loadData();
 
         mUser = FirebaseAuth.getInstance().getCurrentUser();
-//        FancyToast.makeText(getContext(),mUser.getUid(), FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,false).show();
         mdata = new Dataoperation(usenm,totaluse,nomark);
         mThread = new Thread(mdata);
         mThread.start();
-        mBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+        mBroadcastManager = LocalBroadcastManager.getInstance(mContext);
       getexecuted();
         mBroadcastManager.registerReceiver(mBroadcastReceiver =
                 new BroadcastReceiver() {
@@ -505,6 +632,44 @@ public class HomeFragment extends Fragment {
         mThread = new Thread(mdata);
         mThread.start();
         getexecuted();
+        m = new Date();
+        mContext = getContext();
+        mBroadcastManager = LocalBroadcastManager.getInstance(mContext);
+        mBroadcastManager.registerReceiver(mBroadcastReceiver =
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        latitude = intent.getStringExtra(MyService.EXTRA_LATITUDE);
+                        longitude = intent.getStringExtra(MyService.EXTRA_LONGITUDE);
+                        name = intent.getStringExtra("Name");
+                        status1 = intent.getStringExtra("STATE");
+
+                        if (name != null) {
+                            try {
+                                loc.setText(name);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (status1.equals("true")) {
+                            try {
+                                state.setText("Inside");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            getexecuted();
+                        } else if (status1.equals("false")){
+                            try {
+                                state.setText("Outside");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        getexecuted();
+                    }
+                }, new IntentFilter(MyService.ACTION_LOCATION_BROADCAST)
+        );
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Values",Context.MODE_PRIVATE);
        name = sharedPreferences.getString("location","Searching");
         status1 = sharedPreferences.getString("status","true");
@@ -530,7 +695,7 @@ public class HomeFragment extends Fragment {
     private void getexecuted() {
         try {
             mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-            Log.d("Pause", "It is resume");
+
             if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) {
                 ringm.setText("Normal");
             } else if (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE) {
@@ -546,8 +711,11 @@ public class HomeFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        Log.d("Pause", "It is paused");
-        Context context;
+        mContext = null;
+        mBroadcastManager.unregisterReceiver(mBroadcastReceiver);
+        mBroadcastReceiver = null;
+        mBroadcastManager = null;
+        m = null;
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("Vallues",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
@@ -555,7 +723,7 @@ public class HomeFragment extends Fragment {
         editor.apply();
         editor.putString("status",status1);
         editor.commit();
-
+        fragMan = null;
     }
 
     public  static class Dataoperation implements Runnable {
@@ -563,16 +731,13 @@ public class HomeFragment extends Fragment {
         FirebaseUser mUser;
         String name;
         long a;
-        Main2Activity main2Activity;
         private final WeakReference<TextView> usenm,totaluse,nomark;
-
         private long b;
 
         public Dataoperation(TextView textView,TextView mtext,TextView ntext) {
            this.usenm = new WeakReference<>(textView);
             this.totaluse = new WeakReference<>(mtext);
             this.nomark = new WeakReference<>(ntext);
-            main2Activity  = new Main2Activity();
         }
 
         @Override
@@ -580,7 +745,6 @@ public class HomeFragment extends Fragment {
             Log.d("Thr", "Thread created");
             mUser = FirebaseAuth.getInstance().getCurrentUser();
             local = FirebaseDatabase.getInstance().getReference();
-            main2Activity.showContent();
             local.child("user").child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -609,17 +773,13 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     a = dataSnapshot.getChildrenCount();
-//                    mHandler.post(new Runnable() {
-//                        @SuppressLint("SetTextI18n")
-//                        @Override
-//                        public void run() {
+
                     try {
                         totaluse.get().setText(String.valueOf(a));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-//                        }
-//                    });
+
 
 
                 }
@@ -633,20 +793,14 @@ public class HomeFragment extends Fragment {
             local.child("Marked Location").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Log.d("Thr", "loc no");
+
                     b = dataSnapshot.getChildrenCount();
-//                    mHandler.post(new Runnable() {
-//                        @SuppressLint("SetTextI18n")
-//                        @Override
-//                        public void run() {
-                            Log.d("Thr", "set loc no");
+
                     try {
                         nomark.get().setText(String.valueOf(b));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-//                        }
-//                    });
                 }
 
                 @Override
@@ -654,7 +808,6 @@ public class HomeFragment extends Fragment {
 
                 }
             });
-//            mHandler.removeCallbacks(this);
         }
     }
 }

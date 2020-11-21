@@ -25,6 +25,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -43,16 +44,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.android.SphericalUtil;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class MyService extends Service implements GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener, LocationListener{
     private static final String TAG = MyService.class.getSimpleName();
-    private static final int PERMISSION_REQUEST_READ_PHONE_STATE =1 ;
     DatabaseReference root = FirebaseDatabase.getInstance().getReference();
     LatLng mLng,mLatLng;
     List<LatLng>mLatLngs = new ArrayList<>();
@@ -62,8 +68,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     AudioManager mAudioManager;
     GoogleApiClient mLocationClient;
     Boolean flag =false;
-    String result,result1,getResult;
-    Map<String, List<LatLng>> mDictionary = new Hashtable<>();
+    String result,result1;
     Integer number;
     Context mContext;
     Main2Activity mMain2Activity = new Main2Activity();
@@ -76,7 +81,8 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     public static final String EXTRA_LONGITUDE = "extra_longitude";
     Phone broad;
     call_sms mCallsms;
-    boolean isConnected;
+
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -109,6 +115,7 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCreate() {
         super.onCreate();
@@ -116,7 +123,34 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
        broad = new Phone();
        mCallsms = new call_sms();
         createNotificationChannel();
-
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Dexter.withContext(this)
+                        .withPermissions(
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.READ_CONTACTS,
+                                Manifest.permission.READ_CALL_LOG,
+                                Manifest.permission.CALL_PHONE,
+                                Manifest.permission.MODIFY_PHONE_STATE,
+                                Manifest.permission.READ_SMS,
+                                Manifest.permission.SEND_SMS,
+                                Manifest.permission.RECEIVE_SMS,
+                                Manifest.permission.READ_PHONE_NUMBERS,
+                                Manifest.permission.READ_PHONE_STATE,
+                                Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.ACCESS_NOTIFICATION_POLICY,
+                                Manifest.permission.ACCESS_NETWORK_STATE,
+                                Manifest.permission.INTERNET
+                        ).withListener(new MultiplePermissionsListener() {
+                    @Override public void onPermissionsChecked(MultiplePermissionsReport report) {/* ... */}
+                    @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {/* ... */}
+                }).check();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Intent notificationIntent = new Intent(this, Main2Activity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
@@ -147,13 +181,6 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-//        mViewwModel = ViewModelProviders.of(intent).get(InternetConnectionViewwModel.class);
-        ConnectivityManager cm =
-                (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
         mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
             if(intent.hasExtra("ACTION")){
                 if(intent.getStringExtra("ACTION").equals("STOP"))
@@ -173,7 +200,6 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         return START_REDELIVER_INTENT;
     }
     private void getData() {
-        Log.d("MyService","Inside");
 
         root.child("Marked Location").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addValueEventListener( mValueEventListener =  new ValueEventListener() {
             @Override
@@ -193,10 +219,10 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                                     longitude =  Double.parseDouble(dataSnapshot3.getValue().toString()) ;
                             }
                             mLng = new LatLng(latitude,longitude);
-                            Log.d("MyService",mLng.toString());
+
                             mLatLngs.add(mLng);
 
-                            Log.d("MyService","Got data");
+
                         }
                     }
                 }
@@ -222,14 +248,11 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
     public void onConnected(@Nullable Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.d("IWANTLOCATION", "== Error On onConnected() Permission not granted");
-//            try {
 
             return ;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mLocationClient,mLocationRequest,this);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
+
         Log.d("IWANTLOCATION","Connected to Google API");
 
     }
@@ -251,38 +274,42 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         if(location != null)
         {
             result1 = result;
-            Log.d("Loc",result1+"");
-            send(location);
+
+            try {
+                send(location);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private void getchecked() throws IOException {
-        Geocoder geocoder = new Geocoder(this);
+    private void getchecked() {
         area.clear();
         for(int i=0;i< number/4;i++)
         {
-//            Log.d("MyService", String.valueOf(i));
-//            Log.d("MyService", String.valueOf(number/4));
             for(int j =0;j<4;j++)
             {
-                Log.d("MyService", String.valueOf(j)+"point");
                 mLatLngList.add(mLatLngs.get(j));
-                Log.d("MyService",mLatLngList.get(j).toString());
+
             }
             mLatLngList.add(mLatLngs.get(0));
-            Log.d("MyService",mLatLngs.get(0).toString());
+
             flag = PolyUtil.containsLocation(mLatLng,mLatLngList,true);
+
             area.add(SphericalUtil.computeArea(mLatLngList));
-            Log.d("Area",SphericalUtil.computeArea(mLatLngList)+"");
-            Log.d("MyService",flag.toString());
+
             if(flag)
             {
-                startBroadcast();
+                try {
+                    startBroadcast();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             else
             {
                 try {
-                        stopBroadcast();
+                    unregisterReceiver(broad);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -294,13 +321,6 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
             mLatLngs.subList(0,3).clear();
         }
 
-    }
-    private void stopBroadcast() {
-        try {
-            unregisterReceiver(broad);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void startBroadcast() {
@@ -321,6 +341,11 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
                 mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
             } catch (Exception e) {
                 e.printStackTrace();
+                try {
+                    mAudioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
             }
 
         }
@@ -328,7 +353,6 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
         else{
             try {
                 mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-
                 } catch (Exception e) {
                 e.printStackTrace();
                 }
@@ -339,42 +363,60 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
 
 
-    private void send(Location location) {
-        Geocoder geocoder = new Geocoder(this);
-        try {
-            List<Address> addresses =
-                    geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+    private void send(Location location) throws IOException {
+        Geocoder geocoder = new Geocoder(this, Locale.ENGLISH);
+        List<Address> addresses =geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+        Log.d("ADDRESS","NOT working");
+        Log.d("ADDRESS","ADDRESS "+ addresses.get(0));
+
+       if (!(addresses.get(0).getLocality()+"1").equals("null1")) {
             result = addresses.get(0).getLocality() + ",";
+                Log.d("ADDRESS",addresses.get(0).getLocality()+"");
+        }else
+            result ="";
+        if (!(addresses.get(0).getSubLocality()+"1").equals("null1")) {
+            Log.d("ADDRESS",result+"");
             result += addresses.get(0).getSubLocality()+ ",";
-            result += addresses.get(0).getAdminArea();
-        } catch (Exception e) {
-            e.printStackTrace();
+
+                Log.d("ADDRESS",addresses.get(0).getSubLocality()+"");
         }
+        if (!(addresses.get(0).getAdminArea()+"1").equals("null1")) {
+            result += addresses.get(0).getAdminArea();
+                Log.d("ADDRESS",addresses.get(0).getAdminArea()+"");
+        }
+
+
         if (result1 != null) {
             if (result1.equals(result)) {
+
                 mLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                Log.d("MyService",location.getLatitude()+ " " + location.getLongitude() +" A");
+
                 getData();
                 try {
                     getchecked();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
+
                 sound(flag);
+
                 sendMessageToUI(String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()),result,flag);
+
                 sendnotific(result);
             }
         } else {
             mLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-            Log.d("MyService",location.getLatitude()+ " " + location.getLongitude() +" A");
+
             getData();
             try {
                 getchecked();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             sound(flag);
+
             sendMessageToUI(String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()),result,flag);
+
             sendnotific(result);
         }
     }
@@ -382,21 +424,27 @@ public class MyService extends Service implements GoogleApiClient.ConnectionCall
 
     private void sendnotific(String result) {
         Intent notificationIntent = new Intent(this, MainActivity.class);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
+
         Intent stopService = new Intent(this,MyService.class);
+
         stopService.putExtra("ACTION","STOP");
+
         PendingIntent stop = PendingIntent.getService(this,0,stopService,PendingIntent.FLAG_CANCEL_CURRENT);
+
         Notification notification =  new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("The locaton service is running")
                 .setContentText(result)
                 .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
                 .setSmallIcon(R.drawable.health)
                 .setContentIntent(pendingIntent)
-                .addAction(R.drawable.health,"Stop",stop)
+                .addAction(R.drawable.ic_close_a,"Stop",stop)
                 .build();
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
         mNotificationManager.notify(1, notification);
     }
 

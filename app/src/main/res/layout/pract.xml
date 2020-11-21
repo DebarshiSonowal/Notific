@@ -1,53 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:progressActivity="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00000000"
-    tools:context=".Main2Activity">
-    <com.vlonjatg.progressactivity.ProgressRelativeLayout
-        android:id="@+id/loadingLayout"
-        progressActivity:errorBackgroundColor="#42a5f5"
-        progressActivity:emptyTitleTextSize="14dp"
-        progressActivity:emptyContentTextSize="12dp"
-        progressActivity:emptyTitleTextColor="#42a5f5"
-        progressActivity:loadingBackgroundColor="#FFFFFF"
+    android:background="@drawable/comp1"
+    android:orientation="vertical"
+    tools:context=".Main2Activity" >
+
+    <TextView
+        android:id="@+id/textView15"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@+id/nav_view"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0">
-        <fragment
-            android:id="@+id/nav_host_fragment"
-            android:name="androidx.navigation.fragment.NavHostFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:defaultNavHost="true"
-            app:navGraph="@navigation/mobile_navigation" />
-    </com.vlonjatg.progressactivity.ProgressRelativeLayout>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline11"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.93" />
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:menu="@menu/bottom_nav_menu" />
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/aclonica"
+        android:gravity="center"
+        android:text="About"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="35sp"
+        progressActivity:layout_constraintEnd_toEndOf="parent"
+        progressActivity:layout_constraintHorizontal_bias="0.489"
+        progressActivity:layout_constraintStart_toStartOf="parent"
+        progressActivity:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:fontFamily="@font/aclonica"
+        android:gravity="center"
+        android:text="This is an Navigation based app to make it simpler to keep you phone away in importanant places "
+        android:textAllCaps="false"
+        android:textColor="#F1D2D2"
+        android:textSize="24sp"
+        progressActivity:layout_constraintEnd_toEndOf="parent"
+        progressActivity:layout_constraintHorizontal_bias="0.0"
+        progressActivity:layout_constraintStart_toStartOf="parent"
+        progressActivity:layout_constraintTop_toBottomOf="@+id/textView38" />
+
+    <TextView
+        android:id="@+id/textView17"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="92dp"
+        android:fontFamily="@font/aladin"
+        android:gravity="center"
+        android:text="@string/to_contact_us"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/_22sdp"
+        android:textStyle="bold"
+        progressActivity:layout_constraintEnd_toEndOf="parent"
+        progressActivity:layout_constraintHorizontal_bias="0.498"
+        progressActivity:layout_constraintStart_toStartOf="parent"
+        progressActivity:layout_constraintTop_toBottomOf="@+id/textView22" />
+
+    <com.skydoves.elasticviews.ElasticImageView
+        android:id="@+id/loginbtn2"
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:layout_marginTop="24dp"
+        progressActivity:layout_constraintEnd_toEndOf="parent"
+        progressActivity:layout_constraintHorizontal_bias="0.498"
+        progressActivity:layout_constraintStart_toStartOf="parent"
+        progressActivity:layout_constraintTop_toBottomOf="@+id/textView39"
+        progressActivity:srcCompat="@drawable/ic_mail" />
+
+    <TextView
+        android:id="@+id/email2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:gravity="center"
+        android:text="debarkhisonowal@gmail.com"
+        android:textColor="#000000"
+        android:textSize="@dimen/_15sdp"
+        progressActivity:layout_constraintEnd_toEndOf="parent"
+        progressActivity:layout_constraintStart_toStartOf="parent"
+        progressActivity:layout_constraintTop_toBottomOf="@+id/loginbtn" />
+
+    <TextView
+        android:id="@+id/textView18"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/aladin"
+        android:gravity="center"
+        android:text="Developers"
+        android:textColor="#000000"
+        android:textSize="@dimen/_32sdp"
+        progressActivity:layout_constraintEnd_toEndOf="parent"
+        progressActivity:layout_constraintStart_toStartOf="parent"
+        progressActivity:layout_constraintTop_toBottomOf="@+id/email" />
+
+    <TextView
+        android:id="@+id/textView19"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/aladin"
+        android:gravity="center"
+        android:text="Debarshi Sonowal"
+        android:textColor="#000000"
+        android:textSize="@dimen/_15sdp"
+        progressActivity:layout_constraintStart_toStartOf="parent"
+        progressActivity:layout_constraintTop_toBottomOf="@+id/textView26" />
+
+    <TextView
+        android:id="@+id/textView20"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/aladin"
+        android:gravity="center"
+        android:text="Abhilash Basumatary"
+        android:textColor="#000000"
+        android:textSize="@dimen/_15sdp"
+        progressActivity:layout_constraintEnd_toEndOf="parent"
+        progressActivity:layout_constraintStart_toStartOf="parent"
+        progressActivity:layout_constraintTop_toBottomOf="@+id/textView33" />
+
+    <TextView
+        android:id="@+id/textView36"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:text="@string/Credits"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        progressActivity:layout_constraintBottom_toBottomOf="parent"
+        progressActivity:layout_constraintEnd_toEndOf="parent"
+        progressActivity:layout_constraintStart_toStartOf="parent" />
+
+</LinearLayout>

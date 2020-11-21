@@ -1,5 +1,6 @@
 package com.deb.notific.ui.dashboard;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -48,6 +49,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.SphericalUtil;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.labo.kaji.fragmentanimations.MoveAnimation;
 import com.pd.chocobar.ChocoBar;
 import com.shashank.sony.fancytoastlib.FancyToast;
@@ -66,6 +72,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
+import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
+
 public class DashboardFragment extends Fragment {
 DatabaseReference rootref = FirebaseDatabase.getInstance().getReference();
     private static final String FIRST = "permissioadasdn";
@@ -74,7 +84,6 @@ DatabaseReference rootref = FirebaseDatabase.getInstance().getReference();
     private static final String FOURTH = "t2345radad";
     public static final String SWITCH = "onswitch";
     Adapter mAdapter;
-    String getResult;
     AdView mAdView;
    Balloon mMark,mAbout,mlog;
     TextView mark,abouttext,log;
@@ -86,12 +95,10 @@ ValueEventListener mValueEventListener;
     View root;
 RecyclerView mRecyclerView;
     Boolean mBoolean;
-    Switch onswitch;
     AudioManager mAudioManager;
-    ElasticImageView logbtn,location,about;
+    ElasticImageView logbtn,location,about,help;
     LinearLayoutManager layoutManager;
     private List<LatLng> mLatLngList;
-    Boolean isConnected;
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -163,19 +170,90 @@ RecyclerView mRecyclerView;
     }
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-//        if(enter){
             return MoveAnimation.create(MoveAnimation.RIGHT, enter, 500);
-//        }else
-//            return MoveAnimation.create(MoveAnimation.LEFT, enter, 1000);
+
     }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              final ViewGroup container, Bundle savedInstanceState) {
 
         root = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        try {
+            Dexter.withContext(container.getContext())
+                    .withPermissions(
+                            Manifest.permission_group.LOCATION,
+                            Manifest.permission.READ_CONTACTS,
+                            Manifest.permission.READ_CALL_LOG,
+                            Manifest.permission.CALL_PHONE,
+                            Manifest.permission.MODIFY_PHONE_STATE,
+                            Manifest.permission_group.SMS,
+                            Manifest.permission_group.PHONE,
+                            Manifest.permission_group.STORAGE,
+                            Manifest.permission.ACCESS_NOTIFICATION_POLICY,
+                            Manifest.permission.ACCESS_NETWORK_STATE,
+                            Manifest.permission.INTERNET
+                    ).withListener(new MultiplePermissionsListener() {
+                @Override public void onPermissionsChecked(MultiplePermissionsReport report) {/* ... */}
+                @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {/* ... */}
+            }).check();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //Views
         mRecyclerView = root.findViewById(R.id.recyclerView);
         mEmptyView = root.findViewById(R.id.loadingLayout);
-       mList= new ArrayList<>();
-      location = root.findViewById(R.id.locbtn);
+        mList= new ArrayList<>();
+        location = root.findViewById(R.id.locbtn);
+        help = root.findViewById(R.id.helpbtn);
+        help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new GuideView.Builder(getContext())
+                        .setTitle("On/Off switch")
+                        .setContentText("Here you can either turn On or Off the app services")
+                        .setTargetView(root.findViewById(R.id.onswitch))
+                        .setDismissType(DismissType.anywhere) //optional - default dismissible by TargetView
+                        .setContentTextSize(12)//optional
+                        .setTitleTextSize(14)//optional
+                        .setGuideListener(new GuideListener() {
+                            @Override
+                            public void onDismiss(View view) {
+                                new GuideView.Builder(getContext())
+                                        .setTitle("Navigation")
+                                        .setContentText("Here you can select any of these options ")
+                                        .setTargetView(root.findViewById(R.id.a))
+                                        .setDismissType(DismissType.anywhere) //optional - default dismissible by TargetView
+                                        .setContentTextSize(12)//optional
+                                        .setTitleTextSize(14)//optional
+                                        .setGuideListener(new GuideListener() {
+                                            @Override
+                                            public void onDismiss(View view) {
+                                                new GuideView.Builder(getContext())
+                                                        .setTitle("Marked Location")
+                                                        .setContentText("Here you can see the marked locations")
+                                                        .setTargetView(root.findViewById(R.id.b))
+                                                        .setDismissType(DismissType.anywhere) //optional - default dismissible by TargetView
+                                                        .setContentTextSize(12)//optional
+                                                        .setTitleTextSize(14)//optional
+                                                        .setGuideListener(new GuideListener() {
+                                                            @Override
+                                                            public void onDismiss(View view) {
+
+                                                            }
+                                                        })
+                                                        .build()
+                                                        .show();
+                                            }
+                                        })
+                                        .build()
+                                        .show();
+                            }
+                        })
+                        .build()
+                        .show();
+            }
+        });
         MobileAds.initialize(getContext(),new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
@@ -189,21 +267,21 @@ RecyclerView mRecyclerView;
         abouttext = root.findViewById(R.id.abouttext);
         log = root.findViewById(R.id.log);
         mAudioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
-         logbtn = root.findViewById(R.id.logoutbtn);
-//         onswitch = root.findViewById(R.id.onswitch);
-         mLifecycleOwner = new LifecycleService();
-         about =   root.findViewById(R.id.addbtn);
-         layoutManager = new LinearLayoutManager(getContext());
+        logbtn = root.findViewById(R.id.logoutbtn);
+        mLifecycleOwner = new LifecycleService();
+        about =   root.findViewById(R.id.addbtn);
+        layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new Adapter(getContext(),mList,area);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setHasFixedSize(false);
+        labeledSwitch = root.findViewById(R.id.onswitch);
+
         if(mAdapter.getItemCount() == 0){
             mEmptyView.showEmpty(R.drawable.ic_empty_box_open,"No items in the cart","Add items to the cart");
         }else
             mEmptyView.showContent();
-        labeledSwitch = root.findViewById(R.id.onswitch);
         labeledSwitch.setOnToggledListener(new OnToggledListener() {
             @Override
             public void onSwitched(ToggleableView toggleableView, boolean isOn) {
